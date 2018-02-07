@@ -32,7 +32,7 @@ You can, now, search code for any algorithm or data-structure in your favorite l
 
 # How to use it(vscode)
 
-<img src="https://p27vbbdo8.bkt.clouddn.com/how.gif" width="650" height="400"/>
+<img src="https://hf-bucket.oss-cn-qingdao.aliyuncs.com/how.gif" width="650" height="400"/>
 
 # Contribute
 
