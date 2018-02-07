@@ -1,0 +1,24 @@
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;title&gt;Affine Cipher&lt;/title&gt;
+&lt;head&gt;
+&lt;!--Part of Cosmos by OpenGenus Foundation
+Affine Cipher: each alphabet letter is maped by a linear function to its numeric equivalent
+and converted to letter again. --&gt;
+&lt;script&gt;
+function encryption(a, b) {
+    for (var x = 0; x &lt; 26; x++){ 
+    var uchar = String.fromCharCode(65 + x);
+    var cchar = String.fromCharCode(((a*x+b)%26) + 65);
+    document.write(uchar + ":" + cchar);
+    document.write("&lt;br&gt;");
+    }
+}
+encryption(5, 8);
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>

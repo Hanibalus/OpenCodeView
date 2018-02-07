@@ -1,0 +1,90 @@
+<pre>
+/*
+ * Part of Cosmos by OpenGenus Foundation
+*/
+#include &lt;iostream&gt;
+using namespace std;
+// Singly-Linked List Defined
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
+};
+//Function to add nodes to the linked list
+Node* TakeInput(int n) {
+
+    Node* head = NULL;
+    //head of the Linked List
+    Node* tail = NULL;
+    //Tail of the Linked List
+
+    while (n--) {
+
+        int value;
+        //data value(int) of the node
+        cin &gt;&gt; value;
+
+        //creating new node
+        Node* newNode = new Node(value);
+
+        //if the is no elements/nodes in the linked list so far.
+        if (head == NULL) head = tail = newNode; //newNode is the only node in the LL
+        else { // there are some elements/nodes in the linked list
+            tail-&gt;next = newNode; // new Node added at the end of the LL
+            tail = newNode; // last node is tail node
+        }
+    }
+    return head;
+}
+Node* DetectCycle(Node* head) {
+    Node* slow = head;
+    Node* fast = head;
+
+    while (fast-&gt;next-&gt;next) {
+        slow = slow-&gt;next;
+        fast = fast-&gt;next-&gt;next;
+        if (slow == fast) return fast;
+    }
+
+    return NULL;
+}
+bool RemoveCycle(Node* head, Node* intersect_Node) {
+
+    Node* slow = head;
+    Node* prev = NULL;
+
+    while (slow != intersect_Node) {
+        slow = slow-&gt;next;
+        prev = intersect_Node;
+        intersect_Node = intersect_Node-&gt;next;
+    }
+
+    prev-&gt;next = NULL; //cycle removed
+}
+void PrintLL(Node* head) {
+    Node* tempPtr = head;
+    // until it reaches the end
+    while (tempPtr != NULL) {
+        //print the data of the node
+        cout &lt;&lt; tempPtr-&gt;data &lt;&lt; " ";
+        tempPtr = tempPtr-&gt;next;
+    }
+    cout &lt;&lt; endl;
+}
+int main() {
+    int n;
+    //size of the linked list
+    cin &gt;&gt; n;
+    Node* head = TakeInput(n);
+    //creating a cycle in the linked list
+    // For n=5 and values 1 2 3 4 5
+    head-&gt;next-&gt;next-&gt;next-&gt;next-&gt;next = head-&gt;next-&gt;next; // change this according tp your input
+    // 1--&gt;2--&gt;3--&gt;4--&gt;5--&gt;3--&gt;4--&gt;5--&gt;3--&gt; ...  and so on
+    // PrintLL(head); Uncomment this to check cycle
+    RemoveCycle(head, DetectCycle(head));
+    PrintLL(head);
+    return 0;
+}</pre>

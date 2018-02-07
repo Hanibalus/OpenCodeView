@@ -1,0 +1,21 @@
+<pre>
+#include&lt;iostream&gt;
+using namespace std;
+
+float squareRoot(int x){
+
+    float i = x;
+    float e = 0.000001;
+    while(i - (x/i) &gt; e){
+        i = (i + (x/i))/2;
+    }
+    return i;
+}
+
+int main(){
+    int x;
+    cin&gt;&gt;x;
+    cout&lt;&lt;"Square root of "&lt;&lt; x &lt;&lt; " is " &lt;&lt; squareRoot(x);
+    return 0;
+}
+</pre>

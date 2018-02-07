@@ -1,0 +1,43 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+// This code requires you to enable the C++11 standard when compiling
+
+/**
+ * @breif convolve - compute the discrete time convolution of functions vectors f and g. Coded for clarity, 
+ * not performance.
+ * @return f * g
+ **/
+template &lt;typename T&gt;
+std::vector&lt;T&gt; convolve(const std::vector&lt;T&gt;&amp; f, const std::vector&lt;T&gt;&amp; g) {
+
+    if(f.size() &lt; 1 || g.size() &lt; 1)
+        return {};
+
+    const auto outputSize = static_cast&lt;int&gt;(f.size() + g.size() - 1);
+    std::vector&lt;float&gt; fg(outputSize, 0.0);
+
+    for (int n = 0; n &lt; outputSize; n++)
+        for (int m = 0; m &lt; static_cast&lt;int&gt;(g.size()); m++)
+            if (n - m &gt;= 0 &amp;&amp; n - m &lt;= static_cast&lt;int&gt;(outputSize - g.size()))
+                fg[n] += f[n - m] * g[m];
+
+    return fg;
+}
+
+int main() {
+    // In this example the input is a vector of 1s and the filter is a weighted
+    // average filter. The result is the sliding average of input using four points.
+    const auto input = std::vector&lt;float&gt;(5, 1.0f);
+    const auto filter = std::vector&lt;float&gt;(4, 0.25f);
+
+    const auto fg = convolve&lt;float&gt;(input, filter);
+
+    for (const auto&amp; elem : fg) 
+        std::cout &lt;&lt; elem &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre>

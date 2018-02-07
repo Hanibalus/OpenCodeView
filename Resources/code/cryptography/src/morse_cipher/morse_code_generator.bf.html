@@ -1,0 +1,404 @@
+<pre>
+Morse Code Generator
+
+store slash
+++++++[&gt;+++++++&lt;-]&gt;+++++&gt;
+
+store space
+++++[&gt;++++++++&lt;-]&gt;&gt;
+
+store dash &amp; dot
++++++[&gt;+++++++++&gt;+++++++++&lt;&lt;-]&gt;+&gt;&gt;
+
+, Prime loop
+Main loop
+[
+  --------------------------------
+
+  space [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;&lt;&lt; &lt;&lt;.&gt;&gt; .&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;
+
+  ---------------- Shift so that 48 (char '0') is now 0
+
+  0 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.....&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  1 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;....&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  2 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;...&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  3 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;...&gt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  4 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;....&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  5 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.....&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  6 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;....&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  7 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;...&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  8 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;...&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  9 [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;....&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;
+
+  -------- Uppercase letters
+
+  a [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  b [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;...&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  c [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  d [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  e [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  f [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  g [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  h [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;....&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  i [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  j [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;...&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  k [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  l [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;.&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  m [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  n [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  o [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;...&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  p [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;..&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  q [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;.&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  r [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  s [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;...&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  t [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  u [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  v [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;...&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  w [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  x [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;..&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  y [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  z [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;
+
+  -------
+
+  a [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  b [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;...&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  c [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  d [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+#
+  e [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  f [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  g [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  h [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;....&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  i [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  j [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;...&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  k [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  l [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;.&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  m [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  n [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  o [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;...&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  p [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;..&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  q [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;.&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  r [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;.&lt;.&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  s [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;...&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  t [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  u [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;..&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  v [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;...&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  w [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;&lt;.&gt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  x [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;..&gt;.&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  y [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;.&lt;.&gt;..&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  z [-&gt;+&gt;+&lt;&lt;]&gt;&gt;[-&lt;&lt;+&gt;&gt;]&lt;&lt;
+  &gt;
+    [-&gt;[-]+&lt;]+&gt;[-&lt;-&gt;]&lt;
+    [ &lt;&lt;..&lt;..&gt;&gt;&gt; &lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt; [-]]
+  &lt;-
+
+  [-]&gt;[-]&gt;[-]&lt;&lt;, Take input
+]
+</pre>

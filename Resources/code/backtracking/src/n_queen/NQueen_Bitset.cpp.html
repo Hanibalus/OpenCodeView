@@ -1,0 +1,37 @@
+<pre>
+///GIVES TOTAL NUMBER OF POSSIBLE WAYS TO SOLVE N QUEEN PROBLEM USING BITSET
+// Part of Cosmos by OpenGenus Foundation
+#include&lt;iostream&gt;
+#include&lt;bitset&gt;
+using namespace std;
+
+bitset&lt;30&gt; column,diag1,diag2;
+
+void solveNQueen(int r, int n, int &amp;ans){
+    if(r==n){
+        ans++;
+        return;
+    }
+    for(int c=0;c&lt;n;c++){
+        if( !column[c] &amp;&amp; !diag1[r-c+n-1] &amp;&amp; !diag2[r+c]){
+            column[c]=diag1[r-c+n-1]=diag2[r+c]=1;
+            solveNQueen(r+1,n,ans);
+            //backtrack
+            column[c]=diag1[r-c+n-1]=diag2[r+c]=0;
+        }
+    }
+
+}
+
+int main(){
+    int n;
+    cout&lt;&lt;"Enter N: ";
+    cin&gt;&gt;n;
+    int ans=0;
+    solveNQueen(0,n,ans);
+    cout&lt;&lt;endl&lt;&lt;ans&lt;&lt;endl;
+
+    return 0;
+}
+
+</pre>

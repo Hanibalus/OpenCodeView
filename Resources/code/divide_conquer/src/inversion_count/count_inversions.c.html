@@ -1,0 +1,92 @@
+<pre>
+//  divide conquer | inversion count | C
+//  Part of Cosmos by OpenGenus Foundation
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+
+int _mergeSort(int arr[], int temp[], int left, int right);
+int merge(int arr[], int temp[], int left, int mid, int right);
+
+int mergeSort(int arr[], int array_size)
+{
+    int *temp = (int *)malloc(sizeof(int)*array_size);
+    return _mergeSort(arr, temp, 0, array_size - 1);
+}
+
+
+int _mergeSort(int arr[], int temp[], int left, int right)
+{
+  int mid, inv_count = 0;
+  if (right &gt; left)
+  {
+
+    mid = (right + left)/2;
+
+
+    inv_count  = _mergeSort(arr, temp, left, mid);
+    inv_count += _mergeSort(arr, temp, mid+1, right);
+
+
+    inv_count += merge(arr, temp, left, mid+1, right);
+  }
+  return inv_count;
+}
+
+
+int merge(int arr[], int temp[], int left, int mid, int right)
+{
+  int i, j, k;
+  int inv_count = 0;
+
+  i = left;
+  j = mid;
+  k = left;
+  while ((i &lt;= mid - 1) &amp;&amp; (j &lt;= right))
+  {
+    if (arr[i] &lt;= arr[j])
+    {
+      temp[k++] = arr[i++];
+    }
+    else
+    {
+      temp[k++] = arr[j++];
+
+
+      inv_count = inv_count + (mid - i);
+    }
+  }
+
+
+  while (i &lt;= mid - 1)
+    temp[k++] = arr[i++];
+
+
+  while (j &lt;= right)
+    temp[k++] = arr[j++];
+
+
+  for (i=left; i &lt;= right; i++)
+    arr[i] = temp[i];
+
+  return inv_count;
+}
+
+
+int main(int argc, char** argv)
+{
+  printf("Number of elements in array : ");
+  int n;
+  scanf("%d", &amp;n);
+  int arr[n];
+  printf("elements in array:\n");
+  for (int x=0; x&lt;n; x++)
+  {
+    scanf("%d", &amp;arr[x]);
+  }
+  printf("Number of inversions are %d \n", mergeSort(arr, n));
+  getchar();
+  return 0;
+}
+</pre>

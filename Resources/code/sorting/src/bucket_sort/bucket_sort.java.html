@@ -1,0 +1,53 @@
+<pre>
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class BucketSort {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//float[] arr={1,9,4,7,2,8};
+		
+
+	    double arr[] = {0.89, 0.565, 0.656, 0.1234, 0.665, 0.3434};
+		bucketSort(arr,arr.length);
+
+	}
+	public static void bucketSort(double arr[], int n)
+	{
+	    // 1) Create n empty buckets
+	    ArrayList&lt;ArrayList&lt;Double&gt;&gt; b=new ArrayList&lt;ArrayList&lt;Double&gt;&gt;();
+	    
+	    for(int i=0;i&lt;n;++i)
+	    {
+	    	b.add(new ArrayList&lt;Double&gt;());
+	    	
+	    	
+	    }	    
+	    
+	    // 2) Put array elements in different buckets
+	    for (int i=0; i&lt;n; i++)
+	    {
+	       int bi = (int) (n*arr[i]); // Index in bucket
+	       b.get(bi).add(arr[i]);
+	    }
+	 
+	    // 3) Sort individual buckets
+	    for (int i=0; i&lt;n; i++)
+	       Collections.sort(b.get(i));
+	 
+	    // 4) Concatenate all buckets into arr[]
+	    int index = 0;
+	    for (int i = 0; i &lt; n; i++)
+	        for (int j = 0; j &lt; b.get(i).size(); j++)
+	          arr[index++] = b.get(i).get(j);
+	
+	
+	for(int i=0;i&lt;arr.length;++i)
+		System.out.println(arr[i]);
+	
+	}
+
+}
+</pre>

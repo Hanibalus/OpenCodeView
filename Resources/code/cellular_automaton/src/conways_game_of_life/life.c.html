@@ -1,0 +1,52 @@
+<pre>
+#include &lt;time.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+// Part of Cosmos by OpenGenus Foundation
+#define width 40
+#define height 30
+
+const char* clear = "\e[1;1H\e[2J";
+
+int main(){
+    srand(time(NULL));
+
+    int board[height][width];
+    int temp[height][width];
+
+    for (int i = 0; i &lt; height; ++i) {
+        for (int j = 0; j &lt; width; ++j) {
+            board[i][j] = rand() % 2;
+        }
+    }
+
+    memcpy(temp, board, sizeof(int) * width * height);
+
+    while (1) {
+        for (int i = 0; i &lt; height; ++i) {
+            for (int j = 0; j &lt; width; ++j) {
+                putc(32 + 16 * board[i][j], stdout);
+            }
+            putc('\n', stdout);
+        }
+        for (int i = 0; i &lt; height; ++i) {
+            for (int j = 0; j &lt; width; ++j) {
+                int sum = board[(i + 1) % height][(j + 1) % width] +
+                          board[(i + 1) % height][j] +
+                          board[(i + 1) % height][(j + width - 1) % width] +
+                          board[i][(j + 1) % width] +
+                          board[i][(j + width - 1) % width] +
+                          board[(i + height - 1) % height][(j + 1) % width] +
+                          board[(i + height - 1) % height][j] +
+                          board[(i + height - 1) % height][(j + width - 1) % width];
+                temp[i][j] = temp[i][j] &amp;&amp; sum &gt;= 2 &amp;&amp; sum &lt;= 3 || sum == 3;
+            }
+        }
+        memcpy(board, temp, sizeof(int) * width * height);
+        char garbage = getchar();
+        printf("%s", clear);
+    }
+    return 0;
+}
+</pre>

@@ -1,0 +1,28 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;bitset&gt;
+
+
+//Part of Cosmos by OpenGenus Foundation
+int invertBit(int n, int numBit)
+{
+    n ^= 1 &lt;&lt; numBit;
+    return n;
+}
+
+int main()
+{
+    int numeric, numberBit, res;
+    std::cout &lt;&lt; "Enter numeric: "&lt;&lt;std::endl;
+    std::cin &gt;&gt; numeric;
+    std::bitset&lt;32&gt; bs(numeric);
+    std::cout &lt;&lt; bs &lt;&lt; '\n';
+    std::cout &lt;&lt; "Enter number bit: "&lt;&lt;std::endl;
+    std::cin &gt;&gt; numberBit;
+    res = invertBit(numeric, numberBit);
+    std::bitset&lt;32&gt; bsRes(res);
+    std::cout &lt;&lt; res &lt;&lt; std::endl;
+    std::cout &lt;&lt; bsRes &lt;&lt; std::endl;
+    return 0;
+}
+</pre>

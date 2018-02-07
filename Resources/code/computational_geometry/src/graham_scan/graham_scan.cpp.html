@@ -1,0 +1,79 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+struct point
+{
+    double x, y;
+    point(double x, double y) : x(x), y(y) {}
+    point() {}
+};
+
+// custom compare for sorting points
+bool cmp(point a, point b)
+{
+    return a.x &lt; b.x || (a.x == b.x &amp;&amp; a.y &lt; b.y);
+}
+
+// check clockwise orientation of points
+bool cw(point a, point b, point c)
+{
+    return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y) &lt; 0;
+}
+
+// check counter-clockwise orientation of points
+bool ccw(point a, point b, point c)
+{
+    return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y) &gt; 0;
+}
+
+// graham scan with Andrew improvements
+void convex_hull(vector&lt;point&gt; &amp;points)
+{
+    if (points.size() == 1)
+        return;
+    sort(points.begin(), points.end(), &amp;cmp);
+    point p1 = points[0], p2 = points.back();
+    vector&lt;point&gt; up, down;
+    up.push_back(p1);
+    down.push_back(p1);
+    for (size_t i = 1; i &lt; points.size(); ++i)
+    {
+        if (i == points.size() - 1 || cw(p1, points[i], p2))
+        {
+            while (up.size() &gt;= 2 &amp;&amp; !cw(up[up.size() - 2], up[up.size() - 1], points[i]))
+                up.pop_back();
+            up.push_back(points[i]);
+        }
+        if (i == points.size() - 1 || ccw(p1, points[i], p2))
+        {
+            while (down.size() &gt;= 2 &amp;&amp; !ccw(down[down.size() - 2], down[down.size() - 1], points[i]))
+                down.pop_back();
+            down.push_back(points[i]);
+        }
+    }
+    cout &lt;&lt; "Convex hull is:" &lt;&lt; endl;
+    for (size_t i = 0; i &lt; up.size(); ++i)
+        cout &lt;&lt; "x: " &lt;&lt; up[i].x &lt;&lt; " y: " &lt;&lt; up[i].y &lt;&lt; endl;
+    for (int i = down.size() - 2; i &gt; 0; --i)
+        cout &lt;&lt; "x: " &lt;&lt; down[i].x &lt;&lt; " y: " &lt;&lt; down[i].y &lt;&lt; endl;
+}
+
+int main()
+{
+    int n;
+    cout &lt;&lt; "Enter number of points followed by points" &lt;&lt; endl;
+    cin &gt;&gt; n;
+    vector&lt;point&gt; points(n);
+    for (int i = 0; i &lt; n; i++)
+    {
+        cin &gt;&gt; points[i].x &gt;&gt; points[i].y;
+    }
+    convex_hull(points);
+    return 0;
+}
+</pre>

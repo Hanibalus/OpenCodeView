@@ -1,0 +1,66 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define MAX(x, y) (((x) &gt; (y)) ? (x) : (y))
+
+typedef struct node{
+    int data;   
+    struct node *left;
+   struct node *right;
+}node;
+
+node* newnode(int d){
+    node* temp = (node*)malloc(sizeof(node));
+    temp-&gt;data = d;
+    temp-&gt;left = NULL;
+    temp-&gt;right = NULL;
+}
+
+node *buildTree(){
+    int d;
+    printf("\nEnter data:");
+    scanf("%d", &amp;d);
+
+    if(d==-1){
+        return NULL;
+    }
+
+    ///rec case
+    node *n =newnode(d);
+    n-&gt;left = buildTree();
+    n-&gt;right = buildTree();
+    return n;
+}
+
+int height(node *root){
+    if(root==NULL){
+        return 0;
+    }
+
+    return (MAX./(height(root-&gt;left),height(root-&gt;right))+1);
+}
+
+int diameter(node*root){
+    if(root==NULL){
+        return 0;
+    }
+
+    int cp1 = height(root-&gt;left) + height(root-&gt;right);
+    int cp2 = diameter(root-&gt;left);
+    int cp3 = diameter(root-&gt;right);
+
+    return MAX(cp1,MAX(cp2,cp3));
+}
+
+int main(){
+
+    node *root = NULL;
+    root = buildTree();
+    printf("\nDiameter of Binary Tree: ");
+    printf("%d", diameter(root));
+    
+
+    return 0;
+}
+</pre>

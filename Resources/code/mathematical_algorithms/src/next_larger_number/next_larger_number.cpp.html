@@ -1,0 +1,48 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+void nextgr(char num[],int n)
+{
+ int i,j;
+ 
+ for(i=n-1;i&gt;=0;i--)
+ {
+   if(num[i-1]&lt; num[i])
+   break;
+ }
+ 
+ if(i==0)
+ {
+  cout&lt;&lt;"No such greater number exists";
+  return ;
+ }
+ 
+ int x=num[i-1], small=i;
+ 
+ for(j=i+1;j&lt;n;j++)
+ {
+   if(num[j] &gt; x &amp;&amp; num[j] &lt; num[small] )
+   small=j;
+ }
+ 
+ swap(num[i-1],num[small]);
+ 
+ sort(num+i, num+n);
+ 
+ cout&lt;&lt;num;
+}   
+
+int main()
+{
+ char num[20];
+ 
+ cin&gt;&gt;num;
+ int n=strlen(num);
+ nextgr(num,n);
+ 
+ cout&lt;&lt;endl;
+ return 0;
+}
+       
+</pre>

@@ -1,0 +1,20 @@
+<pre>
+// compile with c++11 standard
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+int main()
+{
+  // initialising amd constructing vector array
+  vector&lt;int&gt; vec = {10,5,20,15,-1};
+
+  // sorting the vector
+  sort(vec.begin(), vec.end());
+
+  // printing the last element
+  cout&lt;&lt;"biggest number is : "&lt;&lt;vec[vec.size() - 1]
+  return 0;
+}
+</pre>

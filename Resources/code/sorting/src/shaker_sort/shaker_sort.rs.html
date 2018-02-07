@@ -1,0 +1,71 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+/* Added by Ondama */
+
+/** Read a line of input **/
+fn read () -&gt; String {
+    let mut input = String::new();
+    std::io::stdin().read_line(&amp;mut input).expect("failed to read from stdin");
+    input.trim().to_owned()
+}
+
+/** Display a message and parse input **/
+fn prompt&lt;T: std::str::FromStr + std::default::Default&gt; (prompt: &amp;str) -&gt; T {
+    println!("{}", prompt);
+    let num = read();
+    match num.parse() {
+        Ok(i) =&gt; i,
+        Err(..) =&gt; {
+            eprintln!("'{}' is not valid, using default instead.", num);
+            T::default()
+        }
+    }
+}
+
+/** Sort array **/
+fn shaker_sort&lt;T: std::cmp::PartialOrd + std::fmt::Debug&gt; (arr: &amp;mut Vec&lt;T&gt;) {
+    let size = arr.len();
+    for i in 0..size/2 {
+        let mut swapped: bool = false;
+        let k = size - i - 1;
+        for j in i..k {
+            let p = j;
+            let q = p + 1;
+            if arr[p] &lt; arr[q] {
+                arr.swap(p, q);
+                swapped = true;
+            }
+        }
+        for j in i..k {
+            let p = k - j;
+            let q = p - 1;
+            if arr[p] &gt; arr[q] {
+                arr.swap(p, q);
+                swapped = true;
+            }
+        }
+        if !swapped {
+            break;
+        }
+    }
+}
+
+/** Entry point **/
+fn main () {
+    // The size is a natural number
+    let size = prompt::&lt;usize&gt;(&amp;"Enter size of array:");
+    // Fill array
+    let mut arr = Vec::new();
+    loop {
+        let item = prompt::&lt;i32&gt;(&amp;"Next array element:");
+        arr.push(item);
+        if arr.len() == size {
+            break;
+        }
+    }
+    // Sort array
+    shaker_sort::&lt;i32&gt;(&amp;mut arr);
+    // Print sorted array
+    println!("{:?}", arr);
+}
+</pre>

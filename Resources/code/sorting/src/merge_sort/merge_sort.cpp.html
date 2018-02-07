@@ -1,0 +1,81 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+
+ merge sort synopsis
+
+namespace merge_sort_impl {
+    template&lt;typename _Random_Acccess_Iter&gt;
+    _Random_Acccess_Iter
+    advance(_Random_Acccess_Iter it, ptrdiff_t n);
+}
+
+template&lt;typename _Random_Acccess_Iter, typename _Compare&gt;
+void mergeSort(_Random_Acccess_Iter begin, _Random_Acccess_Iter end, _Compare comp);
+
+template&lt;typename _Random_Acccess_Iter&gt;
+void mergeSort(_Random_Acccess_Iter begin, _Random_Acccess_Iter end);
+ */
+
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+
+namespace merge_sort_impl {
+    template&lt;typename _Random_Acccess_Iter&gt;
+    _Random_Acccess_Iter
+    advance(_Random_Acccess_Iter it, ptrdiff_t n)
+    {
+        std::advance(it, n);
+
+        return it;
+    }
+}
+
+template&lt;typename _Random_Acccess_Iter, typename _Compare&gt;
+void
+mergeSort(_Random_Acccess_Iter begin, _Random_Acccess_Iter end, _Compare comp)
+{
+    using value_type = typename std::iterator_traits&lt;_Random_Acccess_Iter&gt;::value_type;
+    using namespace merge_sort_impl;
+    using std::distance;
+    using std::vector;
+
+    if (begin != end)
+    {
+        _Random_Acccess_Iter leftMin, leftMax, rightMin, rightMax;
+        auto length = distance(begin, end);
+        vector&lt;value_type&gt; tmp(length);
+
+        // bottom-up version
+        for (auto i = 1; i &lt; distance(begin, end); i *= 2)
+        {
+            for (leftMin = begin; leftMin != end; leftMin = rightMax)
+            {
+                rightMin = leftMax = advance(leftMin, i);
+                rightMax = advance(leftMax, i);
+
+                // prevent overflow, if length is not 2^n
+                if (rightMax &gt; end)
+                    rightMax = end;
+
+                auto next = 0;
+                while (leftMin &lt; leftMax &amp;&amp; rightMin &lt; rightMax)
+                    tmp[next++] = comp(*rightMin, *leftMin) ? *rightMin++ : *leftMin++;
+                while (leftMin &lt; leftMax)
+                    *--rightMin = *--leftMax;
+                while (next &gt; 0)
+                    *--rightMin = tmp[--next];
+            }
+        }
+    }
+}
+
+template&lt;typename _Random_Acccess_Iter&gt;
+void
+mergeSort(_Random_Acccess_Iter begin, _Random_Acccess_Iter end)
+{
+    using value_type = typename std::iterator_traits&lt;_Random_Acccess_Iter&gt;::value_type;
+
+    mergeSort(begin, end, std::less&lt;value_type&gt;());
+}
+</pre>

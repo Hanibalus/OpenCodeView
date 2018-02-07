@@ -1,0 +1,63 @@
+<pre>
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+#define BEAD(i, j) beads[i * max + j]
+
+// Part of Cosmos by OpenGenus Foundation
+// function to perform the above algorithm
+void beadSort(vector&lt;int&gt;&amp; a)
+{
+    // Find the maximum element
+    int max = a[0];
+    for (int i = 1; i &lt; a.size(); ++i)
+        if (a[i] &gt; max)
+           max = a[i];
+
+    // allocating memory
+    vector&lt;unsigned char&gt; beads(max * a.size(), 0);
+
+    // mark the beads
+    for (int i = 0; i &lt; a.size(); ++i)
+        for (int j = 0; j &lt; a[i]; ++j)
+            BEAD(i, j) = 1;
+
+    for (int j = 0; j &lt; max; ++j)
+    {
+        // count how many beads are on each post
+        int sum = 0;
+        for (int i=0; i &lt; a.size(); ++i)
+        {
+            sum += BEAD(i, j);
+            BEAD(i, j) = 0;
+        }
+
+        // Move beads down
+        for (int i = a.size() - sum; i &lt; a.size(); ++i)
+            BEAD(i, j) = 1;
+    }
+
+    // Put sorted values in array using beads
+    for (int i = 0; i &lt; a.size(); ++i)
+    {
+        int j;
+        for (j = 0; j &lt; max &amp;&amp; BEAD(i, j); ++j);
+
+        a[i] = j;
+    }
+}
+
+// driver function to test the algorithm
+int main()
+{
+    vector&lt;int&gt; a{5, 3, 1, 7, 4, 1, 1, 20};
+
+    beadSort(a);
+
+    cout&lt;&lt;"After Sorting.. "&lt;&lt;endl;
+    for (int i = 0; i &lt; a.size(); ++i)
+        cout&lt;&lt;a[i]&lt;&lt;" ";
+
+    return 0;
+}</pre>

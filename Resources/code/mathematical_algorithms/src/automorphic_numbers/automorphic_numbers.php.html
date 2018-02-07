@@ -1,0 +1,41 @@
+<pre>
+&lt;?php
+
+function isAutomorphic(int $num)
+{
+    return endsWith(strval($num * $num), strval($num));
+}
+
+function endsWith($haystack, $needle)
+{
+    $length = strlen($needle);
+
+    return $length === 0 ||
+    (substr($haystack, -$length) === $needle);
+}
+
+echo "Automorphic number\n";
+
+$test_data = [
+    0  =&gt; true,
+    9  =&gt; false,
+    5  =&gt; true,
+    6  =&gt; true,
+    7  =&gt; false,
+    8  =&gt; false,
+    25 =&gt; true,
+    30 =&gt; false,
+];
+
+foreach ($test_data as $input =&gt; $expected) {
+
+    $result = isAutomorphic($input);
+
+    printf(
+        "  input %d, expected %s, got %s: %s\n",
+        $input,
+        ($expected ? 'true' : 'false'),
+        ($result ? 'true' : 'false'),
+        ($expected === $result) ? 'OK' : 'FAIL'
+    );
+}</pre>

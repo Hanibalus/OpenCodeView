@@ -1,0 +1,40 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt; 
+
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+void shellSort(vector&lt;int&gt; &amp;ar)
+{
+	int j;
+	for (int gap = ar.size() / 2; gap &gt; 0; gap /= 2)
+  	{
+    	for (int i = gap; i &lt; ar.size(); i++)
+    	{
+      		int temp = ar[i];
+      		for (j = i; j &gt;= gap &amp;&amp; temp &lt; ar[j - gap]; j -= gap)
+      		{
+        		ar[j] = ar[j - gap];
+      		}
+      		ar[j] = temp;
+    	} 
+  	}
+}
+
+int main()
+{
+	vector&lt;int&gt; inputArray;
+	cout &lt;&lt; "Enter the elements of the array: ";
+	for(int i;cin&gt;&gt;i;)
+	{
+		inputArray.push_back(i);
+	}
+	shellSort(inputArray);
+	for(int i=0;i&lt;inputArray.size();i++)
+	{
+		cout&lt;&lt;inputArray[i]&lt;&lt;" ";
+	}
+	cout&lt;&lt;endl;
+	return 0;
+}</pre>

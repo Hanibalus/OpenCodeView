@@ -1,0 +1,66 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int longestPalSubstr(string str)
+{
+    int n = str.size();
+
+    bool ispal[n][n];
+
+    for(int i = 0; i &lt; n; ++i)
+        for(int j = 0; j &lt; n; ++j)
+            ispal[i][j] = false;
+
+    // All substrings of length 1 are palindromes
+    int maxLength = 1;
+    for (int i = 0; i &lt; n; ++i)
+        ispal[i][i] = true;
+
+    // check for sub-string of length 2.
+    int start = 0;
+    for (int i = 0; i &lt; n-1; ++i)
+    {
+        if (str[i] == str[i+1])
+        {
+            ispal[i][i+1] = true;
+            start = i;
+            maxLength = 2;
+        }
+    }
+
+    // Check for lengths greater than 2. k is length
+    // of substring
+    for (int k = 3; k &lt;= n; ++k)
+    {
+        for (int i = 0; i &lt; n-k+1 ; ++i)
+        {
+            // Get the ending index of substring from
+            // starting index i and length k
+            int j = i + k - 1;
+            if (ispal[i+1][j-1] &amp;&amp; str[i] == str[j])
+            {
+                ispal[i][j] = true;
+
+                if (k &gt; maxLength)
+                {
+                    start = i;
+                    maxLength = k;
+                }
+            }
+        }
+    }
+    return maxLength;
+}
+
+int main()
+{
+    string str = "hacktoberfestsefrisawesome";
+    cout&lt;&lt;"Length of longest palindromic substring is "&lt;&lt;longestPalSubstr(str);
+    return 0;
+}
+</pre>

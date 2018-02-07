@@ -1,0 +1,60 @@
+<pre>
+#include &lt;iterator&gt;
+#include &lt;type_traits&gt;
+#include &lt;functional&gt;
+
+namespace palindrome_check{
+template&lt;typename _InputIter,
+         typename _ValueNotEqualTo
+             = std::not_equal_to&lt;typename std::iterator_traits&lt;_InputIter&gt;::value_type&gt;,
+         typename _IterLess = std::less&lt;_InputIter&gt;&gt;
+bool
+isPalindromeRecursive(_InputIter begin, _InputIter end)
+{
+    if (begin != end)
+    {
+        --end;
+        if (_IterLess()(begin, end))
+        {
+            if (_ValueNotEqualTo()(*begin, *end))
+                return false;
+
+            return isPalindromeRecursive&lt;_InputIter, _ValueNotEqualTo, _IterLess&gt;(++begin, end);
+        }
+    }
+
+    return true;
+}
+
+template&lt;typename _InputIter,
+         typename _ValueNotEqualTo
+             = std::not_equal_to&lt;typename std::iterator_traits&lt;_InputIter&gt;::value_type&gt;,
+         typename _IterLess = std::less&lt;_InputIter&gt;&gt;
+bool
+isPalindromeIterative(_InputIter begin, _InputIter end)
+{
+    if (begin != end)
+    {
+        --end;
+        while (_IterLess()(begin, end))
+        {
+            if (_ValueNotEqualTo()(*begin++, *end--))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+template&lt;typename _InputIter,
+         typename _ValueNotEqualTo
+             = std::not_equal_to&lt;typename std::iterator_traits&lt;_InputIter&gt;::value_type&gt;,
+         typename _IterLess = std::less&lt;_InputIter&gt;&gt;
+inline bool
+isPalindrome(_InputIter begin, _InputIter end)
+{
+    // default is iterative
+    return isPalindromeIterative&lt;_InputIter, _ValueNotEqualTo, _IterLess&gt;(begin, end);
+}
+}
+</pre>

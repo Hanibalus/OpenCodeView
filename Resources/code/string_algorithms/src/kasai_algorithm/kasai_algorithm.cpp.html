@@ -1,0 +1,30 @@
+<pre>
+/* 
+ *
+ * Kasai Algorithm 
+ * 
+ */
+
+vector&lt;int&gt; kasaiAlgorithm(string s,vector&lt;int&gt; suffix_array)
+{
+    int m=0;
+    vector&lt;int&gt; LCP(s.size(),0);
+    vector&lt;int&gt; rank(s.size(),0);
+
+    for (int i=0 ; i&lt;s.size() ; i++) rank[suffix_array[i]]=i;
+
+    for (int i=0 ; i&lt;s.size() ; i++ , m?m--:0)
+    {
+        if (rank[i]==s.size()-1) 
+            { 
+                m=0 ; 
+                continue ;
+            }
+        int j=suffix_array[rank[i]+1];
+
+        while (i+m&lt;s.size() &amp;&amp; j+m&lt;s.size() &amp;&amp; s[i+m]==s[j+m])m++;
+        LCP[rank[i]]=m;
+    }
+    return LCP;
+}
+</pre>

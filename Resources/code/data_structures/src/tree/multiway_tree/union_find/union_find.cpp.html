@@ -1,0 +1,85 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+
+// Union-find stores a graph, and allows two operations in amortized constant time:
+// * Add a new edge between two vertices.
+// * Check if two vertices belong to same component.
+class UnionFind {
+    std::vector&lt;size_t&gt; parent;
+    std::vector&lt;size_t&gt; rank;
+    size_t root(size_t node) {
+        if (parent[node] == node) {
+            return node;
+        } else {
+            return parent[node] = getParent(parent[node]);
+        }
+    }
+
+    size_t getParent(size_t node) {
+        return parent[node];
+    }
+
+public:
+    // Make a graph with `size` vertices and no edges.
+    UnionFind(size_t size) {
+        parent.resize(size);
+        rank.resize(size);
+        for (size_t i = 0; i &lt; size; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // Connect vertices `a` and `b`.
+    void Union(size_t a, size_t b) {
+        a = root(a);
+        b = root(b);
+        if (a == b) {
+            return;
+        }
+        if (rank[a] &lt; rank[b]) {
+            parent[a] = b;
+        } else if (rank[a] &gt; rank[b]) {
+            parent[b] = a;
+        } else {
+            parent[a] = b;
+            rank[b] += 1;
+        }
+    }
+
+    // Check if vertices `a` and `b` are in the same component.
+    bool Connected(size_t a, size_t b) {
+        return root(a) == root(b);
+    }
+};
+
+int main() {
+    UnionFind unionFind(10);
+
+    unionFind.Union(3, 4);
+    unionFind.Union(3, 8);
+    unionFind.Union(0, 8);
+    unionFind.Union(1, 3);
+    unionFind.Union(7, 9);
+    unionFind.Union(5, 9);
+
+    // Now the components are:
+    // 0 1 3 4 8
+    // 5 7 9
+    // 2
+    // 6
+    
+    for (size_t i = 0; i &lt; 10; i++) {
+        for (size_t j = i + 1; j &lt; 10; j++) {
+            if (unionFind.Connected(i, j)) {
+                std::cout &lt;&lt; i &lt;&lt; " and " &lt;&lt; j &lt;&lt; " are in the same component" &lt;&lt; std::endl;
+            }
+        }
+    }
+
+    return 0;
+}
+</pre>

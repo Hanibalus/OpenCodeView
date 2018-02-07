@@ -1,0 +1,91 @@
+<pre>
+#include&lt;iostream&gt;
+// Part of Cosmos by OpenGenus Foundation
+using namespace std;
+
+class node{
+public:
+    int data;
+    node* next;
+
+public:
+    node(int d){
+        data=d;
+        next=nullptr;
+    }
+};
+
+void print(node*head){
+    while(head!=nullptr){
+        cout&lt;&lt;head-&gt;data&lt;&lt;"--&gt;";
+        head=head-&gt;next;
+    }
+}
+
+void insertAtHead(node*&amp;head,int d){
+    node* n=new node(d);
+    n-&gt;next=head;
+    head=n;
+}
+
+void insertInMiddle(node*&amp;head,int d,int p){
+    if(p==0){
+        insertAtHead(head,d);
+    }
+    else{
+        //assuming p&lt;=length of LL
+        node*temp=head;
+        for(int jump=1;jump&lt;p;jump++){
+            temp=temp-&gt;next;
+        }
+        node*n=new node(d);
+        n-&gt;next=temp-&gt;next;
+        temp-&gt;next=n;
+    }
+}
+
+void takeInput(node*&amp;head){
+    int d;
+    cin&gt;&gt;d;
+    while(d!=-1){
+        insertAtHead(head,d);
+        cin&gt;&gt;d;
+    }
+}
+
+///overloading to print LL
+ostream&amp; operator&lt;&lt;(ostream&amp;os, node*head){
+    print(head);
+    cout&lt;&lt;endl;
+    return os;
+}
+istream&amp; operator&gt;&gt;(istream&amp;is, node*&amp;head){
+    takeInput(head);
+    return is;
+}
+
+
+///optimized recursive reverse
+node*recReverse2(node*head){
+    if(head==nullptr || head-&gt;next==nullptr){
+        return head;
+    }
+    node*newHead=recReverse2(head-&gt;next);
+    head-&gt;next-&gt;next=head;
+    head-&gt;next=nullptr;
+    return newHead;
+}
+
+int main(){
+    node*head=nullptr;
+    cin&gt;&gt;head;
+    cout&lt;&lt;head;
+    head=recReverse2(head);
+    cout&lt;&lt;"Reversed linked list: "&lt;&lt;endl;
+    cout&lt;&lt;head;
+
+
+
+    return 0;
+}
+</pre>

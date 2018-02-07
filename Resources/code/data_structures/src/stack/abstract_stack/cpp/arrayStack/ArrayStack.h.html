@@ -1,0 +1,152 @@
+<pre>
+#ifndef ARRAYSTACH_H
+#define ARRAYSTACK_H
+
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+
+#include "../IStack.h"
+
+template&lt;typename T&gt;
+class ArrayStack : public IStack&lt;T&gt; {
+    private:
+        int capacity;
+        int top;
+        T **elements;
+        void expandArray();
+    public:
+        ArrayStack(int capacity = 10);
+        ArrayStack(const ArrayStack&amp; stack);
+        ~ArrayStack();
+        ArrayStack&amp; operator=(const ArrayStack&amp; right);
+        void push(const T&amp; element);
+        T pop();
+        T peek() const;
+        bool isEmpty() const;
+        std::string toString() const;
+};
+
+template&lt;typename T&gt;
+void ArrayStack&lt;T&gt;::expandArray() {
+    if (this-&gt;capacity &lt;= this-&gt;top) {
+        T ** temp = this-&gt;elements;
+        this-&gt;capacity = this-&gt;capacity * 2;
+        this-&gt;elements = new T*[this-&gt;capacity];
+        for (int i = 0; i &lt; this-&gt;top; i++) {
+            this-&gt;elements[i] = temp[i];
+        }
+        for (int i = this-&gt;top; i &lt; this-&gt;capacity; i++) {
+            this-&gt;elements[i] = nullptr;
+        }
+        delete [] temp;
+        temp = nullptr;
+    }
+}
+
+template&lt;typename T&gt;
+ArrayStack&lt;T&gt;::ArrayStack(int capacity) {
+    this-&gt;capacity = capacity;
+    this-&gt;top = 0;
+    this-&gt;elements = new T*[this-&gt;capacity];
+    for (int i = 0; i &lt; this-&gt;capacity; i++) {
+        this-&gt;elements[i] = nullptr;
+    }
+}
+
+template&lt;typename T&gt;
+ArrayStack&lt;T&gt;::ArrayStack(const ArrayStack&amp; stack) {
+    this-&gt;top = stack.top;
+    this-&gt;capacity = stack.capacity;
+
+    if (stack.elements != nullptr) {
+        this-&gt;elements = new T*[this-&gt;capacity];
+        for (int i = 0; i &lt; this-&gt;top; i++) {
+            this-&gt;elements[i] = new T(*stack.elements[i]);
+        }
+        for (int i = this-&gt;top; i &lt; this-&gt;capacity; i++) {
+            this-&gt;elements[i] = nullptr;
+        }
+    }
+}
+
+template&lt;typename T&gt;
+ArrayStack&lt;T&gt;::~ArrayStack() {
+    for (int i = 0; i &lt; this-&gt;top; i++) {
+        delete this-&gt;elements[i];
+    }
+    delete [] this-&gt;elements;
+}
+
+template&lt;typename T&gt;
+ArrayStack&lt;T&gt;&amp; ArrayStack&lt;T&gt;::operator=(const ArrayStack&amp; right) {
+    if (this == &amp;right) {
+        throw "Self-assigning at operator= ";
+    }
+    this-&gt;top = right.top;
+    this-&gt;capacity = right.capacity;
+    for (int i = 0; i &lt; this-&gt;top; i++) {
+        delete this-&gt;elements[i];
+    }
+    delete [] this-&gt;elements;
+    if (right.elements != nullptr) {
+        this-&gt;elements = new T*[this-&gt;capacity];
+        for (int i = 0; i &lt; this-&gt;top; i++) {
+            this-&gt;elements[i] = new T(*right.elements[i]);
+        }
+        for (int i = this-&gt;top; i &lt; this-&gt;capacity; i++) {
+            this-&gt;elements[i] = nullptr;
+        }
+    }
+
+    return *this;
+}
+
+template&lt;typename T&gt;
+void ArrayStack&lt;T&gt;::push(const T&amp; element) {
+    this-&gt;expandArray();
+    this-&gt;elements[this-&gt;top] = new T(element);
+    this-&gt;top++;
+}
+
+template&lt;typename T&gt;
+T ArrayStack&lt;T&gt;::pop() {
+    if (this-&gt;isEmpty()) {
+        throw  "The stack is empty.";       
+    } 
+    T temp = *this-&gt;elements[this-&gt;top - 1];
+    delete this-&gt;elements[this-&gt;top - 1];
+    this-&gt;elements[this-&gt;top - 1] = nullptr;
+    this-&gt;top--;
+    return temp;
+    
+}
+
+template&lt;typename T&gt;
+T ArrayStack&lt;T&gt;::peek() const {
+    if (this-&gt;isEmpty()) {
+        throw  "The stack is empty.";        
+    }
+    return *this-&gt;elements[this-&gt;top - 1];
+}
+
+template&lt;typename T&gt;
+bool ArrayStack&lt;T&gt;::isEmpty() const {
+    return this-&gt;elements[0] == nullptr;
+}
+
+template&lt;typename T&gt;
+std::string ArrayStack&lt;T&gt;::toString() const {
+    std::stringstream stream;
+    if (!this-&gt;isEmpty()) {
+        stream &lt;&lt; "The stack looks like; " &lt;&lt; std::endl;
+        for (int i = 0; i &lt; this-&gt;top; i++) {
+            stream &lt;&lt; i &lt;&lt; " : " &lt;&lt; '[' &lt;&lt; *this-&gt;elements[i] &lt;&lt; ']' &lt;&lt; std::endl;
+        }
+    } else {
+        stream &lt;&lt; "The stack is empty" &lt;&lt; std::endl;
+    }
+    return stream.str();
+}
+#endif
+
+</pre>

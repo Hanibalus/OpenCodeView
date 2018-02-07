@@ -1,0 +1,80 @@
+<pre>
+// search | fibonacci search | c
+// Part of Cosmos by OpenGenus Foundation
+
+/*
+ar -&gt; Array name
+n -&gt; Array size
+secondPreceding -&gt; Number at second precedence 
+firstPreceding -&gt; Number at first precedence
+nextNum -&gt; Fibonacci Number equal to or first greatest than the array size
+range -&gt; Eleminated range marker
+*/
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int fibSearch(int ar[], int x, int n);
+int min(int a, int b);
+
+int main()
+{
+	int n;
+	scanf("%d",&amp;n);
+	int ar[n],i;
+	for(i=0;i&lt;n;i++){
+		scanf("%d",&amp;ar[i]);
+	}
+	int x;
+	scanf("%d",&amp;x);
+	int index = fibSearch(ar,x,n);
+	if(index == -1){
+		printf("Element not found.\n");
+		return 0;
+	}
+	printf("Element found at index %d\n",index );
+	return 0;
+}
+
+int fibSearch(int ar[], int x, int n)
+{
+	int secondPreceding = 0, firstPreceding = 1;
+	int nextNum = secondPreceding + firstPreceding;
+	while(nextNum &lt; n){
+		secondPreceding = firstPreceding;
+		firstPreceding = nextNum;
+		nextNum = secondPreceding + firstPreceding;
+	} 
+	int range = -1;
+	while(nextNum &gt; 1){
+		int i = min(range + firstPreceding, n-1);
+		if(x &lt; ar[i]){
+			nextNum = nextNum - firstPreceding;
+			firstPreceding = firstPreceding - secondPreceding;
+			secondPreceding = nextNum - firstPreceding;
+		}
+		else if(x &gt; ar[i]){
+			nextNum = firstPreceding;
+			firstPreceding = secondPreceding;
+			secondPreceding = nextNum - firstPreceding;
+			range = i;
+		}
+		else{
+			return i;
+		}
+	}
+	if(firstPreceding &amp;&amp; ar[range+1] == x){
+		return range + 1;
+	}
+	return -1;
+}
+int min(int a, int b)
+{
+	if(a &gt; b){
+		return b;
+	}
+	else{
+		return a;
+	}
+}
+</pre>

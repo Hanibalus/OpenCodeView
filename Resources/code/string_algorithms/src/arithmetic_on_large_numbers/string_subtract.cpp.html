@@ -1,0 +1,77 @@
+<pre>
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+bool isSmaller(string str1, string str2){
+    int n1 = str1.length(), n2 = str2.length();
+
+    if (n1 &lt; n2){
+        return true;
+    }
+    if (n2 &lt; n1){
+        return false;
+    }
+
+    for (int i=0; i&lt;n1; i++){
+        if (str1[i] &lt; str2[i]){
+            return true;
+        }
+        else if (str1[i] &gt; str2[i]){
+            return false;
+        }
+    }
+    return false;
+}
+
+string strSub(string str1, string str2){
+    if (isSmaller(str1, str2))
+        swap(str1, str2);
+
+    string str = "";
+
+    int n1 = str1.length(), n2 = str2.length();
+
+    reverse(str1.begin(), str1.end());
+    reverse(str2.begin(), str2.end());
+
+    int carry = 0;
+
+    for (int i=0; i&lt;n2; i++){
+        int sub = ((str1[i]-'0')-(str2[i]-'0')-carry);
+
+        if (sub &lt; 0){
+            sub = sub + 10;
+            carry = 1;
+        }
+        else{
+            carry = 0;
+        }
+
+        str.push_back(sub + '0');
+    }
+
+    for (int i=n2; i&lt;n1; i++){
+        int sub = ((str1[i]-'0') - carry);
+        carry = 0;
+        str.push_back(sub + '0');
+    }
+
+    reverse(str.begin(), str.end());
+
+    return str;
+}
+
+int main(){
+    string s;
+    string c;
+    cout&lt;&lt;"Enter Number One"&lt;&lt;endl;
+    cin&gt;&gt;s;
+    cout&lt;&lt;"Enter Number Two"&lt;&lt;endl;
+    cin&gt;&gt;c;
+    cout&lt;&lt;"Subtraction Result: "&lt;&lt;strSub(s,c)&lt;&lt;endl;
+    return 0;
+}
+</pre>

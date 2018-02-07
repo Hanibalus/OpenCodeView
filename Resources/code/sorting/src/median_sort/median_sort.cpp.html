@@ -1,0 +1,128 @@
+<pre>
+#include&lt;iostream&gt;
+ 
+using namespace std;
+ 
+// Part of Cosmos by OpenGenus Foundation
+void swap(int *a, int *b)
+{
+	int temp; 
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+ 
+int Partition(int a[], int low, int high)
+{
+	int pivot, index, i;
+	index = low;
+	pivot = high;
+ 
+	for(i=low; i &lt; high; i++)
+	{
+		if(a[i] &lt; a[pivot])
+		{
+			swap(&amp;a[i], &amp;a[index]);
+			index++;
+		}
+	}
+	swap(&amp;a[pivot], &amp;a[index]);
+ 
+	return index;
+}
+ 
+
+int QuickSort(int a[], int low, int high)
+{
+	int pindex;
+	if(low &lt; high)
+	{
+		pindex = Partition(a, low, high);
+		QuickSort(a, low, pindex-1);
+		QuickSort(a, pindex+1, high);
+	}
+	return 0;
+}
+ 
+int main()
+{
+	int n, m, bi, ai, i, k;
+	double median;
+	cout&lt;&lt;"Enter the number of element in the first data set: ";
+	cin&gt;&gt;n;
+ 
+	int a[n];
+
+	for(i = 0; i &lt; n; i++)
+	{
+		cout&lt;&lt;"Enter "&lt;&lt;i+1&lt;&lt;"th element: ";
+		cin&gt;&gt;a[i];
+	}
+ 
+	cout&lt;&lt;"\nEnter the number of element in the second data set: ";
+	cin&gt;&gt;m;
+ 
+	int b[m];
+
+	for(i = 0; i &lt; m; i++)
+	{
+		cout&lt;&lt;"Enter "&lt;&lt;i+1&lt;&lt;"th element: ";
+		cin&gt;&gt;b[i];
+	}
+ 
+
+	QuickSort(a, 0, n-1);
+	QuickSort(b, 0, m-1);
+ 
+	cout&lt;&lt;"\tThe Median from these data set is: ";
+	ai = 0;
+	bi = 0;
+	if((m+n)%2 == 1)
+	{
+		k =(n+m)/2+1;
+		while(k &gt; 0)
+		{
+			if(a[ai] &lt;= b[bi] &amp;&amp; ai &lt; n)
+			{
+				k--;
+				if(k == 0)
+				cout&lt;&lt;a[ai];
+				ai++;
+			}
+			else if(a[ai] &gt; b[bi] &amp;&amp; bi &lt; m)
+			{
+				k--;
+			
+				if(k == 0)
+					cout&lt;&lt;b[bi];
+				bi++;
+			}
+		}
+	}
+	else
+	{	
+		k = (n+m)/2+1;
+		while(k &gt; 0)
+		{
+			
+			if(a[ai] &lt;= b[bi] &amp;&amp; ai &lt; n)
+			{
+				k--;
+					if(k &lt;= 1)
+					median += a[ai];
+				ai++;
+			}
+			else if(a[ai] &gt; b[bi] &amp;&amp; bi &lt; m)
+			{
+				k--;
+			
+				if(k &lt;= 1)
+					median += b[bi];
+				bi++;
+			}
+		}
+		
+		cout&lt;&lt;median/2;
+	}
+}
+</pre>

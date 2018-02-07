@@ -1,0 +1,5 @@
+<pre>
+linearsearch :: (Eq a) =&gt; [a] -&gt; a -&gt; Maybe Int
+linearsearch [] _ = Nothing
+linearsearch (x:xs) y = if x == y then Just 0 else (1 +) &lt;$&gt; linearsearch xs y
+</pre>

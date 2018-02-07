@@ -1,0 +1,20 @@
+<pre>
+module Palindrome where
+import Control.Monad.Aff (Aff)
+import Control.Monad.Aff.Console (CONSOLE,log)
+import Data.String (toLower)
+import Data.String.Yarn (reverse)
+import Prelude (Unit,bind, pure,unit,(==))
+palindromeChecker::String-&gt;Aff(console::CONSOLE)Unit
+palindromeChecker string = do
+                   _&lt;- if string == toLower (reverse string) then do
+                      log "Palindrome Matching"
+                     else do
+                       log "Palindrome Not Matching"
+                   pure unit
+main::Aff(console::CONSOLE)Unit
+main= do
+        _&lt;- palindromeChecker "Tharun"
+        _&lt;- palindromeChecker "MalaYaLam"
+        pure unit
+</pre>

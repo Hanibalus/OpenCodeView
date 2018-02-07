@@ -1,0 +1,98 @@
+<pre>
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+struct node
+{
+    int data;
+    struct node* next;
+};
+
+int push(struct node** head,int element);
+int pop(struct node** head,int* element);
+
+//main program
+int main()
+{
+    //input no of nodes: Num
+    int Num;
+    printf("Enter number of nodes\n");
+    scanf("%d",&amp;Num);
+
+    //create adjacency matrix
+    int adj[Num][Num];
+
+    //input adjacency matrix
+    printf("Enter adjacency matrix\n");
+    for(int i=0;i&lt;Num;i++)
+    {
+        for(int j=0;j&lt;Num;j++)
+        {
+            scanf("%d",&amp;adj[i][j]);
+        }
+    }
+
+    //DFS traversing
+
+    //create a stack
+    struct node *Stack=NULL;
+
+    //create status array and set it to ready state
+    enum{ready,waiting,processed};
+    int status[Num];
+    for(int i=0;i&lt;Num;i++)
+    {
+        status[i]=ready;
+    }
+    //add first node to stack
+    push(&amp;Stack,0);
+    status[0]=waiting;
+    int node=NULL;
+    printf("DFS traversing\n");
+    while(Stack!=NULL)
+    {
+        //get a node from stack, display it and change status to processed
+        pop(&amp;Stack,&amp;node);
+        printf("%d ",node);
+        status[node]=processed;
+
+        //add it's neighbours with status ready to stack
+        for(int i=0;i&lt;Num;i++)
+        {
+            if(adj[node][i]==1 &amp;&amp; status[i]==ready)
+            {
+                push(&amp;Stack,i);
+                status[i]=waiting;
+            }
+        }
+    }
+    printf("\n");
+
+}
+
+//stack functions
+int push(struct node** head,int element)
+{
+    struct node* temp;
+    temp=*head;
+    *head=(struct node*)malloc(sizeof(struct node));
+    if(head==NULL)
+        return 1;
+    (*head)-&gt;data=element;
+    (*head)-&gt;next=temp;
+    return 0;
+}
+
+int pop(struct node** head,int* element)
+{
+    if(*head==NULL)
+        return 1;
+    *element=(*head)-&gt;data;
+    struct node* temp;
+    temp=*head;
+    *head=(*head)-&gt;next;
+    free(temp);
+    return 0;
+}
+</pre>

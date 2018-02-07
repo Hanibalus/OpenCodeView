@@ -1,0 +1,51 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+
+ insertion sort synopsis
+
+template&lt;typename _Bidirectional_Iter, typename _Compare&gt;
+void
+insertionSort(_Bidirectional_Iter begin, _Bidirectional_Iter end, _Compare compare);
+
+template&lt;typename _Bidirectional_Iter&gt;
+void
+insertionSort(_Bidirectional_Iter begin, _Bidirectional_Iter end);
+ */
+
+#include &lt;functional&gt;
+
+template&lt;typename _Bidirectional_Iter, typename _Compare&gt;
+void
+insertionSort(_Bidirectional_Iter begin, _Bidirectional_Iter end, _Compare compare)
+{
+    if (begin != end)
+    {
+        auto backOfBegin = begin;
+        --backOfBegin;
+
+        auto curr = begin;
+        for (++curr; curr != end; ++curr)
+        {
+            auto pivot = *curr;
+            auto backward = curr;
+            auto nextOfBackward = curr;
+            while (--backward != backOfBegin &amp;&amp; compare(pivot, *backward))
+            {
+                *nextOfBackward = *backward;
+                --nextOfBackward;
+            }
+            *nextOfBackward = pivot;
+        }
+    }
+}
+
+template&lt;typename _Bidirectional_Iter&gt;
+void
+insertionSort(_Bidirectional_Iter begin, _Bidirectional_Iter end)
+{
+    using value_type = typename std::iterator_traits&lt;_Bidirectional_Iter&gt;::value_type;
+
+    insertionSort(begin, end, std::less&lt;value_type&gt;());
+}
+</pre>

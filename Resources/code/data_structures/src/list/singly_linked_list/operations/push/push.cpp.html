@@ -1,0 +1,66 @@
+<pre>
+#include&lt;iostream&gt;
+using namespace std;
+
+// Everytime you work with Append or Push function, there is a corner case.
+// When a NULL Node is passed you have to return a Node that points to the given value.
+// There are two ways to achieve this:
+// 1. Receive the double pointer as an argument.
+// 2. Return the new Node.
+
+struct Node{
+    int data;
+    Node* next;
+};
+
+void printList( Node *head){
+    while(head){
+        cout&lt;&lt;head-&gt;data&lt;&lt;" ";
+        head = head-&gt;next;
+    }
+    cout&lt;&lt;endl;
+}
+
+void push( Node** headref, int x){
+    Node* head = *headref;
+    Node* newNode = new Node();
+    newNode-&gt;data = x;
+    newNode-&gt;next = head;
+    *headref = newNode;
+}
+
+
+void pushAfter(Node* prev_Node, int data){
+    Node* newNode= new Node();
+    newNode-&gt;data =data;
+    newNode-&gt;next = prev_Node-&gt;next;
+    prev_Node-&gt;next = newNode;
+}
+
+void append( Node** headref, int x){
+    Node* head = *headref;
+    if(head==nullptr){
+        Node* newNode = new Node();
+        newNode-&gt;data = x;
+        newNode-&gt;next = nullptr;
+        *headref= newNode;
+        return;
+    }
+    while(head-&gt;next){
+        head= head-&gt;next;
+    }
+    Node *temp = new Node();
+    head-&gt;next = temp;
+    temp-&gt;data = x;
+}
+
+int main(){
+    Node *head =nullptr;
+    append(&amp;head, 5);
+    append(&amp;head, 10);
+    push(&amp;head, 2);
+    pushAfter(head-&gt;next, 4);
+    printList(head);
+    return 0;
+}
+</pre>

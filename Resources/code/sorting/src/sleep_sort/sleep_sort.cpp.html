@@ -1,0 +1,31 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+#include &lt;iostream&gt;
+#include &lt;chrono&gt;
+#include &lt;vector&gt; 
+#include &lt;thread&gt;
+
+using namespace std;
+
+int main(int argc, char** argv)
+{
+    vector&lt;thread&gt; threads;
+    
+    for(auto i = 1; i &lt; argc; ++i)
+    {
+        threads.emplace_back(
+            [i, &amp;argv]() {
+                int arg = stoi(argv[i]);
+                this_thread::sleep_for(chrono::seconds(arg));
+                cout &lt;&lt; argv[i] &lt;&lt; endl;
+            }
+        );
+    }
+    
+    for(auto &amp;thread: threads)
+    {
+        thread.join();
+    }
+    
+    return 0;
+}</pre>

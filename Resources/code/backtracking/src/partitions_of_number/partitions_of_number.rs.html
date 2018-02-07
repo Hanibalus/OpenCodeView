@@ -1,0 +1,44 @@
+<pre>
+#[macro_use]
+extern crate text_io;
+
+fn main() {
+    let n: usize = read!();
+    let mut s: usize = 0;
+    let mut solution: Vec&lt;usize&gt; = Vec::new();
+    solution.push(1);
+    for _ in 0..n {
+        solution.push(0);
+    }
+    backtrack(&amp;mut solution, n, &amp;mut s, 1);
+}
+fn backtrack(vec: &amp;mut Vec&lt;usize&gt;, n: usize, s: &amp;mut usize, level: usize) {
+    //println!("{:?}", vec);
+    if n == *s {
+        printsol(vec, n, level - 1);
+    } else {
+        let mut i = vec[level - 1];
+        while i &lt;= n - *s {
+            if let Some(elem) = vec.get_mut(level) {
+                *elem = i;
+            }
+            *s += i;
+            backtrack(vec, n, s, level + 1);
+            *s -= i;
+            i += 1;
+        }
+    }
+}
+fn printsol(map: &amp;Vec&lt;usize&gt;, num: usize, level: usize) {
+    println!("Solution");
+    print!("{} = ", num);
+    for idx in 1..level + 1 {
+        if idx == 1 {
+            print!("{:?}", map[idx]);
+        } else {
+            print!(" + {:?}", map[idx]);
+        }
+    }
+    println!();
+}
+</pre>

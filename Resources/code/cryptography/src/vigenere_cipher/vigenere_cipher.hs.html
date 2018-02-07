@@ -1,0 +1,70 @@
+<pre>
+--Vigenere cipher
+module Vigenere where
+
+import Data.Char
+
+chrRg :: Int
+chrRg = length ['A'..'Z']
+
+encode :: Char -&gt; Int
+encode = subtract (ord 'A') . ord . toUpper
+
+decode :: Int -&gt; Char
+decode = chr . (ord 'A' +)
+
+shiftr :: Char -&gt; Char -&gt; Char
+shiftr c k = decode $ mod (encode c + encode k) chrRg
+
+shiftl :: Char -&gt; Char -&gt; Char
+shiftl c k = decode $ mod (encode c - encode k) chrRg
+
+vigenere :: String -&gt; String -&gt; String
+vigenere = vigProc shiftr 
+
+unVigenere :: String -&gt; String -&gt; String
+unVigenere = vigProc shiftl  
+
+vigProc :: (Char -&gt; Char -&gt; Char) -&gt; (String -&gt; String -&gt; String)
+vigProc s cs = vigProc' s cs . cycle
+
+vigProc' :: (Char -&gt; Char -&gt; Char) -&gt; (String -&gt; String -&gt; String)
+vigProc' _ [] _ = []
+vigProc' s (c:cs) (k:ks)
+  | isLetter c = s c k : vigProc' s cs ks
+  | otherwise =  c : vigProc' s cs (k:ks)
+
+encrypt :: IO ()
+encrypt = do
+  putStrLn "Enter message to be encrypted: "
+  mes &lt;- getLine
+  putStrLn "Enter key: "
+  key &lt;- getLine
+  putStrLn "Encrypted message: "
+  putStrLn $ vigenere mes key
+{- Ex.
+  encrypt
+  Enter message to be encrypted:
+  "Hello, World!"
+  Enter key:
+  "World"
+  Encrypted message:
+  "CAZCZ, ZJMHR!" -} 
+
+decrypt :: IO ()
+decrypt = do
+  putStrLn "Enter message to be decrypted: "
+  mes &lt;- getLine
+  putStrLn "Enter key: "
+  key &lt;- getLine
+  putStrLn "Decrypted message: "
+  putStrLn $ unVigenere mes key
+{- Ex.
+  decrypt
+  Enter message to be decrypted:
+  "CAZCZ, ZJMHR!"
+  Enter key:
+  "World"
+  Decrypted message:
+  "HELLO, WORLD!" -}
+  </pre>

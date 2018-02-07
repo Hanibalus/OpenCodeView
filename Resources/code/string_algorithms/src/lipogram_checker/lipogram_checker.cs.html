@@ -1,0 +1,46 @@
+<pre>
+﻿using System;
+/*
+ * Part of cosmos by OpenGenus Foundation
+ * */
+namespace lipogram_checker
+{
+    class Program
+    {
+        /// &lt;summary&gt;
+        /// Method to check if a string is lipogram or not
+        /// &lt;/summary&gt;
+        /// &lt;param name="str"&gt;String To Check&lt;/param&gt;
+        /// &lt;returns&gt;Integer Value&lt;/returns&gt;
+        static int lipogram(string str)
+        {
+            int count = 0;
+            string alphabets = "abcdefghijklmnopqrstuvwxyz";
+            str = str.ToLower();
+            for (int i = 0; i &lt; alphabets.Length; i++)
+            {
+                int index = str.IndexOf(alphabets[i]);
+
+                if (index &lt; 0 || index &gt; str.Length)
+                    count++;
+            }
+            return count;
+        }
+        static void Main(string[] args)
+        {
+            string to_chk = "The quick brown fox jumped over the lazy dog";
+
+            int val = lipogram(to_chk);
+
+            if (val == 0)
+                Console.WriteLine("Pangram");
+            else if (val &gt;= 2)
+                Console.WriteLine("Not a pangram but might a lipogram");
+            else
+                Console.WriteLine("Pangrammatic Lipogram");
+
+            Console.ReadKey();
+        }
+    }
+}
+</pre>

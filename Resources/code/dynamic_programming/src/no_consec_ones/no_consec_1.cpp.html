@@ -1,0 +1,27 @@
+<pre>
+#include &lt;iostream&gt;
+#include&lt;vector&gt;
+using namespace std;
+
+int countNonConsecutiveOnes(int n)
+{
+    vector&lt;int&gt; endingZero(n), endingOne(n);
+    endingZero[0] = endingOne[0] = 1;
+    for ( int i = 1; i &lt; n; i++ )
+    {
+        endingZero[i] = endingZero[i-1] + endingOne[i-1];
+        endingOne[i] = endingZero[i-1];
+    }
+    return endingZero[n-1] + endingOne[n-1];
+}
+ 
+int main()
+{
+    int binaryStringLength;
+    cout&lt;&lt;"Enter the length of binary string: ";
+    cin&gt;&gt;binaryStringLength;
+    cout&lt;&lt;"\nCount of Binary representations of length "&lt;&lt;binaryStringLength
+    &lt;&lt;" not having consecutive ones = ";
+    cout &lt;&lt; countNonConsecutiveOnes(binaryStringLength) &lt;&lt; endl;
+    return 0;
+}</pre>

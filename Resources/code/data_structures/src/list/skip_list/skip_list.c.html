@@ -1,0 +1,167 @@
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;limits.h&gt;
+// Part of Cosmos by OpenGenus Foundation
+#define SKIPLIST_MAX_LEVEL 6
+ 
+typedef struct snode {
+    int key;
+    int value;
+    struct snode **forward;
+} snode;
+ 
+typedef struct skiplist {
+    int level;
+    int size;
+    struct snode *header;
+} skiplist;
+ 
+skiplist *skiplist_init(skiplist *list) {
+    int i;
+    snode *header = (snode *) malloc(sizeof(struct snode));
+    list-&gt;header = header;
+    header-&gt;key = INT_MAX;
+    header-&gt;forward = (snode **) malloc(
+            sizeof(snode*) * (SKIPLIST_MAX_LEVEL + 1));
+    for (i = 0; i &lt;= SKIPLIST_MAX_LEVEL; i++) {
+        header-&gt;forward[i] = list-&gt;header;
+    }
+ 
+    list-&gt;level = 1;
+    list-&gt;size = 0;
+ 
+    return list;
+}
+ 
+static int rand_level() {
+    int level = 1;
+    while (rand() &lt; RAND_MAX / 2 &amp;&amp; level &lt; SKIPLIST_MAX_LEVEL)
+        level++;
+    return level;
+}
+ 
+int skiplist_insert(skiplist *list, int key, int value) {
+    snode *update[SKIPLIST_MAX_LEVEL + 1];
+    snode *x = list-&gt;header;
+    int i, level;
+    for (i = list-&gt;level; i &gt;= 1; i--) {
+        while (x-&gt;forward[i]-&gt;key &lt; key)
+            x = x-&gt;forward[i];
+        update[i] = x;
+    }
+    x = x-&gt;forward[1];
+ 
+    if (key == x-&gt;key) {
+        x-&gt;value = value;
+        return 0;
+    } else {
+        level = rand_level();
+        if (level &gt; list-&gt;level) {
+            for (i = list-&gt;level + 1; i &lt;= level; i++) {
+                update[i] = list-&gt;header;
+            }
+            list-&gt;level = level;
+        }
+ 
+        x = (snode *) malloc(sizeof(snode));
+        x-&gt;key = key;
+        x-&gt;value = value;
+        x-&gt;forward = (snode **) malloc(sizeof(snode*) * (level + 1));
+        for (i = 1; i &lt;= level; i++) {
+            x-&gt;forward[i] = update[i]-&gt;forward[i];
+            update[i]-&gt;forward[i] = x;
+        }
+    }
+    return 0;
+}
+ 
+snode *skiplist_search(skiplist *list, int key) {
+    snode *x = list-&gt;header;
+    int i;
+    for (i = list-&gt;level; i &gt;= 1; i--) {
+        while (x-&gt;forward[i]-&gt;key &lt; key)
+            x = x-&gt;forward[i];
+    }
+    if (x-&gt;forward[1]-&gt;key == key) {
+        return x-&gt;forward[1];
+    } else {
+        return NULL;
+    }
+    return NULL;
+}
+ 
+static void skiplist_node_free(snode *x) {
+    if (x) {
+        free(x-&gt;forward);
+        free(x);
+    }
+}
+ 
+int skiplist_delete(skiplist *list, int key) {
+    int i;
+    snode *update[SKIPLIST_MAX_LEVEL + 1];
+    snode *x = list-&gt;header;
+    for (i = list-&gt;level; i &gt;= 1; i--) {
+        while (x-&gt;forward[i]-&gt;key &lt; key)
+            x = x-&gt;forward[i];
+        update[i] = x;
+    }
+ 
+    x = x-&gt;forward[1];
+    if (x-&gt;key == key) {
+        for (i = 1; i &lt;= list-&gt;level; i++) {
+            if (update[i]-&gt;forward[i] != x)
+                break;
+            update[i]-&gt;forward[1] = x-&gt;forward[i];
+        }
+        skiplist_node_free(x);
+ 
+        while (list-&gt;level &gt; 1 &amp;&amp; list-&gt;header-&gt;forward[list-&gt;level]
+                == list-&gt;header)
+            list-&gt;level--;
+        return 0;
+    }
+    return 1;
+}
+ 
+static void skiplist_dump(skiplist *list) {
+    snode *x = list-&gt;header;
+    while (x &amp;&amp; x-&gt;forward[1] != list-&gt;header) {
+        printf("%d[%d]-&gt;", x-&gt;forward[1]-&gt;key, x-&gt;forward[1]-&gt;value);
+        x = x-&gt;forward[1];
+    }
+    printf("NIL\n");
+}
+ 
+int main() {
+    int arr[] = { 3, 6, 9, 2, 11, 1, 4 }, i;
+    skiplist list;
+    skiplist_init(&amp;list);
+ 
+    printf("Insert:--------------------\n");
+    for (i = 0; i &lt; sizeof(arr) / sizeof(arr[0]); i++) {
+        skiplist_insert(&amp;list, arr[i], arr[i]);
+    }
+    skiplist_dump(&amp;list);
+ 
+    printf("Search:--------------------\n");
+    int keys[] = { 3, 4, 7, 10, 111 };
+ 
+    for (i = 0; i &lt; sizeof(keys) / sizeof(keys[0]); i++) {
+        snode *x = skiplist_search(&amp;list, keys[i]);
+        if (x) {
+            printf("key = %d, value = %d\n", keys[i], x-&gt;value);
+        } else {
+            printf("key = %d, not fuound\n", keys[i]);
+        }
+    }
+ 
+    printf("Search:--------------------\n");
+    skiplist_delete(&amp;list, 3);
+    skiplist_delete(&amp;list, 9);
+    skiplist_dump(&amp;list);
+ 
+    return 0;
+}
+</pre>

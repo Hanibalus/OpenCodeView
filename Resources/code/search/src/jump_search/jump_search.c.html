@@ -1,0 +1,68 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#define MAX 100
+int find_element(int element);
+int arr[MAX],n;
+int main()
+{
+
+   int i,element,result;
+   printf("\nEnter the number of elements: ");
+   scanf("%d",&amp;n);
+   printf("\nEnter the elements of array: \n");
+   for(i=0;i&lt;n;i++)
+   {
+         scanf("%d",&amp;arr[i]);
+   }
+      printf("\n\nEnter the element you want to search: ");
+      scanf("%d",&amp;element);
+      result=find_element(element);
+      if(result==-1)
+      {
+            printf("\nElement is not found in the array !\n");
+      }
+      else
+      {
+            printf("\nElement %d is present at position %d",element,result);
+      }
+      return 0;
+}
+int find_element(int element)
+{
+   int jump_step,prev=0;
+   jump_step=floor(sqrt(n));
+
+   /* Finding block in which element lies, if it is present */
+
+   while(arr[prev]&lt;element)
+   {
+       if(arr[jump_step]&gt;element || jump_step&gt;=n)
+       {
+            break;
+       }
+       else
+       {
+                prev=jump_step;
+                jump_step=jump_step+floor(sqrt(n));
+       }
+   }
+
+   /*Finding the element in the identified block */
+
+   while(arr[prev]&lt;element)
+   {
+        prev++;
+   }
+
+   if(arr[prev]==element)
+   {
+        return prev+1;
+   }
+   else
+   {
+        return -1;
+   }
+
+}
+</pre>

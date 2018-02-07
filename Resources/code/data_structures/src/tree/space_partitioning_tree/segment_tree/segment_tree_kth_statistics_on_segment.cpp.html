@@ -1,0 +1,95 @@
+<pre>
+#include &lt;cassert&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+const int lb = -1e9, rb = 1e9;
+struct node {
+	int val;
+	node *l, *r;
+	node() {
+		val = 0;
+		l = r = nullptr;
+	}
+	node(int x) {
+		val = x;
+		l = r = nullptr;
+	}
+	node(node* vl, node* vr) {
+		l = vl;
+		r = vr;
+		if (l) val += l-&gt;val;
+		if (r) val += r-&gt;val;
+	}
+};
+vector&lt;node*&gt; tr;
+int cnt(node* v) { return v ? v-&gt;val : 0; }
+node* add_impl(node* v, int tl, int tr, int x) {
+	if (tl == tr) {
+		return new node(cnt(v) + 1);
+	} else {
+		int tm = (tl + tr) / 2;
+		if (x &lt;= tm)
+			return new node(add_impl(v ? v-&gt;l : v, tl, tm, x), v ? v-&gt;r : v);
+		else
+			return new node(v ? v-&gt;l : v,
+							add_impl(v ? v-&gt;r : v, tm + 1, tr, x));
+	}
+}
+void add(int x) {
+	node* v = tr.back();
+	tr.push_back(add_impl(v, lb, rb, x));
+}
+int order_of_key_impl(node* v, int tl, int tr, int l, int r) {
+	if (!v) return 0;
+	if (l == tl &amp;&amp; r == tr) return v-&gt;val;
+	int tm = (tl + tr) / 2;
+	if (r &lt;= tm)
+		return order_of_key_impl(v-&gt;l, tl, tm, l, r);
+	else
+		return order_of_key_impl(v-&gt;l, tl, tm, l, tm) +
+			   order_of_key_impl(v-&gt;r, tm + 1, tr, tm + 1, r);
+}
+int order_of_key(int l, int r, int x) {
+	int ans = order_of_key_impl(tr[r], lb, rb, lb, x - 1) -
+			  order_of_key_impl(tr[l - 1], lb, rb, lb, x - 1) + 1;
+	return ans;
+}
+int find_by_order_impl(node* l, node* r, int tl, int tr, int x) {
+	if (tl == tr) return tl;
+	int tm = (tl + tr) / 2;
+	if (cnt(r ? r-&gt;l : r) - cnt(l ? l-&gt;l : l) &gt;= x)
+		return find_by_order_impl(l ? l-&gt;l : l, r ? r-&gt;l : r, tl, tm, x);
+	else
+		return find_by_order_impl(l ? l-&gt;r : l, r ? r-&gt;r : r, tm + 1, tr,
+								  x - (cnt(r ? r-&gt;l : r) - cnt(l ? l-&gt;l : l)));
+}
+int find_by_order(int l, int r, int x) {
+	assert(r - l + 1 &gt;= x &amp;&amp; x &gt; 0);
+	return find_by_order_impl(tr[l - 1], tr[r], lb, rb, x);
+}
+int main() {
+	tr.push_back(nullptr);
+	vector&lt;int&gt; a;
+	int n;
+	cin &gt;&gt; n;
+	for (int i = 0; i &lt; n; i++) {
+		int x;
+		cin &gt;&gt; x;
+		a.push_back(x);
+		add(x);
+	}
+	int q;
+	cin &gt;&gt; q;
+	for (int i = 0; i &lt; q; i++) {
+		int t;  // type of question: 1 - order of key, 2 - find by order
+		cin &gt;&gt; t;
+		int l, r, x;  // 1 &lt;= l &lt;= r &lt;= n
+		cin &gt;&gt; l &gt;&gt; r &gt;&gt; x;
+		if (t == 1) {
+			cout &lt;&lt; order_of_key(l, r, x) &lt;&lt; endl;
+		} else {
+			cout &lt;&lt; find_by_order(l, r, x) &lt;&lt; endl;
+		}
+	}
+}</pre>

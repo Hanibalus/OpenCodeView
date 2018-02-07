@@ -1,0 +1,37 @@
+<pre>
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;algorithm&gt;
+#include&lt;set&gt;
+using namespace std;
+
+set&lt;string&gt; s;
+
+void permutation(string a, int i=0){
+    if(a[i]=='\0'){
+        // cout &lt;&lt; a &lt;&lt; endl;
+        s.insert(a);
+        return;
+    }
+    for(int j=i; a[j]!='\0'; j++){
+        swap(a[i], a[j]);
+        permutation(a, i+1);
+        swap(a[i], a[j]);
+    }
+}
+
+int main() {
+    string a;
+    cout &lt;&lt; "Enter any string : ";
+    cin &gt;&gt; a;
+
+    permutation(a);
+    
+    set&lt;string&gt;::iterator i;
+    
+    for(i=s.begin(); i!=s.end(); i++){
+        cout &lt;&lt; *i &lt;&lt; endl;
+    }
+    
+	return 0;
+}</pre>

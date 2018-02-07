@@ -1,0 +1,62 @@
+<pre>
+/*
+ * Part of Cosmos by OpenGenus Foundation
+*/
+#include &lt;iostream&gt;
+#include &lt;stack&gt;
+using namespace std;
+void InputElements(stack&lt;int&gt; &amp;s){
+
+    //no. of elements to be inserted
+    int size;
+    cin&gt;&gt;size;
+
+    while(size--){
+        int num;
+        cin&gt;&gt;num;
+        s.push(num);
+    }
+}
+void InsertInStack(stack&lt;int&gt; &amp;s,int x){
+
+    if(s.empty()){
+        s.push(x);
+        return;
+    }
+
+    int cur=s.top();
+    s.pop();
+    InsertInStack(s,x);
+    s.push(cur);
+}
+void ReverseStack(stack&lt;int&gt; &amp;s){
+
+    if(s.empty()) return;
+
+    int cur=s.top();
+    s.pop();
+    ReverseStack(s);
+
+    InsertInStack(s,cur);
+}
+void PrintStack(stack&lt;int&gt; s){
+    while(!s.empty()){
+        cout&lt;&lt;s.top()&lt;&lt;" ";
+        s.pop();
+    }
+    cout&lt;&lt;endl;
+}
+int main(){
+    //Stack Decalared
+    stack&lt;int&gt; s;
+    //Inserting elements in to the stack
+    InputElements(s);
+    //Print stack
+    PrintStack(s);
+    //Reverse Stack without using any extra space
+    ReverseStack(s);
+    //Print again
+    PrintStack(s);
+    return 0;
+}
+</pre>

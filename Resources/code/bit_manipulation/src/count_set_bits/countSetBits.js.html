@@ -1,0 +1,21 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+
+export default function countSetBits(n) {
+  n = +n;
+
+  if (!(n &gt;= 0 || n &lt; 0)) {
+    return 0;
+  } else if (n &lt; 0) {
+  	throw new Error('negtive numbers are not supported');
+  }
+  
+  let cnt = 0;
+  while (n) {
+  	cnt++;
+    n &amp;= n - 1;
+  }
+  
+  return cnt;
+}
+</pre>

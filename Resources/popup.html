@@ -1,0 +1,45 @@
+<html>
+<head>
+    <script src="js/jquery.js"></script>
+    <script src="js/popup.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/popup.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/font.css">
+    <link rel="shortcut icon" type="image/png" href="icon/icon.png"/>
+    <title>OpenCode View</title>
+    <meta charset='utf-8'>
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-sm-12">
+                <a class="navbar-brand" href="popup.html">
+                    <img src="icon/icon.png">OpenCodeView
+                </a>
+                <div class="input-group">
+                    <input id="search" class="form-control text-center" type="search" size="128" placeholder="Search any code; Try: sorting">
+                </div>
+            <div id="pop-tags">
+                <input type="button" class="btn-xs button-pop" value="sort"/>
+                <input type="button" class="btn-xs button-pop" value="search"/>
+                <input type="button" class="btn-xs button-pop" value="math"/>
+                <input type="button" class="btn-xs button-pop" value="string"/>
+                <input type="button" class="btn-xs button-pop" value="crypto"/>
+                <input type="button" class="btn-xs button-pop" value="data structures"/>
+                <input type="button" class="btn-xs button-pop" value="graph"/>
+                <input type="button" class="btn-xs button-pop" value="greedy"/>
+                <input type="button" class="btn-xs button-pop" value="operating systems"/>
+                <input type="button" class="btn-xs button-pop" value="artificial intelligence"/>
+            </div>
+            </div>
+        </div><br>
+        <div id="bookmarks"></div>
+        <div class="row" id="iframeview" style="margin-left:2%;">
+            <a class="btn btn-sm btn-warning" id="iframeback" style="display:none;">返回</a>
+            <iframe src="" width="100%" height="5000px" name="codeview" style="border:0px;"></iframe>
+        </div>
+    </div>
+</body>
+</html>

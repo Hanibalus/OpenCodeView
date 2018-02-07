@@ -1,0 +1,716 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;cassert&gt;
+#include &lt;string&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+template&lt;typename _Type, class _Derivative&gt;
+class BaseNode
+{
+protected:
+    using ValueType = _Type;
+    using SPNodeType = std::shared_ptr&lt;_Derivative&gt;;
+
+public:
+    BaseNode(ValueType v, SPNodeType l = nullptr, SPNodeType r = nullptr)
+        :value_(v), left_(l), right_(r) {}
+
+    ValueType value()
+    {
+        return value_;
+    }
+
+    void value(ValueType v)
+    {
+        value_ = v;
+    }
+
+    SPNodeType &amp;left()
+    {
+        return left_;
+    }
+
+    void left(SPNodeType l)
+    {
+        left_ = l;
+    }
+
+    SPNodeType &amp;right()
+    {
+        return right_;
+    }
+
+    void right(SPNodeType r)
+    {
+        right_ = r;
+    }
+
+protected:
+    ValueType value_;
+    SPNodeType left_, right_;
+};
+
+template&lt;typename _Type&gt;
+class RBNode :public BaseNode&lt;_Type, RBNode&lt;_Type&gt;&gt;
+{
+private:
+    using ValueType = _Type;
+    using SPNodeType = std::shared_ptr&lt;RBNode&gt;;
+    using WPNodeType = std::weak_ptr&lt;RBNode&gt;;
+
+public:
+    enum class Color
+    {
+        RED,
+        BLACK
+    };
+
+    RBNode(ValueType v, SPNodeType l = nullptr, SPNodeType r = nullptr, SPNodeType p = nullptr)
+        :BaseNode&lt;_Type, RBNode&lt;_Type&gt;&gt;(v, l, r), parent_(p), color_(Color::RED) {}
+
+    SPNodeType parent()
+    {
+        return parent_.lock();
+    }
+
+    void parent(SPNodeType p)
+    {
+        parent_ = p;
+    }
+
+    Color color()
+    {
+        return color_;
+    }
+
+    void color(Color c)
+    {
+        color_ = c;
+    }
+
+private:
+    WPNodeType parent_;
+    Color color_;
+};
+
+template&lt;typename _Type, typename _Compare = std::less&lt;_Type&gt;&gt;
+class RBTree
+{
+private:
+    typedef RBNode&lt;_Type&gt; NodeType;
+    typedef std::shared_ptr&lt;NodeType&gt; SPNodeType;
+    typedef typename RBNode&lt;_Type&gt;::Color Color;
+
+public:
+    RBTree() :root_(nullptr), sentinel_(std::make_shared&lt;NodeType&gt;(0)), compare_(_Compare())
+    {
+        sentinel_-&gt;left(sentinel_);
+        sentinel_-&gt;right(sentinel_);
+        sentinel_-&gt;parent(sentinel_);
+        sentinel_-&gt;color(Color::BLACK);
+        root_ = sentinel_;
+    }
+
+    void insert(_Type const &amp;n);
+
+    void erase(_Type const &amp;n);
+
+    SPNodeType const find(_Type const &amp;);
+
+    std::string preOrder() const;
+
+    std::string inOrder() const;
+
+private:
+    SPNodeType root_;
+    SPNodeType sentinel_;
+    _Compare compare_;
+
+    SPNodeType &amp;insert(SPNodeType &amp;root, SPNodeType &amp;pt);
+
+    SPNodeType _find(_Type const &amp;value);
+
+    void rotateLeft(SPNodeType const &amp;);
+
+    void rotateRight(SPNodeType const &amp;);
+
+    void fixViolation(SPNodeType &amp;);
+
+    SPNodeType successor(SPNodeType const &amp;);
+
+    SPNodeType &amp;sibling(SPNodeType const &amp;);
+
+    bool isLeftChild(SPNodeType const &amp;);
+
+    bool isRightChild(SPNodeType const &amp;);
+
+    void deleteOneNode(SPNodeType &amp;);
+
+    void deleteCase1(SPNodeType const &amp;);
+
+    void deleteCase2(SPNodeType const &amp;);
+
+    void deleteCase3(SPNodeType const &amp;);
+
+    void deleteCase4(SPNodeType const &amp;);
+
+    void deleteCase5(SPNodeType const &amp;);
+
+    void deleteCase6(SPNodeType const &amp;);
+};
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::insert(_Type const &amp;value)
+{
+    SPNodeType pt = std::make_shared&lt;NodeType&gt;(value, sentinel_, sentinel_);
+
+    root_ = insert(root_, pt);
+
+    fixViolation(pt);
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::erase(_Type const &amp;value)
+{
+    SPNodeType delete_node = _find(value);
+
+    if (delete_node != sentinel_)
+    {
+        if (delete_node-&gt;left() == sentinel_)
+        {
+            deleteOneNode(delete_node);
+        }
+        else
+        {
+            SPNodeType smallest = successor(delete_node);
+            auto temp = delete_node-&gt;value();
+            delete_node-&gt;value(smallest-&gt;value());
+            smallest-&gt;value(temp);
+            deleteOneNode(smallest);
+        }
+    }
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteOneNode(SPNodeType &amp;pt)
+{
+    auto child = pt-&gt;left() != sentinel_ ? pt-&gt;left() : pt-&gt;right();
+    if (pt-&gt;parent() == sentinel_)
+    {
+        root_ = child;
+        root_-&gt;parent(sentinel_);
+        root_-&gt;color(Color::BLACK);
+    }
+    else
+    {
+        if (isLeftChild(pt))
+        {
+            pt-&gt;parent()-&gt;left(child);
+        }
+        else
+        {
+            pt-&gt;parent()-&gt;right(child);
+        }
+        child-&gt;parent(pt-&gt;parent());
+        if (pt-&gt;color() == Color::BLACK)
+        {
+            if (child-&gt;color() == Color::RED)
+            {
+                child-&gt;color(Color::BLACK);
+            }
+            else
+            {
+                deleteCase1(child);
+            }
+        }
+    }
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+auto
+RBTree&lt;_Type, _Compare&gt;::find(_Type const &amp;value)-&gt;SPNodeType const
+{
+    auto pt = _find(value);
+
+    return pt != sentinel_ ? pt : nullptr;
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+std::string
+RBTree&lt;_Type, _Compare&gt;::preOrder() const
+{
+    if (root_ == sentinel_)
+    {
+        return {};
+    }
+    std::string elem{};
+    std::stack&lt;SPNodeType&gt; st{};
+    st.push(root_);
+    elem.append(std::to_string(st.top()-&gt;value()));
+    while (!st.empty())
+    {
+        while (st.top()-&gt;left() != sentinel_)
+        {
+            elem.append(std::to_string(st.top()-&gt;left()-&gt;value()));
+            st.push(st.top()-&gt;left());
+        }
+        while (!st.empty() &amp;&amp; st.top()-&gt;right() == sentinel_)
+            st.pop();
+        if (!st.empty())
+        {
+            elem.append(std::to_string(st.top()-&gt;right()-&gt;value()));
+            auto temp = st.top();
+            st.pop();
+            st.push(temp-&gt;right());
+        }
+    }
+
+    return elem;
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+std::string
+RBTree&lt;_Type, _Compare&gt;::inOrder() const
+{
+    if (root_ == sentinel_)
+    {
+        return {};
+    }
+    std::string elem{};
+    std::stack&lt;SPNodeType&gt; st{};
+    st.push(root_);
+    while (!st.empty())
+    {
+        while (st.top()-&gt;left() != sentinel_)
+            st.push(st.top()-&gt;left());
+        while (!st.empty() &amp;&amp; st.top()-&gt;right() == sentinel_)
+        {
+            elem.append(std::to_string(st.top()-&gt;value()));
+            st.pop();
+        }
+        if (!st.empty())
+        {
+            elem.append(std::to_string(st.top()-&gt;value()));
+            auto temp = st.top();
+            st.pop();
+            st.push(temp-&gt;right());
+        }
+    }
+
+    return elem;
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+auto
+RBTree&lt;_Type, _Compare&gt;::insert(SPNodeType &amp;root, SPNodeType &amp;pt)-&gt;SPNodeType &amp;
+{
+    // If the tree is empty, return a new node
+    if (root == sentinel_)
+    {
+        pt-&gt;parent(root-&gt;parent());
+
+        return pt;
+    }
+
+    // Otherwise, recur down the tree
+    if (compare_(pt-&gt;value(), root-&gt;value()))
+    {
+        root-&gt;left(insert(root-&gt;left(), pt));
+        root-&gt;left()-&gt;parent(root);
+    }
+    else if (compare_(root-&gt;value(), pt-&gt;value()))
+    {
+        root-&gt;right(insert(root-&gt;right(), pt));
+        root-&gt;right()-&gt;parent(root);
+    }
+    else
+    {
+        pt-&gt;parent(root-&gt;parent());
+        pt-&gt;left(root-&gt;left());
+        pt-&gt;right(root-&gt;right());
+        pt-&gt;color(root-&gt;color());
+    }
+
+    // return the (unchanged) node pointer
+    return root;
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+auto
+RBTree&lt;_Type, _Compare&gt;::_find(_Type const &amp;value)-&gt;SPNodeType
+{
+    auto pt = std::make_shared&lt;NodeType&gt;(value);
+    std::stack&lt;SPNodeType&gt; st{};
+    st.push(root_);
+    while (!st.empty())
+    {
+        if (compare_(st.top()-&gt;value(), pt-&gt;value()) == compare_(pt-&gt;value(), st.top()-&gt;value()))
+        {
+            return st.top();
+        }
+        while (st.top()-&gt;left() != sentinel_)
+        {
+            st.push(st.top()-&gt;left());
+            if (compare_(st.top()-&gt;value(),
+                         pt-&gt;value()) == compare_(pt-&gt;value(), st.top()-&gt;value()))
+            {
+                return st.top();
+            }
+        }
+        while (!st.empty() &amp;&amp; st.top()-&gt;right() == sentinel_)
+            st.pop();
+        if (!st.empty())
+        {
+            if (compare_(st.top()-&gt;value(),
+                         pt-&gt;value()) == compare_(pt-&gt;value(), st.top()-&gt;value()))
+            {
+                return st.top();
+            }
+            else
+            {
+                SPNodeType &amp;temp = st.top();
+                st.pop();
+                st.push(temp-&gt;right());
+            }
+        }
+    }
+
+    return sentinel_;
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::rotateLeft(SPNodeType const &amp;pt)
+{
+    auto pt_right = pt-&gt;right();
+
+    pt-&gt;right() = pt_right-&gt;left();
+
+    if (pt-&gt;right() != sentinel_)
+    {
+        pt-&gt;right()-&gt;parent(pt);
+    }
+
+    pt_right-&gt;parent(pt-&gt;parent());
+
+    if (pt-&gt;parent() == sentinel_)
+    {
+        root_ = pt_right;
+    }
+    else if (pt == pt-&gt;parent()-&gt;left())
+    {
+        pt-&gt;parent()-&gt;left(pt_right);
+    }
+    else
+    {
+        pt-&gt;parent()-&gt;right(pt_right);
+    }
+
+    pt_right-&gt;left(pt);
+    pt-&gt;parent(pt_right);
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::rotateRight(SPNodeType const &amp;pt)
+{
+    auto pt_left = pt-&gt;left();
+
+    pt-&gt;left(pt_left-&gt;right());
+
+    if (pt-&gt;left() != sentinel_)
+    {
+        pt-&gt;left()-&gt;parent(pt);
+    }
+
+    pt_left-&gt;parent(pt-&gt;parent());
+
+    if (pt-&gt;parent() == sentinel_)
+    {
+        root_ = pt_left;
+    }
+    else if (pt == pt-&gt;parent()-&gt;left())
+    {
+        pt-&gt;parent()-&gt;left(pt_left);
+    }
+    else
+    {
+        pt-&gt;parent()-&gt;right(pt_left);
+    }
+
+    pt_left-&gt;right(pt);
+    pt-&gt;parent(pt_left);
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+auto
+RBTree&lt;_Type, _Compare&gt;::successor(SPNodeType const &amp;pt)-&gt;SPNodeType
+{
+    auto child = sentinel_;
+    if (pt-&gt;left() != sentinel_)
+    {
+        child = pt-&gt;left();
+        while (child-&gt;right() != sentinel_)
+            child = child-&gt;right();
+    }
+    else if (pt-&gt;right() != sentinel_)
+    {
+        child = pt-&gt;right();
+        while (child-&gt;left() != sentinel_)
+            child = child-&gt;left();
+    }
+
+    return child;
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::fixViolation(SPNodeType &amp;pt)
+{
+    auto parent_pt = sentinel_;
+    auto grand_parent_pt = sentinel_;
+
+    while (pt-&gt;color() == Color::RED &amp;&amp; pt-&gt;parent()-&gt;color() == Color::RED)
+    {
+        parent_pt = pt-&gt;parent();
+        grand_parent_pt = pt-&gt;parent()-&gt;parent();
+
+        /*
+         Case : A
+         Parent of pt is left child of Grand-parent of pt
+         */
+        if (parent_pt == grand_parent_pt-&gt;left())
+        {
+            auto uncle_pt = grand_parent_pt-&gt;right();
+
+            /*
+             Case : 1
+             The uncle of pt is also red
+             Only Recoloring required
+             */
+            if (uncle_pt-&gt;color() == Color::RED)
+            {
+                grand_parent_pt-&gt;color(Color::RED);
+                parent_pt-&gt;color(Color::BLACK);
+                uncle_pt-&gt;color(Color::BLACK);
+                pt = grand_parent_pt;
+            }
+            else
+            {
+                /*
+                 Case : 2
+                 pt is right child of its parent
+                 Left-rotation required
+                 */
+                if (pt == parent_pt-&gt;right())
+                {
+                    rotateLeft(parent_pt);
+                    pt = parent_pt;
+                    parent_pt = pt-&gt;parent();
+                }
+
+                /*
+                 Case : 3
+                 pt is left child of its parent
+                 Right-rotation required
+                 */
+                rotateRight(grand_parent_pt);
+                auto temp = parent_pt-&gt;color();
+                parent_pt-&gt;color(grand_parent_pt-&gt;color());
+                grand_parent_pt-&gt;color(temp);
+                pt = parent_pt;
+            }
+        }
+        /*
+         Case : B
+         Parent of pt is right child of Grand-parent of pt
+         */
+        else
+        {
+            auto uncle_pt = grand_parent_pt-&gt;left();
+
+            /*
+             Case : 1
+             The uncle of pt is also red
+             Only Recoloring required
+             */
+            if (uncle_pt-&gt;color() == Color::RED)
+            {
+                grand_parent_pt-&gt;color(Color::RED);
+                parent_pt-&gt;color(Color::BLACK);
+                uncle_pt-&gt;color(Color::BLACK);
+                pt = grand_parent_pt;
+            }
+            else
+            {
+                /*
+                 Case : 2
+                 pt is left child of its parent
+                 Right-rotation required
+                 */
+                if (pt == parent_pt-&gt;left())
+                {
+                    rotateRight(parent_pt);
+                    pt = parent_pt;
+                    parent_pt = pt-&gt;parent();
+                }
+
+                /*
+                 Case : 3
+                 pt is right child of its parent
+                 Left-rotation required
+                 */
+                rotateLeft(grand_parent_pt);
+                auto temp = parent_pt-&gt;color();
+                parent_pt-&gt;color(grand_parent_pt-&gt;color());
+                grand_parent_pt-&gt;color(temp);
+                pt = parent_pt;
+            }
+        }
+    }
+
+    root_-&gt;color(Color::BLACK);
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+auto
+RBTree&lt;_Type, _Compare&gt;::sibling(SPNodeType const &amp;n)-&gt;SPNodeType &amp;
+{
+    return n-&gt;parent()-&gt;left() != n ? n-&gt;parent()-&gt;left() : n-&gt;parent()-&gt;right();
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+bool
+RBTree&lt;_Type, _Compare&gt;::isLeftChild(SPNodeType const &amp;n)
+{
+    return n == n-&gt;parent()-&gt;left();
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+bool
+RBTree&lt;_Type, _Compare&gt;::isRightChild(SPNodeType const &amp;n)
+{
+    return n == n-&gt;parent()-&gt;right();
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteCase1(SPNodeType const &amp;n)
+{
+    if (n-&gt;parent() != sentinel_)
+    {
+        deleteCase2(n);
+    }
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteCase2(SPNodeType const &amp;n)
+{
+    auto s = sibling(n);
+    if (s-&gt;color() == Color::RED)
+    {
+        n-&gt;parent()-&gt;color(Color::RED);
+        s-&gt;color(Color::BLACK);
+        if (isLeftChild(n))
+        {
+            rotateLeft(n-&gt;parent());
+        }
+        else
+        {
+            rotateRight(n-&gt;parent());
+        }
+    }
+    deleteCase3(n);
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteCase3(SPNodeType const &amp;n)
+{
+    auto s = sibling(n);
+    if (n-&gt;parent()-&gt;color() == Color::BLACK
+        &amp;&amp; s-&gt;color() == Color::BLACK
+        &amp;&amp; s-&gt;left()-&gt;color() == Color::BLACK
+        &amp;&amp; s-&gt;right()-&gt;color() == Color::BLACK)
+    {
+        s-&gt;color(Color::RED);
+        deleteCase1(n-&gt;parent());
+    }
+    else
+    {
+        deleteCase4(n);
+    }
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteCase4(SPNodeType const &amp;n)
+{
+    auto s = sibling(n);
+    if (n-&gt;parent()-&gt;color() == Color::RED
+        &amp;&amp; s-&gt;color() == Color::BLACK
+        &amp;&amp; s-&gt;left()-&gt;color() == Color::BLACK
+        &amp;&amp; s-&gt;right()-&gt;color() == Color::BLACK)
+    {
+        s-&gt;color(Color::RED);
+        n-&gt;parent()-&gt;color(Color::BLACK);
+    }
+    else
+    {
+        deleteCase5(n);
+    }
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteCase5(SPNodeType const &amp;n)
+{
+    auto s = sibling(n);
+    if (s-&gt;color() == Color::BLACK)
+    {
+        if (isLeftChild(n)
+            &amp;&amp; s-&gt;right()-&gt;color() == Color::BLACK
+            &amp;&amp; s-&gt;left()-&gt;color() == Color::RED)
+        {
+            s-&gt;color(Color::RED);
+            s-&gt;left()-&gt;color(Color::BLACK);
+            rotateRight(s);
+        }
+        else if (isRightChild(n)
+                 &amp;&amp; s-&gt;left()-&gt;color() == Color::BLACK
+                 &amp;&amp; s-&gt;right()-&gt;color() == Color::RED)
+        {
+            s-&gt;color(Color::RED);
+            s-&gt;right()-&gt;color(Color::BLACK);
+            rotateLeft(s);
+        }
+    }
+    deleteCase6(n);
+}
+
+template&lt;typename _Type, typename _Compare&gt;
+void
+RBTree&lt;_Type, _Compare&gt;::deleteCase6(SPNodeType const &amp;n)
+{
+    auto s = sibling(n);
+    s-&gt;color(n-&gt;parent()-&gt;color());
+    n-&gt;parent()-&gt;color(Color::BLACK);
+
+    if (isLeftChild(n))
+    {
+        s-&gt;right()-&gt;color(Color::BLACK);
+        rotateLeft(n-&gt;parent());
+    }
+    else
+    {
+        s-&gt;left()-&gt;color(Color::BLACK);
+        rotateRight(n-&gt;parent());
+    }
+}
+</pre>

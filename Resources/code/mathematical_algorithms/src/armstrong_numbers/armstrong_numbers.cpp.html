@@ -1,0 +1,24 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+// Part of Cosmos by OpenGenus Foundation
+int main()
+{
+    int initialNumber;
+    int number;
+    cout &lt;&lt; "Enter a three digit number: ";
+    cin &gt;&gt; initialNumber;
+    number = initialNumber;
+    
+    int lastDigitCubed = pow(number%10, 3);
+    number /= 10;
+    int middleDigitCubed = pow(number%10, 3);
+    number /= 10;
+    int firstDigitCubed = pow(number%10, 3);
+    
+    bool isArmstrongNumber = (firstDigitCubed+ middleDigitCubed+ lastDigitCubed) == initialNumber;
+    cout &lt;&lt; initialNumber &lt;&lt; " is " &lt;&lt; (isArmstrongNumber ? "" : "not ") &lt;&lt; "an Armstrong number." &lt;&lt; endl;
+}
+</pre>

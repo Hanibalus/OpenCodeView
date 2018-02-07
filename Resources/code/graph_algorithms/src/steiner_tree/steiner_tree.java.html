@@ -1,0 +1,40 @@
+<pre>
+public class SteinerTree {
+
+	public static int minLengthSteinerTree(int[][] g, int[] verticesToConnect) {
+		int n = g.length;
+		int m = verticesToConnect.length;
+		if (m &lt;= 1)
+			return 0;
+
+		for (int k = 0; k &lt; n; k++)
+			for (int i = 0; i &lt; n; i++)
+				for (int j = 0; j &lt; n; j++)
+					g[i][j] = Math.min(g[i][j], g[i][k] + g[k][j]);
+
+		int[][] dp = new int[1 &lt;&lt; m][n];
+
+		for (int i = 0; i &lt; m; i++)
+			for (int j = 0; j &lt; n; j++)
+				dp[1 &lt;&lt; i][j] = g[verticesToConnect[i]][j];
+
+		for (int i = 1; i &lt; 1 &lt;&lt; m; i++) {
+			if (((i - 1) &amp; i) != 0) {
+				for (int j = 0; j &lt; n; j++) {
+					dp[i][j] = Integer.MAX_VALUE / 2;
+					for (int k = (i - 1) &amp; i; k &gt; 0; k = (k - 1) &amp; i) {
+						dp[i][j] = Math.min(dp[i][j], dp[k][j] + dp[i ^ k][j]);
+					}
+				}
+				for (int j = 0; j &lt; n; j++) {
+					for (int k = 0; k &lt; n; k++) {
+						dp[i][j] = Math.min(dp[i][j], dp[i][k] + g[k][j]);
+					}
+				}
+			}
+		}
+
+		return dp[(1 &lt;&lt; m) - 1][verticesToConnect[0]];
+	}
+}
+</pre>

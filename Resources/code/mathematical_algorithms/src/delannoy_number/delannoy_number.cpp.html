@@ -1,0 +1,31 @@
+<pre>
+#include &lt;iostream&gt;
+// Part of Cosmos by OpenGenus Foundation
+int DelannoyGenerator(int n, int m)
+{
+	int d = 1;
+	if ((n == 0) || (m == 0))
+		d = 1;
+	else
+		d = DelannoyGenerator(n-1,m) + DelannoyGenerator(n,m-1) + DelannoyGenerator(n-1,m-1);
+	
+	return d;
+}
+
+int main(int argc, char **argv)
+{
+	int m, n, result = 0;
+	
+	std::cout &lt;&lt; "Provide the 'n' value: ";
+	std::cin &gt;&gt; n;
+	std::cout &lt;&lt; std::endl;
+	
+	std::cout &lt;&lt; "Provide the 'm' value: ";
+	std::cin &gt;&gt; m;
+	std::cout &lt;&lt; std::endl;
+		
+	result = DelannoyGenerator(n, m);
+	
+	std::cout &lt;&lt; "The delannoy number is: " &lt;&lt; result &lt;&lt; std::endl;
+}
+</pre>

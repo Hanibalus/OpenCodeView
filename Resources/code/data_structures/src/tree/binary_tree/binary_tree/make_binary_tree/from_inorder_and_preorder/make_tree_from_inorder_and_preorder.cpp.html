@@ -1,0 +1,79 @@
+<pre>
+#include&lt;iostream&gt;
+#include&lt;cmath&gt;
+#include&lt;queue&gt;
+#include&lt;cmath&gt;
+using namespace std;
+
+template&lt;typename T&gt;
+class Binarytreenode{
+
+public:
+    T data;
+    Binarytreenode&lt;T&gt; * left;
+    Binarytreenode&lt;T&gt; * right;
+
+
+    Binarytreenode(T data)
+    {
+        this-&gt;data=data;
+        left=NULL;
+        right=NULL;
+    }
+
+};
+
+
+void postorder(Binarytreenode&lt;int&gt;* root)
+{
+    if(root==NULL)
+        return;
+
+    postorder(root-&gt;left);
+    postorder(root-&gt;right);
+
+    cout&lt;&lt;root-&gt;data&lt;&lt;" ";
+    return;
+}
+Binarytreenode&lt;int&gt; * create(int *preorder,int*inorder,int ps,int pe,int is,int ie)
+{
+    if(ps&gt;pe||is&gt;ie)
+    {
+        return NULL;
+    }
+
+    int rootdata = preorder[ps];
+    Binarytreenode&lt;int&gt; * root = new Binarytreenode&lt;int&gt;(rootdata);
+    int k;
+    for(int i=is;i&lt;=ie;i++)
+        if(inorder[i]==rootdata)
+        {
+         k=i;
+         break;
+        }
+
+    root-&gt;left = create(preorder,inorder,ps+1,ps+k-is,is,k-1);
+    root-&gt;right = create(preorder,inorder,ps+k-is+1,pe,k+1,ie);
+
+    return root;
+}
+int main()
+{
+    int preorder[100], inorder[100];
+    int size;
+    cin&gt;&gt;size;
+    for(int i = 0;i&lt;size;i++)
+        cin&gt;&gt;preorder[i];
+
+    for(int i=0;i&lt;size;i++)
+        cin&gt;&gt;inorder[i];
+
+    Binarytreenode&lt;int&gt; * root = create(preorder,inorder,0,size-1,0,size-1);
+
+
+    postorder(root);
+
+
+}
+
+</pre>

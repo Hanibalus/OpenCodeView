@@ -1,0 +1,59 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+
+#include &lt;unordered_map&gt;
+#include &lt;unordered_set&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+/*
+    Checks if two strings are anagrams of each other, ignoring any whitespace.
+    
+    Create maps of the counts of every character in each string.
+    As well as keep a set of all characters used in both strings.
+
+    Check to ensure every unique character is used in both strings the
+        same number of times.
+*/
+bool isAnagram(const string&amp; s1, const string&amp; s2){
+    unordered_map&lt;char, int&gt; charCount1, charCount2;
+    unordered_set&lt;char&gt; allChars;
+    
+    for (char c : s1){
+        c = tolower(c);
+        if (!iswspace(c)){
+            charCount1[c]++;
+            allChars.insert(c);
+        }
+    }
+    
+    for (char c : s2){
+        c = tolower(c);
+        if (!iswspace(c)){
+            charCount2[c]++;
+            allChars.insert(c);
+        }
+    }
+    
+    for (auto it = allChars.begin(); it != allChars.end(); it++){
+        char c = *it;
+        if (charCount1[c] != charCount2[c])
+            return false;
+    }
+    
+    return true;
+}
+
+int main()
+{
+    cout &lt;&lt; isAnagram("anagram", "not a gram") &lt;&lt; endl; // false
+    cout &lt;&lt; isAnagram("anagram", "na a marg") &lt;&lt; endl;  // true
+    cout &lt;&lt; isAnagram("William Shakespeare", "I am \t a weakish speller") &lt;&lt; endl; // true
+    cout &lt;&lt; isAnagram("Madam Curie", "Radium came") &lt;&lt; endl; // true
+    cout &lt;&lt; isAnagram("notagram", "notaflam") &lt;&lt; endl; // false
+    
+    return 0;
+}</pre>

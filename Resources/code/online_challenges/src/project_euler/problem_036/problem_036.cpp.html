@@ -1,0 +1,28 @@
+<pre>
+#include &lt;bitset&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+bool isPalindrome(const std::string&amp; str);
+
+int main()
+{
+    int sum = 0;
+    
+    for (int i = 1; i &lt; 1000000; ++i)
+    {
+        if (isPalindrome(std::to_string(i)))
+        {
+            std::string currentBinaryString = std::bitset&lt;32&gt;(i).to_string();
+            currentBinaryString.erase(0, currentBinaryString.find('1')); // Remove leading zeroes
+            if (isPalindrome(currentBinaryString))
+                sum += i;    
+        }
+    }
+    std::cout &lt;&lt; sum &lt;&lt; "\n";
+}
+
+bool isPalindrome(const std::string&amp; str)
+{
+    return str == std::string{ str.rbegin(), str.rend() };
+}</pre>

@@ -1,0 +1,73 @@
+<pre>
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+template&lt;typename T&gt;
+class Singleton
+{
+public:
+	static T* GetInstance();
+	static void destroy();
+
+private:
+
+	Singleton(Singleton const&amp;){};
+	Singleton&amp; operator=(Singleton const&amp;){};
+
+protected:
+	static T* m_instance;
+
+	Singleton(){ m_instance = static_cast &lt;T*&gt; (this); };
+	~Singleton(){  };
+};
+
+template&lt;typename T&gt;
+T* Singleton&lt;T&gt;::m_instance = 0;
+
+template&lt;typename T&gt;
+T* Singleton&lt;T&gt;::GetInstance()
+{
+	if(!m_instance)
+	{
+		Singleton&lt;T&gt;::m_instance = new T();
+	}
+
+	return m_instance;
+}
+
+template&lt;typename T&gt;
+void Singleton&lt;T&gt;::destroy()
+{
+	delete Singleton&lt;T&gt;::m_instance;
+	Singleton&lt;T&gt;::m_instance = 0;
+}
+
+class TheCow: public Singleton&lt;TheCow&gt; 
+{
+public:
+	void SetSays(std::string &amp;whatToSay)
+	{
+		whatISay = whatToSay;
+	};
+	void Speak(void)
+	{
+		std::cout &lt;&lt; "I say" &lt;&lt; whatISay &lt;&lt; "!" &lt;&lt; std::endl;
+	};
+private:
+	std::string whatISay;
+};
+
+void SomeFunction(void)
+{
+	std::string say("moo");
+	TheCow::GetInstance()-&gt;SetSays(say);
+}
+
+int main (int argc, char **argv)
+{
+	std::string say("meow");
+	TheCow::GetInstance()-&gt;SetSays(say);
+	SomeFunction();
+	TheCow::GetInstance()-&gt;Speak();
+}
+</pre>

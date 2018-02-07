@@ -1,0 +1,38 @@
+<pre>
+#include &lt;stdio.h&gt;
+
+// Find the nth magic number where n is a positive number
+// @param n: the nth number in the sequence to be calculated and returned
+// @param fac: factor level. 
+// @return: an integer where it is the nth number that can be expressed as a power or sum of the factor level
+int magicNumber(int n, int fac)
+{
+    int answer = 0;
+    int expo = 1;
+
+    while (n != 0)
+    {
+        expo = expo * fac;
+        if (n &amp; 1)
+            answer += expo;
+        n = n &gt;&gt; 1; 
+    }
+    return answer;
+}
+
+int main(int argc, char *argv[])
+{
+    int n, f;
+    printf("n: \n&gt;&gt; ");
+    scanf("%d", &amp;n);
+    printf("factor: \n&gt;&gt; ");
+    scanf("%d", &amp;f);
+    
+    if (n &gt; 0 &amp;&amp; f &gt; 0) {
+        printf("The magic number is: %d\n", magicNumber(n, f));
+    }
+    else {
+        printf("n and f must be positive and nonzero.\n");
+    }
+    return 0;
+}</pre>

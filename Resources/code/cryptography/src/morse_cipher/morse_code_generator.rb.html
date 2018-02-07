@@ -1,0 +1,32 @@
+<pre>
+MORSE_CODES = {
+  'a' =&gt; '.-', 'b' =&gt; '-...', 'c' =&gt; '-.-.',
+  'd' =&gt; '-..', 'e' =&gt; '.', 'f' =&gt; '..-.',
+  'g' =&gt; '--.', 'h' =&gt; '....', 'i' =&gt; '..',
+  'j' =&gt; '.---', 'k' =&gt; '-.-', 'l' =&gt; '.-..',
+  'm' =&gt; '--', 'n' =&gt; '-.', 'o' =&gt; '---',
+  'p' =&gt; '.--.', 'q' =&gt; '--.-', 'r' =&gt; '.-.',
+  's' =&gt; '...', 't' =&gt; '-', 'u' =&gt; '..-',
+  'v' =&gt; '...-', 'w' =&gt; '.--', 'x' =&gt; '-..-',
+  'y' =&gt; '-.--', 'z' =&gt; '--..', ' ' =&gt; ' ',
+  '1' =&gt; '.----', '2' =&gt; '..---', '3' =&gt; '...--',
+  '4' =&gt; '....-', '5' =&gt; '.....', '6' =&gt; '-....',
+  '7' =&gt; '--...', '8' =&gt; '---..', '9' =&gt; '----.',
+  '0' =&gt; '-----'
+}.freeze
+
+def encode(string)
+  text = string.downcase.split('')
+  encoded_text = []
+
+  text.each do |c|
+    morse_char = MORSE_CODES[c]
+    encoded_text.push(morse_char)
+  end
+
+  encoded_text.join('')
+end
+
+# TEST!
+puts encode('Hello World') # =&gt; ......-...-..--- .-----.-..-..-..
+</pre>

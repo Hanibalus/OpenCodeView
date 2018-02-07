@@ -1,0 +1,89 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+// Part of Cosmos by OpenGenus Foundation
+typedef struct node {
+			int value;
+			struct node *left, *right;
+		    }node;
+
+static node* root = NULL;
+node* create_node(int val)
+{
+        node* tmp = (node *) malloc(sizeof(node));
+        tmp-&gt;value = val;
+        tmp-&gt;left = tmp-&gt;right = NULL;
+        return tmp;
+}
+
+void create_tree(int val)
+{
+        node* tmp = root;
+        if (!root)
+          root = create_node(val);
+        else
+        {
+           while (1)
+           {
+             if (val &gt; tmp-&gt;value)
+             {
+                if (!tmp-&gt;right)
+                {
+                  tmp-&gt;right = create_node(val);
+                  break;
+                }
+                else
+                  tmp = tmp-&gt;right;
+             }
+             else
+             {
+                if (!tmp-&gt;left)
+                {
+                  tmp-&gt;left= create_node(val);
+                  break;
+                }
+                else
+                  tmp = tmp-&gt;left;
+             }
+           }
+        }
+
+}
+
+int min(int left_ht, int right_ht)
+{
+  return (left_ht &lt; right_ht ? left_ht : right_ht);
+}
+
+int min_depth_tree(node* tmp)
+{
+        if (!tmp)
+          return 0;
+        if (!tmp-&gt;left &amp;&amp; !tmp-&gt;right)
+          return 1;
+        if (!tmp-&gt;left) 
+          return min_depth_tree(tmp-&gt;right)+1;
+        if (!tmp-&gt;right) 
+          return min_depth_tree(tmp-&gt;left)+1;
+
+        return min(min_depth_tree(tmp-&gt;left),min_depth_tree(tmp-&gt;right))+1;
+}
+
+int main()
+{
+  int ctr, num_nodes, value,min_depth;
+  printf("Enter number of nodes\n");
+  scanf("%d",&amp;num_nodes);
+  for (ctr = 0; ctr &lt; num_nodes; ctr++)
+  {
+     printf("Enter values\n");
+     scanf("%d",&amp;value);
+     create_tree(value);
+  }
+  min_depth = min_depth_tree(root);
+  printf("minimum depth = %d\n",min_depth);
+}
+
+
+
+</pre>

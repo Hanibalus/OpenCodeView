@@ -1,0 +1,61 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+#include &lt;cmath&gt;
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+
+// This code requires you to enable the C++11 standard when compiling
+
+void helpAndExit() {
+    std::cout &lt;&lt; "Newton-Raphson iteration for the function x*log10(x)-1.2\n"
+    &lt;&lt; "\nUsage: newton-raphson INITIAL_GUESS ERROR_LIMIT MAX_ITERATIONS\n"
+    &lt;&lt; "\tINITIAL_GUESS - The initial guess (x0). A number.\n"
+    &lt;&lt; "\tERROR_LIMIT - The stopping condition. A positive number.\n"
+    &lt;&lt; "\tMAX_ITERATIONS - The maximum number of allowed iterations. A positive number.\n"
+    &lt;&lt; "\n\tExample: newton_raphson 1 0.001 1000" &lt;&lt; std::endl;
+    exit(1);
+}
+
+int main(int argc, char* argv[]) {
+    if(argc != 4)
+        helpAndExit();
+
+    float x0, allowedError;
+    int maxIterations;
+
+    try {
+        x0 = std::stof(std::string(argv[1]));
+        allowedError = std::stof(std::string(argv[2])); 
+        maxIterations = std::stoi(std::string(argv[3]));
+
+        if(allowedError &lt; 0.0f || maxIterations &lt; 0)
+            throw std::domain_error("Error limit and number of iterations must be positive numbers!");
+
+    } catch(std::exception&amp; e) {
+        std::cout &lt;&lt; e.what() &lt;&lt; "\n" &lt;&lt; std::endl;
+        helpAndExit();
+    }
+
+    auto f = [](const float x) { return x * std::log10(x) - 1.2; };
+    auto df = [](const float x) { return std::log10(x) + 0.43429; };
+
+    for(auto i = 1; i &lt; maxIterations; i++)
+    {
+       const auto error = f(x0)/df(x0); 
+
+       if(std::fabs(error) &lt; allowedError)
+       {
+           std::cout &lt;&lt; "Conversion reached after: " &lt;&lt; i &lt;&lt; " iterations. Solution: " &lt;&lt; x0 &lt;&lt; std::endl;
+           return 0;
+       }
+
+       x0 = x0 - error;
+    }
+
+    std::cout &lt;&lt; "Convergence not reached after " &lt;&lt; maxIterations &lt;&lt; " iterations" &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre>

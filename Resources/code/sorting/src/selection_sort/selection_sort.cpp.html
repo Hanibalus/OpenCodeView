@@ -1,0 +1,45 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+
+ selection sort synopsis
+
+template&lt;typename _Input_Iter, typename _Compare&gt;
+void
+selectionSort(_Input_Iter begin, _Input_Iter end, _Compare compare);
+
+template&lt;typename _Input_Iter&gt;
+void
+selectionSort(_Input_Iter begin, _Input_Iter end);
+ */
+
+#include &lt;functional&gt;
+
+template&lt;typename _Input_Iter, typename _Compare&gt;
+void
+selectionSort(_Input_Iter begin, _Input_Iter end, _Compare compare)
+{
+    if (begin != end)
+    {
+        for (auto curr = begin; curr != end; ++curr)
+        {
+            auto minimum = curr;
+            auto forward = curr;
+            while (++forward != end)
+                if (compare(*forward, *minimum))
+                    minimum = forward;
+
+            std::iter_swap(minimum, curr);
+        }
+    }
+}
+
+template&lt;typename _Input_Iter&gt;
+void
+selectionSort(_Input_Iter begin, _Input_Iter end)
+{
+    using value_type = typename std::iterator_traits&lt;_Input_Iter&gt;::value_type;
+
+    selectionSort(begin, end, std::less&lt;value_type&gt;());
+}
+</pre>

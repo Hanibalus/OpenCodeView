@@ -1,0 +1,189 @@
+<pre>
+namespace LinkedList
+{
+    class Node&lt;T&gt;
+    {
+        // properties
+        private T value;
+        private Node&lt;T&gt; nextNode;
+
+
+        // constructors
+        public Node(T value, Node&lt;T&gt; nextNode)
+        {
+            this.value = value;
+            this.nextNode = nextNode;
+        }
+
+        public Node(T value)
+        {
+            this.value = value;
+            this.nextNode = null;
+        }
+
+        public Node()
+        {
+            this.value = default(T);
+            this.nextNode = null;
+        }
+
+
+        // getters
+        public T getValue()
+        {
+            return this.value;
+        }
+
+        public Node&lt;T&gt; getNextNode()
+        {
+            return nextNode;
+        }
+
+
+        // setters
+        public void setValue(T value)
+        {
+            this.value = value;
+        }
+
+        public void setNextNode(Node&lt;T&gt; nextNode)
+        {
+            this.nextNode = nextNode;
+        }
+
+
+        // sets the current object to the next node
+        // in the linked list
+        public void setNext()
+        {
+        	if(this.nextNode == null)
+				throw new Exception("Trying to move to null node");
+			else
+			{
+				this.value = nextNode.value;
+				this.nextNode = nextNode.nextNode;
+			}
+        }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+    }
+
+    class LinkedList&lt;T&gt;
+    {
+        // properties
+        private Node&lt;T&gt; head = null;
+
+        // constructors
+        public LinkedList()
+        {
+            // empty
+        }
+
+        // random access
+        public T getValue(int index)
+        {
+            Node&lt;T&gt; node = head;
+
+            for(int i = 0 ; i &lt; index ; i++)
+            {
+                node.setNext();
+            }
+
+            return node.getValue();
+        }
+
+		// overriding the index operator
+        public T this[int index]
+        {
+            get{return getValue(index);}
+        }
+
+        // the amount of items in the list
+        public int count()
+        {
+            int counter = 0;
+            Node&lt;T&gt; node = head;
+
+            while(node.getNextNode() != null)
+            {
+                node.setNext();
+                counter++;
+            }
+
+            return counter;
+
+        }
+
+        // removes a node from the list
+        public void remove(int index)
+        {
+			Node&lt;T&gt; node = head;
+
+            for(int i = 0 ; i &lt; index - 1 ; i++)
+            {
+                node.setNext();
+            }
+
+            node.setNextNode(node.getNextNode().getNextNode());
+        }
+
+        // ToString method
+        public override string ToString()
+        {
+            string s = "";
+            Node&lt;T&gt; node = head;
+
+            while(node != null || node.getNextNode() != null)
+            {
+                s += node.getValue().ToString() + '\n';
+                node.setNext();
+            }
+
+            return s;
+        }
+
+        // returns the head node
+        public Node&lt;T&gt; getHeadNode()
+        {
+            return head;
+        }
+
+
+        // add a value to the end
+        public void append(T value)
+        {
+            Node&lt;T&gt; node = head;
+            Node&lt;T&gt; newNode = new Node&lt;T&gt;(value);
+
+			if(head == null)
+			{
+				head = newNode;
+			}
+			else
+			{
+				while(node.getNextNode() != null)
+					node.setNext();
+				node.setNextNode(node);
+			}
+        }
+
+        // insert a node in the middle
+        public void insert(int index, T value)
+        {
+            Node&lt;T&gt; node = head;
+            Node&lt;T&gt; newNode = new Node&lt;T&gt;(value);
+
+            for(int i = 0 ; i &lt; index - 1; i++)
+            {
+                node.setNext();
+            }
+
+            newNode.setNextNode(node.getNextNode());
+            node.setNextNode(newNode);
+        }
+    }
+}
+</pre>

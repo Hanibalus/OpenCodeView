@@ -1,0 +1,124 @@
+<pre>
+#include&lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;cstring&gt;
+using namespace std;
+const int MAXC = 26;
+const int MAXS = 500;
+int out[MAXS];
+int f[MAXS];
+int g[MAXS][MAXC];
+int buildMatchingMachine(string arr[], int k)
+{
+    memset(out, 0, sizeof out);
+    memset(g, -1, sizeof g);
+     int states = 1;
+    for (int i = 0; i &lt; k; ++i)
+    {
+        const string &amp;word = arr[i];
+        int currentState = 0;
+ 
+        for (int j = 0; j &lt; word.size(); ++j)
+        {
+            int ch = word[j] - 'a';
+ 
+            if (g[currentState][ch] == -1)
+                g[currentState][ch] = states++;
+ 
+            currentState = g[currentState][ch];
+        }        out[currentState] |= (1 &lt;&lt; i);
+    }
+ 
+    for (int ch = 0; ch &lt; MAXC; ++ch)
+        if (g[0][ch] == -1)
+            g[0][ch] = 0;
+ 
+    memset(f, -1, sizeof f);
+    queue&lt;int&gt; q;
+ 
+    for (int ch = 0; ch &lt; MAXC; ++ch)
+    {
+        if (g[0][ch] != 0)
+        {
+            f[g[0][ch]] = 0;
+            q.push(g[0][ch]);
+        }
+    }
+    while (q.size())
+    {
+        int state = q.front();
+        q.pop();
+ 
+        for (int ch = 0; ch &lt;= MAXC; ++ch)
+        {
+            if (g[state][ch] != -1)
+            {
+                int failure = f[state];
+ 
+                while (g[failure][ch] == -1)
+                      failure = f[failure];
+ 
+                failure = g[failure][ch];
+                f[g[state][ch]] = failure;
+ 
+                out[g[state][ch]] |= out[failure];
+ 
+                q.push(g[state][ch]);
+            }
+        }
+    }
+ 
+    return states;
+}
+int findNextState(int currentState, char nextInput)
+{
+    int answer = currentState;
+    int ch = nextInput - 'a';
+ 
+    while (g[answer][ch] == -1)
+        answer = f[answer];
+ 
+    return g[answer][ch];
+}
+ 
+void searchWords(string arr[], int k, string text)
+{
+    buildMatchingMachine(arr, k);
+ 
+    int currentState = 0;
+    for (int i = 0; i &lt; text.size(); ++i)
+    {
+        currentState = findNextState(currentState, text[i]);
+        if (out[currentState] == 0)
+             continue;
+        for (int j = 0; j &lt; k; ++j)
+        {
+            if (out[currentState] &amp; (1 &lt;&lt; j))
+            {
+                cout &lt;&lt; "Word " &lt;&lt; arr[j] &lt;&lt; " appears from "
+                     &lt;&lt; i - arr[j].size() + 1 &lt;&lt; " to " &lt;&lt; i &lt;&lt; endl;
+            }
+        }
+    }
+}
+ 
+int main()
+{
+	cout&lt;&lt;"Enter number of test words you want.\n";
+	int num;
+	cin&gt;&gt;num;
+    string arr[num];
+	cout&lt;&lt;"Enter test words.\n";
+		for(int i=0;i&lt;num;i++)
+		cin&gt;&gt;arr[i];
+		cout&lt;&lt;"Enter test sentence.\n";
+    string text ;
+    cin&gt;&gt;text;
+    int k = sizeof(arr)/sizeof(arr[0]);
+ 
+    searchWords(arr, k, text);
+ 
+    return 0;
+}
+
+</pre>

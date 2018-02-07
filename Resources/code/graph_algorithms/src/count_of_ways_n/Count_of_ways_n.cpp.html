@@ -1,0 +1,71 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+
+const int MOD = 1000000007;
+
+int size, n;
+
+std::vector&lt; std::vector&lt;long long&gt; &gt; multiple (std::vector&lt; std::vector&lt;long long&gt; &gt; a, std::vector&lt; std::vector&lt;long long&gt; &gt; b){
+  std::vector&lt; std::vector&lt;long long&gt; &gt; res(size);
+
+  for (int i = 0; i &lt; size; i++) res[i].resize(size);
+
+  for (int i = 0; i &lt; size; i++) {
+    for (int l = 0; l &lt; size; l++) {
+      long long tmp = 0;
+
+      for (int j = 0; j &lt; size; j++) {
+        tmp = (tmp + a[i][j] * b[j][l]) % MOD;
+      }
+
+      res[i][l] = tmp;
+    }
+  }
+
+  return res;
+}
+
+std::vector&lt; std::vector&lt;long long&gt; &gt; binPow(std::vector&lt; std::vector&lt;long long&gt; &gt; a, long long power) {
+  std::vector&lt; std::vector&lt;long long&gt; &gt; ans(size);
+
+  for (int i = 0; i &lt; size; i++) {
+    ans[i].resize(size);
+    ans[i][i] = 1;
+  }
+
+  std::vector&lt; std::vector&lt;long long&gt; &gt; cur = a;
+
+  while(power) {
+    if (power &amp; 1) {
+      ans = multiple (ans, cur);
+    }
+    cur = multiple (cur, cur);
+    power /= 2;
+  }
+
+  return ans;
+}
+
+int main () {
+  std::cin &gt;&gt; size &gt;&gt; n;
+
+  int from, to;
+  std::cin &gt;&gt; from &gt;&gt; to;
+
+  std::vector&lt; std::vector&lt;long long&gt; &gt; graph(size);
+
+  for (int i = 0; i &lt; size; i++) {
+    graph[i].resize(size);
+  }
+
+  for (int i = 0; i &lt; size; i++) {
+    for (int j = 0; j &lt; size; j++) {
+      std::cin &gt;&gt; graph[i][j];
+    }
+  }
+
+  std::cout &lt;&lt; binPow(graph, n)[from][to];
+}
+</pre>

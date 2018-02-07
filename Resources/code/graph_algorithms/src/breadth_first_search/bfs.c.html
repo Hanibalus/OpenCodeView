@@ -1,0 +1,108 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+struct node
+{
+    int data;
+    struct node* next;
+};
+
+int del(struct node** head,int* element);
+int add(struct node** head,int element);
+
+//main program
+int main()
+{
+    //input no of nodes: Num
+    int Num;
+    printf("Enter number of nodes\n");
+    scanf("%d",&amp;Num);
+
+    //create adjacency matrix
+    int adj[Num][Num];
+
+    //input adjacency matrix
+    printf("Enter adjacency matrix\n");
+    for(int i=0;i&lt;Num;i++)
+    {
+        for(int j=0;j&lt;Num;j++)
+        {
+            scanf("%d",&amp;adj[i][j]);
+        }
+    }
+
+    //BFS traversing
+
+    //create a queue
+    struct node *Queue=NULL;
+
+    //create status array and set it to ready state
+    enum{ready,waiting,processed};
+    int status[Num];
+    for(int i=0;i&lt;Num;i++)
+    {
+        status[i]=ready;
+    }
+    //add first node to queue
+    add(&amp;Queue,0);
+    status[0]=waiting;
+    int node=NULL;
+    printf("BFS traversing\n");
+    while(Queue!=NULL)
+    {
+        //get a node from queue, display it and change status to processed
+        del(&amp;Queue,&amp;node);
+        printf("%d ",node);
+        status[node]=processed;
+
+        //add it's neighbours with status ready to queue
+        for(int i=0;i&lt;Num;i++)
+        {
+            if(adj[node][i]==1 &amp;&amp; status[i]==ready)
+            {
+                add(&amp;Queue,i);
+                status[i]=waiting;
+            }
+        }
+    }
+    printf("\n");
+
+}
+
+//queue functions
+int del(struct node** head,int* element)
+{
+    if(*head==NULL)
+        return 1;
+    *element=(*head)-&gt;data;
+    struct node* temp;
+    temp=*head;
+    *head=(*head)-&gt;next;
+    free(temp);
+    return 0;
+}
+
+int add(struct node** head,int element)
+{
+    if((*head)==NULL)
+    {
+        *head=(struct node*)malloc(sizeof(struct node));
+        (*head)-&gt;next=NULL;
+        (*head)-&gt;data=element;
+        return 0;
+    }
+    struct node* temp=*head;
+    while(temp-&gt;next!=NULL)
+    {
+        temp=temp-&gt;next;
+    }
+    temp-&gt;next=(struct node*)malloc(sizeof(struct node));
+    if(temp-&gt;next==NULL)
+        return 1;
+    temp=temp-&gt;next;
+    temp-&gt;data=element;
+    temp-&gt;next=NULL;
+    return 0;
+}
+</pre>

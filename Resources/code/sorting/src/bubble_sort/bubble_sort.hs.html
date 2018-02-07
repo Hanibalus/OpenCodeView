@@ -1,0 +1,7 @@
+<pre>
+-- Part of Cosmos by OpenGenus Foundation
+bubblesort :: (Ord a) =&gt; [a] -&gt; [a]
+bubblesort [] = []
+bubblesort [x] = [x]
+bubblesort (x:y:ys) = let (z:zs) = bubblesort (y:ys) in
+                        if x &lt; z then x:z:zs else bubblesort (z:x:zs)</pre>

@@ -1,0 +1,26 @@
+<pre>
+/*
+Counts the number of values between 0 and a given number that satisfy the condition x+n = x^n (0&lt;=x&lt;=n)
+*/
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+long solve(long n) {
+    long c = 0;
+    while(n){
+         c += n%2?0:1;
+         n/=2; 
+    }
+    c=pow(2,c);
+    return c;
+}
+
+int main() {
+    long n;
+    cin &gt;&gt; n;
+    long result = solve(n);
+    cout &lt;&lt; result &lt;&lt; endl;
+    return 0;
+}
+</pre>

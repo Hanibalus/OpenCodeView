@@ -1,0 +1,45 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+// Part of Cosmos by OpenGenus Foundation
+int main(){
+    printf("enter the size of array to be sorted:\n");
+    int n; scanf("%d", &amp;n);
+    int pigeon[n];
+    
+    printf("now enter the elements of the array:\n");
+    for(int i=0;i&lt;n;++i){
+        scanf("%d", &amp;pigeon[i]);
+    }
+
+    int max, min;
+    max = pigeon[0]; min = pigeon[0];
+    for(int i=0;i&lt;n;++i){
+        if(min &gt; pigeon[i]) min = pigeon[i];
+
+        if(max &lt; pigeon[i]) max = pigeon[i];
+    }
+    //printf("%d\n %d\n",max, min );
+
+    int range = max  +1;
+    int hole[range+1];
+    for(int i=0;i&lt;range+1;++i){
+        hole[i] = 0;
+    }
+
+    for(int i=0;i&lt;n;++i){
+        hole[pigeon[i]]++;
+    }
+
+    //for(int i=0;i&lt;range+1;++i){
+      // printf("%d ",hole[i] );
+    //}
+    printf("\n");
+    for(int i=0;i&lt;range+1;++i){
+        while(hole[i] &gt; 0){
+            printf("%d ", i);
+            hole[i]--;
+        }
+    }
+}
+</pre>

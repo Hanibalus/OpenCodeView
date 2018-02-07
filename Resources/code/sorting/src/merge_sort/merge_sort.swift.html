@@ -1,0 +1,49 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+//
+//  merge_sort.swift
+//  Created by DaiPei on 2017/10/11.
+//
+
+import Foundation
+
+func mergeSort(_ array: inout [Int]) {
+    mergeSort(&amp;array, low:0, high: array.count - 1)
+}
+
+private func mergeSort(_ array: inout [Int], low: Int, high: Int) {
+    if low &lt; high {
+        let mid = (low + high) / 2
+        mergeSort(&amp;array, low:low, high:mid)
+        mergeSort(&amp;array, low:mid + 1, high:high)
+        merge(&amp;array, low:low, mid:mid, high:high)
+    }
+}
+
+private func merge(_ array: inout [Int], low: Int, mid: Int, high: Int) {
+    var tmpArray = [Int](array)
+    var i = low, j = mid + 1, k = low
+    while i &lt;= mid &amp;&amp; j &lt;= high {
+        if tmpArray[i] &lt; tmpArray[j] {
+            array[k] = tmpArray[i]
+            i += 1
+        } else {
+            array[k] = tmpArray[j]
+            j += 1
+        }
+        k += 1
+    }
+    while i &lt;= mid {
+        array[k] = tmpArray[i]
+        i += 1
+        k += 1
+    }
+    while j &lt;= mid {
+        array[k] = tmpArray[j]
+        j += 1
+        k += 1
+    }
+}
+
+</pre>

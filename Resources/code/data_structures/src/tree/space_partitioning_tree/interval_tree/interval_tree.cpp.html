@@ -1,0 +1,117 @@
+<pre>
+//Part of Cosmos by OpenGenus Foundation
+
+#include &lt;iostream&gt;
+using namespace std;
+ 
+struct Interval
+{
+    int low, high;
+};
+ 
+
+struct ITNode
+{
+    Interval *i;  
+    int max;
+    ITNode *left, *right;
+};
+ 
+
+ITNode * newNode(Interval i)
+{
+    ITNode *temp = new ITNode;
+    temp-&gt;i = new Interval(i);
+    temp-&gt;max = i.high;
+    temp-&gt;left = temp-&gt;right = NULL;
+    return temp;
+};
+ 
+
+ITNode *insert(ITNode *root, Interval i)
+{
+    
+    if (root == NULL)
+        return newNode(i);
+ 
+    
+    int l = root-&gt;i-&gt;low;
+ 
+    
+    if (i.low &lt; l)
+        root-&gt;left = insert(root-&gt;left, i);
+ 
+
+    else
+        root-&gt;right = insert(root-&gt;right, i);
+ 
+    
+    if (root-&gt;max &lt; i.high)
+        root-&gt;max = i.high;
+ 
+    return root;
+}
+ 
+
+bool doOVerlap(Interval i1, Interval i2)
+{
+    if (i1.low &lt;= i2.high &amp;&amp; i2.low &lt;= i1.high)
+        return true;
+    return false;
+}
+ 
+Interval *overlapSearch(ITNode *root, Interval i)
+{
+    
+    if (root == NULL) return NULL;
+ 
+    
+    if (doOVerlap(*(root-&gt;i), i))
+        return root-&gt;i;
+ 
+    
+    if (root-&gt;left != NULL &amp;&amp; root-&gt;left-&gt;max &gt;= i.low)
+        return overlapSearch(root-&gt;left, i);
+ 
+    
+    return overlapSearch(root-&gt;right, i);
+}
+ 
+void inorder(ITNode *root)
+{
+    if (root == NULL) return;
+ 
+    inorder(root-&gt;left);
+ 
+    cout &lt;&lt; "[" &lt;&lt; root-&gt;i-&gt;low &lt;&lt; ", " &lt;&lt; root-&gt;i-&gt;high &lt;&lt; "]"
+         &lt;&lt; " max = " &lt;&lt; root-&gt;max &lt;&lt; endl;
+ 
+    inorder(root-&gt;right);
+}
+ 
+
+int main()
+{
+    
+    Interval ints[] = {{15, 20}, {10, 30}, {17, 19},
+        {5, 20}, {12, 15}, {30, 40}
+    };
+    int n = sizeof(ints)/sizeof(ints[0]);
+    ITNode *root = NULL;
+    for (int i = 0; i &lt; n; i++)
+        root = insert(root, ints[i]);
+ 
+    cout &lt;&lt; "Inorder traversal of constructed Interval Tree is\n";
+    inorder(root);
+ 
+    Interval x = {6, 7};
+ 
+    cout &lt;&lt; "\nSearching for interval [" &lt;&lt; x.low &lt;&lt; "," &lt;&lt; x.high &lt;&lt; "]";
+    Interval *res = overlapSearch(root, x);
+    if (res == NULL)
+        cout &lt;&lt; "\nNo Overlapping Interval";
+    else
+        cout &lt;&lt; "\nOverlaps with [" &lt;&lt; res-&gt;low &lt;&lt; ", " &lt;&lt; res-&gt;high &lt;&lt; "]";
+    return 0;
+}
+</pre>

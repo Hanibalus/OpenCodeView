@@ -1,0 +1,22 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+//
+//  insertion_sort.swift
+//  Created by DaiPei on 2017/10/11.
+//
+
+import Foundation
+
+func insertionSort(_ array: inout [Int]) {
+    for i in 1..&lt;array.count {
+        var j = Int(i)
+        let key = array[j]
+        while j &gt;= 1 &amp;&amp; key &lt; array[j - 1] {
+            array[j] = array[j - 1]
+            j -= 1
+        }
+        array[j] = key
+    }
+}
+</pre>

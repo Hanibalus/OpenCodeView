@@ -1,0 +1,39 @@
+<pre>
+package main
+ 
+import "fmt"
+ 
+func main() {
+    for _, s := range []string{
+        "The quick brown fox jumps over the lazy dog.",
+        `Watch "Jeopardy!", Alex Trebek's fun TV quiz game.`,
+        "Not a pangram.",
+    } {
+        if pangram(s) {
+            fmt.Println("Yes:", s)
+        } else {
+            fmt.Println("No: ", s)
+        }
+    }
+}
+ 
+func pangram(s string) bool {
+	var missing uint32 = (1 &lt;&lt; 26) - 1
+	for _, c := range s {
+		var index uint32
+		if 'a' &lt;= c &amp;&amp; c &lt;= 'z' {
+			index = uint32(c - 'a')
+		} else if 'A' &lt;= c &amp;&amp; c &lt;= 'Z' {
+			index = uint32(c - 'A')
+		} else {
+			continue
+		}
+ 
+		missing &amp;^= 1 &lt;&lt; index
+		if missing == 0 {
+			return true
+		}
+	}
+	return false
+}
+</pre>

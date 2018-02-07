@@ -1,0 +1,22 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+double log_factorial(int n){
+	double ans = 0;
+	for(int i = 1; i &lt;= n; i++)
+		ans += log(i);
+	return ans;
+}
+
+int main(){
+	int n;
+	cin &gt;&gt; n;
+
+	cout &lt;&lt; log_factorial(n) &lt;&lt; endl;
+	
+	return 0;
+}
+
+</pre>

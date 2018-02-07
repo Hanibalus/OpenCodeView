@@ -1,0 +1,48 @@
+<pre>
+import java.util.Scanner;
+// Part of Cosmos by OpenGenus Foundation
+class BitDivision
+{
+	static int division(int divident, int divisor)
+	{
+		int curr=1;
+		int result=0;	
+		if ( divisor &gt;divident)
+    	    return 0;
+
+    	else if ( divisor ==divident)
+    	    return 1;
+
+    	while (divisor &lt;divident) 
+    	{
+    	    divisor &lt;&lt;= 1;
+    	    curr &lt;&lt;= 1;
+    	}
+
+    	divisor &gt;&gt;= 1;
+    	curr &gt;&gt;= 1;
+
+  	  	while (curr!=0) 
+  	  	{
+        	if (divident &gt;= divisor) 
+        	{
+        	   divident -= divisor;
+           	 	result |= curr;
+        	}
+        	curr &gt;&gt;= 1;
+        	divisor &gt;&gt;= 1;
+    	}
+    	return result;
+	}
+
+	public static void main(String[]args)
+	{
+		Scanner scan=new Scanner(System.in);
+		//a -&gt; represents divident
+		int a=scan.nextInt();
+		//b -&gt; represents divisor
+		int b=scan.nextInt();
+		System.out.println(division(a,b));
+	}
+}
+</pre>

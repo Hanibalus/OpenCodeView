@@ -1,0 +1,25 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+
+
+using namespace std;
+
+int main(){
+  int n,i;
+  int a=0,b=1,c=2,d;
+  cout&lt;&lt;"Enter a number\n";
+  cin&gt;&gt;n;
+  cout&lt;&lt;a&lt;&lt;" "&lt;&lt;b&lt;&lt;" "&lt;&lt;c&lt;&lt;" ";
+  for(i=0;i&lt;n-3;i++){
+    d = a + b + c;
+    cout&lt;&lt;d&lt;&lt;" ";
+    a = b;
+    b = c;
+    c = d;
+    
+  }
+  return 0;
+}
+</pre>

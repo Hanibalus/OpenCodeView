@@ -1,0 +1,382 @@
+<pre>
+#include "catch.hpp"
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;queue&gt;
+#include "../tree_node/tree_node.cpp"
+#include "../tree_serializer/tree_serializer.cpp"
+#include "path_sum.hpp"
+
+using Node = TreeNode&lt;int&gt;;
+using PNode = std::shared_ptr&lt;Node&gt;;
+
+bool isSame(std::vector&lt;std::vector&lt;int&gt;&gt; &amp;a, std::vector&lt;std::vector&lt;int&gt;&gt; &amp;b) {
+    std::sort(a.begin(), a.end());
+    std::sort(b.begin(), b.end());
+
+    if (a.size() != b.size())
+        return false;
+    for (size_t i = 0; i &lt; a.size(); ++i) {
+        if (a.at(i).size() != b.at(i).size())
+            return false;
+        for (size_t j = 0; j &lt; a.at(i).size(); ++j)
+            if (a.at(i).at(j) != b.at(i).at(j))
+                return false;
+    }
+    return true;
+}
+
+TEST_CASE("paths between root to leaf") {
+    PathSum&lt;int&gt; sol;
+    std::vector&lt;std::vector&lt;int&gt;&gt; (PathSum&lt;int&gt;::* pf)(PNode, int) = &amp;PathSum&lt;int&gt;::getPathsOfSum;
+
+    TreeSerializer ts;
+    PNode root = nullptr;
+    auto res = (sol.*pf)(root, 0);
+    std::vector&lt;std::vector&lt;int&gt;&gt; expect{};
+
+    SECTION("give empty tree") {
+        root = ts.deserialize("# ");
+        res = (sol.*pf)(root, 0);
+        expect = {};
+        CHECK(isSame(res, expect));
+    }
+
+    SECTION("give one node") {
+        root = ts.deserialize("1 # # ");
+        res = (sol.*pf)(root, 0);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 1);
+        expect = {{1}};
+        CHECK(isSame(res, expect));
+    }
+
+    SECTION("user define") {
+        root = ts.deserialize("5 4 11 7 # # 2 # # # 8 13 # # 4 5 # # 1 # # ");
+        res = (sol.*pf)(root, 22);
+        expect = {{5, 4, 11, 2}, {5, 8, 4, 5}};
+        CHECK(isSame(res, expect));
+    }
+
+    SECTION("give balance tree") {
+        root = ts.deserialize("1 2 # # 3 # # ");
+        res = (sol.*pf)(root, 1);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 2);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 3);
+        expect = {{1, 2}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 4);
+        expect = {{1, 3}};
+        CHECK(isSame(res, expect));
+
+        root = ts.deserialize("1 2 4 # # # 3 5 # # # ");
+        res = (sol.*pf)(root, 7);
+        expect = {{1, 2, 4}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 9);
+        expect = {{1, 3, 5}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 1);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 2);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 3);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 4);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 5);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 6);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 8);
+        expect = {};
+        CHECK(isSame(res, expect));
+
+        root = ts.deserialize("1 2 4 # # # 3 # 5 # # ");
+        res = (sol.*pf)(root, 7);
+        expect = {{1, 2, 4}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 9);
+        expect = {{1, 3, 5}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 1);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 2);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 3);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 4);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 5);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 6);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 8);
+        expect = {};
+        CHECK(isSame(res, expect));
+
+        root = ts.deserialize("1 2 # 4 # # 3 5 # # # ");
+        res = (sol.*pf)(root, 7);
+        expect = {{1, 2, 4}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 9);
+        expect = {{1, 3, 5}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 1);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 2);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 3);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 4);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 5);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 6);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 8);
+        expect = {};
+        CHECK(isSame(res, expect));
+
+        root = ts.deserialize("1 2 # 4 # # 3 # 5 # # ");
+        res = (sol.*pf)(root, 7);
+        expect = {{1, 2, 4}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 9);
+        expect = {{1, 3, 5}};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 1);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 2);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 3);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 4);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 5);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 6);
+        expect = {};
+        CHECK(isSame(res, expect));
+        res = (sol.*pf)(root, 8);
+        expect = {};
+        CHECK(isSame(res, expect));
+    }
+
+    SECTION("give unbalance tree") {
+        SECTION("left is more deep") {
+            root = ts.deserialize("1 2 # # # ");
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {{1, 2}};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 2 3 # # # # ");
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 6);
+            expect = {{1, 2, 3}};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 2 # 3 # # # ");
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 6);
+            expect = {{1, 2, 3}};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 2 4 # # # 3 # # ");
+            res = (sol.*pf)(root, 4);
+            expect = {{1, 3}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 7);
+            expect = {{1, 2, 4}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 6);
+            expect = {};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 2 # 4 # # 3 # # ");
+            res = (sol.*pf)(root, 4);
+            expect = {{1, 3}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 7);
+            expect = {{1, 2, 4}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 6);
+            expect = {};
+            CHECK(isSame(res, expect));
+        }
+
+        SECTION("right is more deep") {
+            root = ts.deserialize("1 # 2 # # ");
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {{1, 2}};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 # 2 3 # # # ");
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 6);
+            expect = {{1, 2, 3}};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 # 2 # 3 # # ");
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 3);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 6);
+            expect = {{1, 2, 3}};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 2 # # 3 4 # # # ");
+            res = (sol.*pf)(root, 3);
+            expect = {{1, 2}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 8);
+            expect = {{1, 3, 4}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 4);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 7);
+            expect = {};
+            CHECK(isSame(res, expect));
+
+            root = ts.deserialize("1 2 # # 3 # 4 # # ");
+            res = (sol.*pf)(root, 3);
+            expect = {{1, 2}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 8);
+            expect = {{1, 3, 4}};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 1);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 2);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 4);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 5);
+            expect = {};
+            CHECK(isSame(res, expect));
+            res = (sol.*pf)(root, 7);
+            expect = {};
+            CHECK(isSame(res, expect));
+        }
+    }
+}
+</pre>

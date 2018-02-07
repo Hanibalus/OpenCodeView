@@ -1,0 +1,425 @@
+<pre>
+#include "red_black_tree.cpp"
+
+void
+test() {
+    std::shared_ptr&lt;RBTree&lt;int&gt; &gt; rbt;
+    rbt = make_shared&lt;RBTree&lt;int&gt; &gt;();
+    rbt-&gt;find(3);
+    assert(rbt-&gt;preOrder() == "");
+    assert(rbt-&gt;find(32) == nullptr);
+    rbt-&gt;insert(1);
+    rbt-&gt;insert(4);
+    rbt-&gt;insert(7);
+    rbt-&gt;insert(10);
+    rbt-&gt;insert(2);
+    rbt-&gt;insert(6);
+    rbt-&gt;insert(8);
+    rbt-&gt;insert(3);
+    rbt-&gt;insert(5);
+    rbt-&gt;insert(9);
+    rbt-&gt;insert(100);
+    assert(rbt-&gt;preOrder() == "74213659810100");
+    rbt-&gt;insert(40);
+    assert(rbt-&gt;preOrder() == "7421365984010100");
+    rbt-&gt;insert(30);
+    assert(rbt-&gt;preOrder() == "742136598401030100");
+    rbt-&gt;insert(20);
+    assert(rbt-&gt;preOrder() == "74213659840201030100");
+    rbt-&gt;insert(15);
+    assert(rbt-&gt;preOrder() == "7421365209810154030100");
+    rbt-&gt;insert(50);
+    assert(rbt-&gt;preOrder() == "742136520981015403010050");
+    rbt-&gt;insert(60);
+    assert(rbt-&gt;preOrder() == "74213652098101540306050100");
+    rbt-&gt;insert(70);
+    assert(rbt-&gt;preOrder() == "7421365209810154030605010070");
+    rbt-&gt;insert(80);
+    assert(rbt-&gt;preOrder() == "742136520981015403060508070100");
+    rbt-&gt;insert(63);
+    assert(rbt-&gt;preOrder() == "74213652098101560403050807063100");
+    rbt-&gt;insert(67);
+    assert(rbt-&gt;preOrder() == "7421365209810156040305080676370100");
+    rbt-&gt;insert(65);
+    rbt-&gt;insert(69);
+    rbt-&gt;insert(37);
+    rbt-&gt;insert(33);
+    rbt-&gt;insert(35);
+    rbt-&gt;insert(31);
+    assert(rbt-&gt;inOrder() == "1234567891015203031333537405060636567697080100");
+    assert(rbt-&gt;preOrder() == "2074213659810156040333031373550806763657069100");
+    assert(rbt-&gt;find(31) != nullptr);
+    assert(rbt-&gt;find(32) == nullptr);
+    
+    rbt-&gt;erase(69);
+    assert(rbt-&gt;preOrder() == "20742136598101560403330313735508067636570100");
+    rbt-&gt;erase(65);
+    assert(rbt-&gt;preOrder() == "207421365981015604033303137355080676370100");
+    rbt-&gt;erase(1);
+    assert(rbt-&gt;preOrder() == "20742365981015604033303137355080676370100");
+    rbt-&gt;erase(3);
+    assert(rbt-&gt;preOrder() == "2074265981015604033303137355080676370100");
+    rbt-&gt;erase(2);
+    assert(rbt-&gt;preOrder() == "207546981015604033303137355080676370100");
+    rbt-&gt;erase(60);
+    assert(rbt-&gt;preOrder() == "2075469810155033303137354080676370100");
+    rbt-&gt;erase(35);
+    assert(rbt-&gt;preOrder() == "20754698101550333031374080676370100");
+    rbt-&gt;erase(37);
+    assert(rbt-&gt;preOrder() == "207546981015503330314080676370100");
+    rbt-&gt;erase(40);
+    assert(rbt-&gt;preOrder() == "2075469810155031303380676370100");
+    rbt-&gt;erase(50);
+    assert(rbt-&gt;preOrder() == "20754698101567333130638070100");
+    rbt-&gt;erase(20);
+    assert(rbt-&gt;preOrder() == "157546981067333130638070100");
+    rbt-&gt;erase(15);
+    assert(rbt-&gt;preOrder() == "1075469867333130638070100");
+    rbt-&gt;erase(10);
+    assert(rbt-&gt;preOrder() == "97546867333130638070100");
+    rbt-&gt;erase(9);
+    assert(rbt-&gt;preOrder() == "8547667333130638070100");
+    rbt-&gt;erase(100);
+    assert(rbt-&gt;preOrder() == "8547667333130638070");
+    rbt-&gt;erase(70);
+    assert(rbt-&gt;preOrder() == "85476673331306380");
+    rbt-&gt;erase(80);
+    assert(rbt-&gt;preOrder() == "854763331306763");
+}
+
+// test of RBTree methods
+struct RBTreeTest
+{
+    typedef RBTree&lt;int&gt; tree_type;
+    using node_type = tree_type::node_type;
+    using p_node_type = tree_type::p_node_type;
+    using Color = tree_type::Color;
+    
+    RBTreeTest() {
+        testSibling();
+        
+        // below test of delete cases need ignore invoke
+        testDeleteCase2();
+        testDeleteCase3();
+        testDeleteCase4();
+        testDeleteCase5();
+        testDeleteCase6();
+    }
+    
+    void testSibling() {
+        tree_type t;
+        p_node_type n = std::make_shared&lt;node_type&gt;(0), l = std::make_shared&lt;node_type&gt;(0),
+        r = std::make_shared&lt;node_type&gt;(0);
+        n-&gt;left = l;
+        n-&gt;right = r;
+        l-&gt;parent = n;
+        r-&gt;parent = n;
+        assert(t.sibling(l) == r);
+        assert(t.sibling(r) == l);
+    }
+    
+    void testDeleteCase2() {
+        tree_type t;
+        p_node_type n = std::make_shared&lt;node_type&gt;(0), p = std::make_shared&lt;node_type&gt;(0),
+        s = std::make_shared&lt;node_type&gt;(0), sl = std::make_shared&lt;node_type&gt;(0),
+        sr = std::make_shared&lt;node_type&gt;(0);
+        
+        // test n is left of parent
+        p-&gt;color = Color::BLACK;
+        s-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = sr-&gt;left = sr-&gt;right = t.sentinel_;
+        p-&gt;left = n;
+        p-&gt;right = s;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        t.deleteCase2(n);
+        assert(p-&gt;color == Color::RED);
+        assert(s-&gt;color == Color::BLACK);
+        assert(s-&gt;parent == t.sentinel_);
+        assert(n-&gt;left == t.sentinel_);
+        assert(n-&gt;right == t.sentinel_);
+        assert(sl-&gt;left == t.sentinel_);
+        assert(sl-&gt;right == t.sentinel_);
+        assert(sr-&gt;left == t.sentinel_);
+        assert(sr-&gt;right == t.sentinel_);
+        assert(s-&gt;left == p);
+        assert(s-&gt;right == sr);
+        assert(p-&gt;parent == s);
+        assert(sr-&gt;parent == s);
+        assert(p-&gt;left == n);
+        assert(p-&gt;right == sl);
+        assert(n-&gt;parent == p);
+        assert(sl-&gt;parent == p);
+        
+        // test n is right of parent
+        p-&gt;color = Color::BLACK;
+        s-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = sr-&gt;left = sr-&gt;right = t.sentinel_;
+        p-&gt;left = s;
+        p-&gt;right = n;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        t.deleteCase2(n);
+        assert(p-&gt;color == Color::RED);
+        assert(s-&gt;color == Color::BLACK);
+        assert(s-&gt;parent == t.sentinel_);
+        assert(n-&gt;left == t.sentinel_);
+        assert(n-&gt;right == t.sentinel_);
+        assert(sl-&gt;left == t.sentinel_);
+        assert(sl-&gt;right == t.sentinel_);
+        assert(sr-&gt;left == t.sentinel_);
+        assert(sr-&gt;right == t.sentinel_);
+        assert(s-&gt;left == sl);
+        assert(s-&gt;right == p);
+        assert(sl-&gt;parent == s);
+        assert(p-&gt;parent == s);
+        assert(p-&gt;left == sr);
+        assert(p-&gt;right == n);
+        assert(sr-&gt;parent == p);
+        assert(n-&gt;parent == p);
+    }
+    
+    void testDeleteCase3() {
+        tree_type t;
+        p_node_type n = std::make_shared&lt;node_type&gt;(0), p = std::make_shared&lt;node_type&gt;(0),
+        s = std::make_shared&lt;node_type&gt;(0), sl = std::make_shared&lt;node_type&gt;(0),
+        sr = std::make_shared&lt;node_type&gt;(0);
+        n-&gt;color = p-&gt;color = s-&gt;color = sl-&gt;color = sr-&gt;color = Color::BLACK;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = sr-&gt;left = sr-&gt;right = t.sentinel_;
+        p-&gt;left = n;
+        p-&gt;right = s;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        t.deleteCase3(n);
+        assert(s-&gt;color == Color::RED);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(sl-&gt;color == Color::BLACK);
+        assert(sr-&gt;color == Color::BLACK);
+        
+        n-&gt;color = p-&gt;color = s-&gt;color = sl-&gt;color = sr-&gt;color = Color::BLACK;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = sr-&gt;left = sr-&gt;right = t.sentinel_;
+        p-&gt;left = s;
+        p-&gt;right = n;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        t.deleteCase3(n);
+        assert(s-&gt;color == Color::RED);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(sl-&gt;color == Color::BLACK);
+        assert(sr-&gt;color == Color::BLACK);
+    }
+    
+    void testDeleteCase4() {
+        tree_type t;
+        p_node_type n = std::make_shared&lt;node_type&gt;(0), p = std::make_shared&lt;node_type&gt;(0),
+        s = std::make_shared&lt;node_type&gt;(0), sl = std::make_shared&lt;node_type&gt;(0),
+        sr = std::make_shared&lt;node_type&gt;(0);
+        n-&gt;color = s-&gt;color = sl-&gt;color = sr-&gt;color = Color::BLACK;
+        p-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = sr-&gt;left = sr-&gt;right = t.sentinel_;
+        p-&gt;left = n;
+        p-&gt;right = s;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        t.deleteCase4(n);
+        assert(s-&gt;color == Color::RED);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(sl-&gt;color == Color::BLACK);
+        assert(sr-&gt;color == Color::BLACK);
+        
+        n-&gt;color = s-&gt;color = sl-&gt;color = sr-&gt;color = Color::BLACK;
+        p-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = sr-&gt;left = sr-&gt;right = t.sentinel_;
+        p-&gt;left = s;
+        p-&gt;right = n;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        t.deleteCase4(n);
+        assert(s-&gt;color == Color::RED);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(sl-&gt;color == Color::BLACK);
+        assert(sr-&gt;color == Color::BLACK);
+    }
+    
+    void testDeleteCase5() {
+        tree_type t;
+        p_node_type n = std::make_shared&lt;node_type&gt;(0), p = std::make_shared&lt;node_type&gt;(0),
+        s = std::make_shared&lt;node_type&gt;(0), sl = std::make_shared&lt;node_type&gt;(0),
+        sr = std::make_shared&lt;node_type&gt;(0), s_l = std::make_shared&lt;node_type&gt;(0),
+        s_r = std::make_shared&lt;node_type&gt;(0);
+        n-&gt;color = p-&gt;color = s-&gt;color = sr-&gt;color = s_l-&gt;color = s_r-&gt;color = Color::BLACK;
+        sl-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sr-&gt;left = sr-&gt;right = \
+        s_l-&gt;left = s_l-&gt;right = s_r-&gt;left =
+        s_r-&gt;right =
+        t.sentinel_;
+        p-&gt;left = n;
+        p-&gt;right = s;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        sl-&gt;left = s_l;
+        sl-&gt;right = s_r;
+        s_l-&gt;parent = s_r-&gt;parent = sl;
+        t.deleteCase5(n);
+        assert(s-&gt;color == Color::RED);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(sl-&gt;color == Color::BLACK);
+        assert(sr-&gt;color == Color::BLACK);
+        assert(s_l-&gt;color == Color::BLACK);
+        assert(s_r-&gt;color == Color::BLACK);
+        assert(p-&gt;parent == t.sentinel_);
+        assert(n-&gt;left == t.sentinel_);
+        assert(n-&gt;right == t.sentinel_);
+        assert(sr-&gt;left == t.sentinel_);
+        assert(sr-&gt;right == t.sentinel_);
+        assert(s_l-&gt;left == t.sentinel_);
+        assert(s_l-&gt;right == t.sentinel_);
+        assert(s_r-&gt;left == t.sentinel_);
+        assert(s_r-&gt;right == t.sentinel_);
+        assert(p-&gt;left == n);
+        assert(p-&gt;right == sl);
+        assert(n-&gt;parent == p);
+        assert(sl-&gt;parent == p);
+        assert(sl-&gt;left == s_l);
+        assert(sl-&gt;right == s);
+        assert(s_l-&gt;parent == sl);
+        assert(s-&gt;parent == sl);
+        assert(s-&gt;left == s_r);
+        assert(s-&gt;right == sr);
+        assert(s_r-&gt;parent == s);
+        assert(sr-&gt;parent == s);
+        
+        n-&gt;color = p-&gt;color = s-&gt;color = sl-&gt;color = s_l-&gt;color = s_r-&gt;color = Color::BLACK;
+        sr-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = sl-&gt;left = sl-&gt;right = \
+        s_l-&gt;left = s_l-&gt;right = s_r-&gt;left =
+        s_r-&gt;right =
+        t.sentinel_;
+        p-&gt;left = s;
+        p-&gt;right = n;
+        n-&gt;parent = s-&gt;parent = p;
+        s-&gt;left = sl;
+        s-&gt;right = sr;
+        sl-&gt;parent = sr-&gt;parent = s;
+        sr-&gt;left = s_l;
+        sr-&gt;right = s_r;
+        s_l-&gt;parent = s_r-&gt;parent = sr;
+        t.deleteCase5(n);
+        assert(s-&gt;color == Color::RED);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(sl-&gt;color == Color::BLACK);
+        assert(sr-&gt;color == Color::BLACK);
+        assert(s_l-&gt;color == Color::BLACK);
+        assert(s_r-&gt;color == Color::BLACK);
+        assert(p-&gt;parent == t.sentinel_);
+        assert(n-&gt;left == t.sentinel_);
+        assert(n-&gt;right == t.sentinel_);
+        assert(sl-&gt;left == t.sentinel_);
+        assert(sl-&gt;right == t.sentinel_);
+        assert(s_l-&gt;left == t.sentinel_);
+        assert(s_l-&gt;right == t.sentinel_);
+        assert(s_r-&gt;left == t.sentinel_);
+        assert(s_r-&gt;right == t.sentinel_);
+        assert(p-&gt;left == sr);
+        assert(p-&gt;right == n);
+        assert(n-&gt;parent == p);
+        assert(sr-&gt;parent == p);
+        assert(sr-&gt;left == s);
+        assert(sr-&gt;right == s_r);
+        assert(s-&gt;parent == sr);
+        assert(s_r-&gt;parent == sr);
+        assert(s-&gt;left == sl);
+        assert(s-&gt;right == s_l);
+        assert(sl-&gt;parent == s);
+        assert(s_l-&gt;parent == s);
+    }
+    
+    void testDeleteCase6() {
+        tree_type t;
+        p_node_type n = std::make_shared&lt;node_type&gt;(0), p = std::make_shared&lt;node_type&gt;(0),
+        s = std::make_shared&lt;node_type&gt;(0), sc = std::make_shared&lt;node_type&gt;(0);
+        p-&gt;color = n-&gt;color = s-&gt;color = Color::BLACK;
+        sc-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = s-&gt;left = sc-&gt;left = sc-&gt;right = t.sentinel_;
+        p-&gt;left = n;
+        p-&gt;right = s;
+        n-&gt;parent = p;
+        s-&gt;parent = p;
+        s-&gt;right = sc;
+        sc-&gt;parent = s;
+        t.deleteCase6(n);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(s-&gt;color == Color::BLACK);
+        assert(sc-&gt;color == Color::BLACK);
+        assert(s-&gt;parent == t.sentinel_);
+        assert(n-&gt;left == t.sentinel_);
+        assert(n-&gt;right == t.sentinel_);
+        assert(p-&gt;right == t.sentinel_);
+        assert(sc-&gt;left == t.sentinel_);
+        assert(sc-&gt;right == t.sentinel_);
+        assert(s-&gt;left == p);
+        assert(s-&gt;right == sc);
+        assert(p-&gt;parent == s);
+        assert(sc-&gt;parent == s);
+        assert(p-&gt;left == n);
+        assert(n-&gt;parent == p);
+        
+        p-&gt;color = n-&gt;color = s-&gt;color = Color::BLACK;
+        sc-&gt;color = Color::RED;
+        p-&gt;parent = n-&gt;left = n-&gt;right = s-&gt;right = sc-&gt;left = sc-&gt;right = t.sentinel_;
+        p-&gt;left = s;
+        p-&gt;right = n;
+        s-&gt;parent = p;
+        n-&gt;parent = p;
+        s-&gt;left = sc;
+        sc-&gt;parent = s;
+        t.deleteCase6(n);
+        assert(p-&gt;color == Color::BLACK);
+        assert(n-&gt;color == Color::BLACK);
+        assert(s-&gt;color == Color::BLACK);
+        assert(sc-&gt;color == Color::BLACK);
+        assert(s-&gt;parent == t.sentinel_);
+        assert(n-&gt;left == t.sentinel_);
+        assert(n-&gt;right == t.sentinel_);
+        assert(p-&gt;left == t.sentinel_);
+        assert(sc-&gt;left == t.sentinel_);
+        assert(sc-&gt;right == t.sentinel_);
+        assert(s-&gt;left == sc);
+        assert(s-&gt;right == p);
+        assert(sc-&gt;parent == s);
+        assert(p-&gt;parent == s);
+        assert(p-&gt;right == n);
+        assert(n-&gt;parent == p);
+    }
+};
+
+// Driver Code
+int
+main()
+{
+    RBTreeTest t;
+    test();
+    
+    return 0;
+}</pre>

@@ -1,0 +1,7 @@
+<pre>
+-- Part of Cosmos by OpenGenus Foundation
+quicksort :: (Ord a) =&gt; [a] -&gt; [a]
+quicksort [] = []
+quicksort (x:xs) = let less = filter (&lt;x) xs in
+                 let greater = filter (&gt;=x) xs in
+                    (quicksort less) ++ [x] ++ (quicksort greater)</pre>

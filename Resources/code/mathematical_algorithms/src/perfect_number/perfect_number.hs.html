@@ -1,0 +1,11 @@
+<pre>
+--Perfect Number
+module PerfectNumber where
+
+perfectNum :: Integer -&gt; Bool
+perfectNum n = factorSum n == n
+
+factorSum :: Integer -&gt; Integer
+factorSum n = sum [x | x &lt;- [1..n], mod n x == 0, x &lt; n]
+
+perfectList = map perfectNum [1..]</pre>

@@ -1,0 +1,33 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+
+//Part of Cosmos by OpenGenus Foundation
+double integralRectangle(double a, double b, double step, std::function&lt;double(double)&gt; f)
+{
+    double fragment, res;
+    fragment = (b - a) / step;
+    res = step * (f(a) + f(b)) / 6.0;
+    for (int i = 1; i &lt;= fragment; ++i)
+        res = res + 4.0 / 6.0 * step * f(a + step * (i - 0.5));
+
+    for (int i = 1; i &lt;= fragment - 1; ++i)
+        res = res + 2.0 / 6.0 * step * f(a + step * i);
+    return res;
+}
+
+int main()
+{
+    double a, b, step, res;
+    std::cout &lt;&lt; "Enter interval: " &lt;&lt; std::endl;
+    std::cout &lt;&lt; "a: " &lt;&lt; std::endl;
+    std::cin &gt;&gt; a;
+    std::cout &lt;&lt; "b: " &lt;&lt; std::endl;
+    std::cin &gt;&gt; b;
+    std::cout &lt;&lt; "Enter integration step: " &lt;&lt; std::endl;
+    std::cin &gt;&gt; step;
+    res = integralRectangle(a, b, step, [](double x)-&gt;double{return x;});
+    std::cout &lt;&lt; "Result: " &lt;&lt; res &lt;&lt; std::endl;
+    return 0;
+}
+</pre>

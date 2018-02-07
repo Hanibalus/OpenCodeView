@@ -1,0 +1,25 @@
+<pre>
+//Part of Cosmos by OpenGenus Foundation
+open System
+open System.Collections.Generic
+
+let rec merge (left:IComparable list) (right:IComparable list): IComparable list = 
+    match (left,right) with
+    | (_,[]) -&gt; left
+    | ([],_) -&gt; right
+    | (l::ls,r::rs) when  l &lt; r -&gt; l::merge ls right
+    | (l::ls,r::rs) -&gt; r::merge left rs
+
+let rec merge_sort= 
+    function
+    | [x]-&gt; [x]
+    |  x -&gt; let (left,right) = List.splitAt (x.Length/2) x
+            merge (merge_sort left) (merge_sort right)
+    
+
+[&lt;EntryPoint&gt;]
+
+let main(argv) =
+    printfn "%A" &lt;| merge_sort [10;22;41;2;33;12;52]
+    0
+</pre>

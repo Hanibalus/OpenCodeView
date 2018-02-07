@@ -1,0 +1,151 @@
+<pre>
+#include &lt;iostream&gt;
+#define ll long long
+#define MOD 1000000007
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+// structure representing a treap node
+struct node {
+    ll key;
+    ll priority;
+    node* left;
+    node* right;
+    node* parent;
+
+    node(ll data) {
+        key = data;
+        priority = (1LL * rand()) % MOD;
+        left = right = parent = NULL;
+    }
+};
+
+// function to left-rotate the subtree rooted at x
+void left_rotate(node* &amp;root, node* x) {
+    node* y = x-&gt;right;
+    x-&gt;right = y-&gt;left;
+    
+    if (y-&gt;left != NULL) {
+        y-&gt;left-&gt;parent = x;
+    }
+    y-&gt;parent = x-&gt;parent;
+    if (x-&gt;parent == NULL) {
+        root = y;
+    }
+    else if (x-&gt;key &gt; x-&gt;parent-&gt;key) {
+        x-&gt;parent-&gt;right = y;
+    }
+    else {
+        x-&gt;parent-&gt;left = y;
+    }
+
+    y-&gt;left = x;
+    x-&gt;parent = y;
+}
+
+// function to right-rotate the subtree rooted at x
+void right_rotate(node* &amp;root, node* x) {
+    node* y = x-&gt;left;
+    x-&gt;left = y-&gt;right;
+
+    if (y-&gt;right != NULL) {
+        y-&gt;right-&gt;parent = x;
+    }
+    y-&gt;parent = x-&gt;parent;
+    if (x-&gt;parent == NULL) {
+        root = y;
+    }
+    else if (x-&gt;key &gt; x-&gt;parent-&gt;key) {
+        x-&gt;parent-&gt;right = y;
+    }
+    else {
+        x-&gt;parent-&gt;left = y;
+    }
+
+    y-&gt;right = x;
+    x-&gt;parent = y;
+}
+
+// function to restore min-heap property by rotations
+void treap_insert_fixup(node* &amp;root, node* z) {
+    while (z-&gt;parent != NULL &amp;&amp; z-&gt;parent-&gt;priority &gt; z-&gt;priority) {
+        // if z is a right child
+        if (z-&gt;key &gt; z-&gt;parent-&gt;key) {
+            left_rotate(root, z-&gt;parent);
+        }
+        // if z is a left child
+        else {
+            right_rotate(root, z-&gt;parent);
+        }
+    }
+}
+
+// function to insert a node into the treap
+// performs simple BST insert and calls treap_insert_fixup
+void insert(node* &amp;root, ll data) {
+    node *x = root, *y = NULL;
+    while (x != NULL) {
+        y = x;
+        if (data &lt; x-&gt;key) {
+            x = x-&gt;left;
+        }
+        else {
+            x = x-&gt;right;
+        }
+    }
+
+    node* z = new node(data);
+    z-&gt;parent = y;
+    if (y == NULL) {
+        root = z;
+    }
+    else if (z-&gt;key &gt; y-&gt;key) {
+        y-&gt;right = z;
+    }
+    else {
+        y-&gt;left = z;
+    }
+
+    treap_insert_fixup(root, z);
+}
+
+void preorder(node* root) {
+    if (root) {
+        cout &lt;&lt; root-&gt;key &lt;&lt; " ";
+        preorder(root-&gt;left);
+        preorder(root-&gt;right);
+    }
+}
+
+// free the allocated memory
+void delete_treap(node* root) {
+    if (root) {
+        delete_treap(root-&gt;left);
+        delete_treap(root-&gt;right);
+        delete root;
+    }
+}
+
+int main() {
+    node* root = NULL;
+    int choice;
+    ll key;
+    while (true) {
+        cout &lt;&lt; "1. Insert 2. Preorder 3. Quit\n";
+        cin &gt;&gt; choice;
+        if (choice == 1) {
+            cout &lt;&lt; "Enter key : ";
+            cin &gt;&gt; key;
+            insert(root, key);
+        }
+        else if (choice == 2) {
+            preorder(root);
+            cout &lt;&lt; endl;
+        }
+        else {
+            break;
+        }
+    }
+    delete_treap(root);
+    return 0;
+}
+</pre>

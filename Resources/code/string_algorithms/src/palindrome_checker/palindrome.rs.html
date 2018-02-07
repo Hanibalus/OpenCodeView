@@ -1,0 +1,12 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+
+fn is_palindrome(input: &amp;str) -&gt; bool {
+    let reversed: String = input.chars().rev().collect();
+    reversed == input
+}
+
+fn main() {
+    println!("{:?}", is_palindrome("test"));
+    println!("{:?}", is_palindrome("hahah"));
+}</pre>

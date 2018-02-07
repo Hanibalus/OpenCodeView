@@ -1,0 +1,10 @@
+<pre>
+-- Part of Cosmos by OpenGenus Foundation
+hanoi :: Int -&gt; String -&gt; String -&gt; String -&gt; IO Int
+hanoi 0 _ _ _ = return 0
+hanoi x from to using = do
+  c1 &lt;- hanoi (x-1) from using to
+  putStrLn ("Moving " ++ show x ++ " from " ++ from ++ " to " ++ to)
+  c2 &lt;- hanoi (x-1) using to from
+  return (1+ c1 + c2)
+</pre>

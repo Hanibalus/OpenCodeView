@@ -1,0 +1,54 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+class BloomFilter
+{
+public:
+	BloomFilter(int size)
+	{
+		size_ = size;
+		bits_ = new char[size_/8 + 1];
+	}
+	~BloomFilter()
+	{
+		delete []bits_;
+	}
+
+	void Add(int value)
+	{
+		int hash = value % size_;
+		bits_[hash / 8] |= 1 &lt;&lt; (hash % 8);
+	}
+
+	bool Contains(int value)
+	{
+		int hash = value % size_;
+		return (bits_[hash / 8] &amp; (1 &lt;&lt; (hash % 8))) != 0;
+	}
+
+private:
+	char* bits_;
+	int size_;
+};
+
+int main()
+{
+	BloomFilter bloomFilter(1000);
+	bloomFilter.Add(1);
+	bloomFilter.Add(2);
+	bloomFilter.Add(1001);
+	bloomFilter.Add(1004);
+
+	if (bloomFilter.Contains(1))
+		cout &lt;&lt; "bloomFilter contains 1" &lt;&lt; endl;
+
+	if (bloomFilter.Contains(2))
+		cout &lt;&lt; "bloomFilter contains 2" &lt;&lt; endl;
+
+	if (!bloomFilter.Contains(3))
+		cout &lt;&lt; "bloomFilter not contains 3" &lt;&lt; endl;
+
+	if (bloomFilter.Contains(4))
+		cout &lt;&lt; "bloomFilter not contains 4, but return false positive" &lt;&lt; endl;
+}</pre>

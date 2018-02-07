@@ -1,0 +1,215 @@
+<pre>
+
+#include&lt;iostream&gt;
+
+using namespace std;
+
+//built node .... node = (data and pointer)
+struct node     
+{
+    int data;   //data item
+    node* next; //pointer to next node
+
+};
+
+//built linked list
+class linkedlist
+{
+    private:
+        node* head; //pointer to the first node
+
+    public:
+        linkedlist()    //constructor
+        {
+            head=NULL;  //head pointer points to null in the beginning == empty list
+
+        }
+
+        //declaration
+        void addElementFirst(int d);            //add element in the beginning (one node)
+        void addElementEnd(int d);              //add element in the end (one node)
+        void addElementAfter(int d,int b);      //add element d before node b
+        void deleteElement(int d);
+        void display();                         //display all nodes
+
+};
+
+//definition
+//1-Push front code
+void linkedlist::addElementFirst(int d)
+{
+    node* newNode=new node;         
+    newNode-&gt;data=d;                 
+    newNode-&gt;next=head;             
+    head=newNode;                   
+
+}
+
+//2-Push back code
+void linkedlist::addElementEnd(int x)
+{
+    node* newNode=new node;     
+    node* temp=new node;        
+    temp=head;                  
+    newNode-&gt;data=x;            
+    if(temp==NULL)              
+    {
+        newNode-&gt;next=NULL;
+        head=newNode;
+        return;                 
+
+    }
+
+    
+    while(temp-&gt;next!=NULL)
+    {
+        temp=temp-&gt;next;        
+
+    }
+    newNode-&gt;next=NULL;         
+    temp-&gt;next=newNode;        
+
+}
+
+//3-Push after code
+//head-&gt;10-&gt;5-&gt;8-&gt;NULL
+//if d=5,key=2
+//head-&gt;10-&gt;5-&gt;2-&gt;8-&gt;NULL
+void linkedlist::addElementAfter(int d,int key)   
+{
+    node* search=new node;    //search is pointer must search to points to the node that we want
+    search=head;              //firstly search must points to what head points
+    while(search!=NULL)       //if linked list has nodes and is not empty
+    {
+        if(search-&gt;data==d)   
+        {
+            node* newNode=new node; 
+            newNode-&gt;data=key;      //put key in data in newNode
+            newNode-&gt;next=search-&gt;next;   //make the next of newNode pointer to the next to search pointer
+            search-&gt;next=newNode;         //then make search pointer to the newNode
+            return;                       //or break;
+
+        }
+        //else
+        search=search-&gt;next;
+    }
+    
+    if(search==NULL)  //if linked list empty
+        cout&lt;&lt;"The link not inserted because there is not found the node "&lt;&lt;d&lt;&lt;" in the LinkedList. "&lt;&lt;endl;
+
+}
+
+//4-delete code
+void linkedlist::deleteElement(int d)
+{
+    node* del;  
+    del=head;   
+
+    if(del==NULL)   
+    {
+        cout&lt;&lt;"Linked list is empty"&lt;&lt;endl;
+        return;     
+
+    }
+
+    if(del-&gt;data==d)    //if first element in linked list is the element that we want to delete ... or one element is what we want
+    {
+        head=del-&gt;next; //make head points to the next to del
+        return;
+    }
+
+    //if(del-&gt;data!=d) .... the same
+    if(del-&gt;next==NULL) 
+    {
+        cout&lt;&lt;"Is not here, So not deleted."&lt;&lt;endl;
+        return;
+    }
+
+    //if here more one nodes...one node points to another node ... bigger than 2 nodes .. at least 2 nodes
+    while(del-&gt;next!=NULL)
+    {
+        if(del-&gt;next-&gt;data==d)
+        {
+            node* tmp = del-&gt;next;
+            del-&gt;next=del-&gt;next-&gt;next;
+            delete tmp;
+            return;
+
+        }
+        //else
+        del=del-&gt;next;
+
+    }
+    cout&lt;&lt;"Is not here, So not deleted."&lt;&lt;endl;
+
+}
+
+
+//void linkedlist::display(node *head)
+void linkedlist::display()
+{
+    int n=0;                        //counter for number of node
+    node* current=head;             
+
+    if (current==NULL)
+        cout&lt;&lt;"This is empty linked list."&lt;&lt;endl;
+
+    while(current!=NULL)           
+    {
+        cout&lt;&lt;"The node data number "&lt;&lt;++n&lt;&lt;" is "&lt;&lt;current-&gt;data&lt;&lt;endl;  
+        current=current-&gt;next;      
+
+    }
+    cout&lt;&lt;endl;
+
+}
+
+
+int main()
+{
+    linkedlist li;      
+
+    li.display();       
+
+    li.addElementFirst(25);  //head-&gt;25-&gt;NULL
+    li.addElementFirst(36);  //head-&gt;36-&gt;25-&gt;NULL
+    li.addElementFirst(49);  //head-&gt;49-&gt;36-&gt;25-&gt;NULL
+    li.addElementFirst(64);  //head-&gt;64-&gt;49-&gt;36-&gt;25-&gt;NULL
+    cout&lt;&lt;"After adding in the first of linked list"&lt;&lt;endl;
+    li.display();
+        //64
+        //49
+        //36
+        //25
+
+
+    cout&lt;&lt;endl;
+
+    cout&lt;&lt;"After adding in the end of linked list"&lt;&lt;endl;
+    //head-&gt;64-&gt;49-&gt;36-&gt;25-&gt;NULL
+    li.addElementEnd(25);  //head-&gt;25-&gt;NULL
+    li.addElementEnd(36);  //head-&gt;25-&gt;36-&gt;NULL
+    li.addElementEnd(49);  //head-&gt;25-&gt;36-&gt;49-&gt;NULL
+    li.addElementEnd(64);  //head-&gt;25-&gt;36-&gt;49-&gt;64-&gt;NULL
+    //head-&gt;64-&gt;49-&gt;36-&gt;25-&gt;25-&gt;36-&gt;49-&gt;64-&gt;NULL
+    li.display();
+
+    cout&lt;&lt;endl;
+
+    //head-&gt;64-&gt;49-&gt;36-&gt;25-&gt;25-&gt;36-&gt;49-&gt;64-&gt;NULL
+    cout&lt;&lt;"linked list after adding 10 after node that has data = 49"&lt;&lt;endl;
+    li.addElementAfter(49,10);
+    li.display();
+    //head-&gt;64-&gt;49-&gt;10-&gt;36-&gt;25-&gt;25-&gt;36-&gt;49-&gt;64-&gt;NULL
+
+    //head-&gt;64-&gt;49-&gt;10-&gt;36-&gt;25-&gt;25-&gt;36-&gt;49-&gt;64-&gt;NULL
+    cout&lt;&lt;"linked list after adding deleting 49"&lt;&lt;endl;
+    li.deleteElement(49);
+    li.display();
+    //head-&gt;64-&gt;10-&gt;36-&gt;25-&gt;25-&gt;36-&gt;49-&gt;64-&gt;NULL
+    //Notice :delete the first 49 ... not permission for duplicates
+    return 0;
+}
+
+
+</pre>

@@ -1,0 +1,100 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;string&gt;
+// Part of Cosmos by OpenGenus Foundation
+// Rails fence cipher - Cryptography
+using namespace std;
+
+string Encryptor(string msg, int key){
+	int msgLen=msg.size();
+	bool direction=true;
+	char enc[key][msgLen];
+	for(int i=0; i&lt;key; i++){
+		for(int j=0; j&lt;msgLen; j++){
+			enc[i][j]='\n';
+		}
+	}
+	for(int i=0, row=0, col=0 ; i&lt;msgLen; i++){
+		if(row==0||row==key-1){
+			direction=!direction;
+		}
+		enc[row][col++]=msg[i];
+		direction?row--:row++;
+	}
+	string cipher;
+	for(int i=0; i&lt;key; i++){
+		for(int j=0; j&lt;msgLen; j++){
+			if(enc[i][j]!='\n'){
+				cipher.push_back(enc[i][j]);
+			}
+		}
+	}
+	return cipher;
+}
+
+string Decryptor(string cipher, int key){
+	int cipLen=cipher.size();
+	bool direction;
+	char dec[key][cipLen];
+	for(int i=0; i&lt;key; i++){
+		for(int j=0; j&lt;cipLen; j++){
+			dec[i][j]='\n';
+		}
+	}
+	for(int i=0, row=0, col=0; i&lt;cipLen; i++){
+		if(row==0){direction=false;}
+		else if(row==key-1){direction=true;}
+		dec[row][col++]='*';
+		direction?row--:row++;
+	}
+	int index=0;
+	for(int i=0; i&lt;key; i++){
+		for(int j=0; j&lt;cipLen; j++){
+			if(dec[i][j]=='*' &amp;&amp; index&lt;cipLen){
+				dec[i][j]=cipher[index++];
+			}
+		}
+	}
+	string msg;
+	for(int i=0, row=0, col=0; i&lt;cipLen; i++){
+		if(row==0){
+			direction=false;
+		}
+		else if(row==key-1){
+			direction=true;
+		}
+		if(dec[row][col]!='*'){
+			msg.push_back(dec[row][col++]);
+		}
+		direction?row--:row++;
+	}
+	return msg;
+}
+
+
+int main(){
+	int key, choice;
+	std::string cip, msg;
+	cout&lt;&lt;"1. Encrypt \n2. Decrypt \n&gt;&gt;";
+	cin&gt;&gt;choice;
+	
+	if(choice==1){
+		cout&lt;&lt;"Enter Message\n&gt;&gt;";
+		cin.ignore();
+		std::getline(std::cin, msg);
+		cout&lt;&lt;"Enter Key\n&gt;&gt;";
+		cin&gt;&gt;key;
+		cout&lt;&lt;"Encrypted Message\n&gt;&gt;"&lt;&lt;Encryptor(msg,key);
+	}
+	else if(choice==2){
+		cout&lt;&lt;"Enter Encrypted Message\n&gt;&gt;";
+		cin.ignore();
+		std::getline(std::cin, cip);
+		cout&lt;&lt;"Enter Key\n&gt;&gt;";
+		cin&gt;&gt;key;
+		cout&lt;&lt;"Original Message\n&gt;&gt;"&lt;&lt;Decryptor(cip,key);
+	}
+	return 0;
+}
+</pre>

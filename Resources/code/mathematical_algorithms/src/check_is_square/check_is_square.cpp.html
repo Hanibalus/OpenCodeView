@@ -1,0 +1,49 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation 
+#include &lt;iostream&gt;
+using namespace std;
+
+typedef long long int lld;
+bool IsSquare(lld number)
+{
+	lld min = 1;
+	lld max = number;
+	lld mid = min + (max - min)/2;
+	if (number == 0 || number == 1)
+		return true;
+	while (min&lt;max) {
+		if (mid*mid &gt; number)
+		{
+			max = mid -1;
+			mid = min + (max - min)/2;
+		}
+		else if (mid*mid &lt; number)
+		{
+			min = mid + 1;
+			mid = min + (max - min)/2;
+
+		}
+		if (mid*mid == number)
+			return true;
+
+	}
+	return false;
+}
+
+int main() {
+
+	int t;
+	cout &lt;&lt; "Enter the number of testcases:" &lt;&lt; '\n';
+	cin &gt;&gt; t;
+	lld number;
+	while (t--)
+	{
+		cin &gt;&gt; number;
+		if (IsSquare(number))
+			cout &lt;&lt; "Natural Square number" &lt;&lt; '\n';
+		else
+			cout &lt;&lt; "Not a Natural Square" &lt;&lt; '\n';
+	}
+	return 0;
+}
+</pre>

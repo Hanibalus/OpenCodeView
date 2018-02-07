@@ -1,0 +1,104 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;vector&gt;
+
+#define alphas 26
+using namespace std;
+
+typedef struct Node{
+    Node *child[alphas];
+    int leaf;
+}trieNode;
+
+trieNode* getNode(){
+    trieNode *t = new trieNode;
+    if(t){
+        for(int i=0;i&lt;alphas;i++)
+            t-&gt;child[i] = NULL;
+        t-&gt;leaf = 0;
+    }
+    return t;
+}
+
+void insert(trieNode *root, string s){
+    trieNode *head = root;
+    int len = s.length();
+    for(int i=0;i&lt;len;i++){
+        if(head-&gt;child[s[i]-'a']==NULL){
+            head-&gt;child[s[i]-'a'] = getNode();
+        }
+        head = head-&gt;child[s[i]-'a'];
+    }
+    head-&gt;leaf = 1;
+}
+
+void walk(trieNode *root){
+    trieNode *head = root;
+    for(int i=0;i&lt;alphas;i++){
+        if(head-&gt;child[i]!=NULL){
+            cout&lt;&lt;char(i+'a')&lt;&lt;" ";
+            walk(head-&gt;child[i]);
+        }
+    }
+}
+
+bool noChildren(trieNode *root){
+    trieNode *head = root;
+    for(int i=0;i&lt;26;i++)
+        if(head-&gt;child[i])
+            return false;
+    return true;
+}
+
+bool notLeaf(trieNode *root){
+    if(root-&gt;leaf == 1)
+        return false;
+    return true;
+}
+
+bool deletes(trieNode *root, string s, int l,int len){
+    if(root){
+        if(l==len){
+            root-&gt;leaf = 0;
+            if(noChildren(root)){
+                return true;
+            }
+            return false;
+        }
+        else{
+            int index = s[l]-'a';
+            if(deletes(root-&gt;child[index],s,l+1,len)){
+                free(root-&gt;child[index]);
+                root-&gt;child[index] = NULL;
+                return (notLeaf(root) &amp;&amp; noChildren(root));
+            }
+        }
+    }
+    return false;
+}
+
+int main(){
+    int n;
+    cin&gt;&gt;n;
+    vector&lt;string&gt; str;
+    string s;
+
+    for(int i=0;i&lt;n;i++){
+      cin&gt;&gt;s;
+      str.push_back(s);
+    }
+
+    trieNode *root = getNode();
+    for(int i=0;i&lt;n;i++){
+        insert(root,str[i]);
+    }
+    walk(root);
+    cout&lt;&lt;endl;
+    cin&gt;&gt;s;
+    deletes(root,s,0,n);
+    walk(root);
+    return 0;
+}
+</pre>

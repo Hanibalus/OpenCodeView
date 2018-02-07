@@ -1,0 +1,70 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// Fenwick Tree (also known as Binary Indexed Tree or BIT)
+class BIT
+{
+    public:
+    int n;
+    vector&lt;int&gt; arr;
+
+    // constructor: initializes variables
+    BIT(int n) 
+    {
+        this -&gt; n = n;
+        arr.resize(n+1, 0);
+    }
+
+    // returns least significant bit
+    int lsb(int idx)
+    {
+        return idx &amp; -idx;
+    }
+
+    // updates the element at index idx by val
+    void update(int idx, int val) // log(n) complexity
+    {
+        while(idx &lt;= n)
+        {
+            arr[idx] += val;
+            idx += lsb(idx);
+        }
+    }
+
+    // returns prefix sum from 1 to idx
+    int prefix(int idx) // log(n) complexity
+    {
+        int sum = 0;
+        while(idx &gt; 0)
+        {
+            sum += arr[idx];
+            idx -= lsb(idx);
+        }
+        return sum;
+    }
+
+    // returns sum of elements between indices l and r
+    int range_query(int l, int r) // log(n) complexity
+    {
+        return prefix(r) - prefix(l-1);
+    }
+
+};
+
+int main()
+{
+    vector&lt;int&gt; array = {1, 2, 3, 4, 5};
+    int n = array.size();
+    BIT tree(n);
+
+    for(int i=0; i&lt;n; i++)
+        tree.update(i+1, array[i]);
+
+    cout &lt;&lt; "Range Sum from 2 to 4: " &lt;&lt; tree.range_query(2,4) &lt;&lt; endl;
+    cout &lt;&lt; "Range Sum from 1 to 5: " &lt;&lt; tree.range_query(1,5) &lt;&lt; endl;
+}
+</pre>

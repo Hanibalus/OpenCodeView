@@ -1,0 +1,29 @@
+<pre>
+/// Part of Cosmos by OpenGenus Foundation
+/// Find of average of numbers in an array
+/// Contributed by: Pranav Gupta (foobar98)
+/// Modified by: Arnav Borborah (arnavb)
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main()
+{
+	vector&lt;int&gt; elements;
+
+	cout &lt;&lt; "Enter the numbers you want to find the average of: ";
+	int sum = 0;
+	string input;
+	getline(cin, input);
+	istringstream is(input);
+	for(int element; is &gt;&gt; element;){ // Read numbers until the user enters a newline
+		elements.push_back(element);
+		sum += element;
+	}
+	double avg = static_cast&lt;double&gt;(sum)/elements.size();
+	cout &lt;&lt; "Average of numbers: " &lt;&lt; avg &lt;&lt; endl;
+}
+</pre>

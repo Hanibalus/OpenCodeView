@@ -1,0 +1,22 @@
+<pre>
+#include &lt;iostream&gt;
+
+int main()
+{
+    for (int i = 1; i &lt; 1000; ++i)
+    {
+        for (int j = 1; j &lt; 1000; ++j)
+        {
+            for (int k = 1; k &lt; 1000; ++k)
+            {
+                if (((i*i) + (j*j) == (k*k)) &amp;&amp; ((i + j + k) == 1000))
+                {
+                    std::cout &lt;&lt; i*j*k &lt;&lt; "\n";
+                    goto OutsideLoop;
+                }
+            }
+        }
+    }
+    OutsideLoop: // Need this for breaking outside all three loops
+    return 0;
+}</pre>

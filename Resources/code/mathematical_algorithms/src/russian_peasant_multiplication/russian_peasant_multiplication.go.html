@@ -1,0 +1,28 @@
+<pre>
+package main
+
+import "fmt"
+
+func russianPeasant(a, b int) int {
+	// Init result
+	res := 0
+
+	//While second munber doesn't become 1
+	for b &gt; 0 {
+		// If second number is odd, add first number to result
+		if (b &amp; 1) != 0 {
+			res += a
+		}
+		// Double the first number
+		a = a &lt;&lt; 1
+		// Halve the second number
+		b = b &gt;&gt; 1
+	}
+	return res
+}
+
+func main() {
+	fmt.Println(russianPeasant(18, 24))
+	fmt.Println(russianPeasant(20, 12))
+}
+</pre>

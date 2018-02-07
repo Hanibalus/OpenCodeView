@@ -1,0 +1,59 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+struct node
+{
+ int d;
+ node *left;
+ node *right;
+};
+
+struct node* newnode(int num)
+{
+ node *temp=new node;
+ temp-&gt;d=num;
+ temp-&gt;left=temp-&gt;right=NULL;
+ return temp;
+}
+  
+void rightview(struct node *root, int level, int *maxlevel)
+{
+ if(root==NULL)
+ return;
+
+ 
+ if(*maxlevel&lt;level)
+ {
+  cout&lt;&lt;root-&gt;d&lt;&lt;" ";
+  *maxlevel=level;
+ }
+ 
+ rightview(root-&gt;right,level+1,maxlevel);
+ rightview(root-&gt;left,level+1,maxlevel);
+ 
+}
+
+int main()
+{
+    struct node *root = newnode(1);
+    root-&gt;left = newnode(2);
+    root-&gt;right = newnode(3);
+    root-&gt;left-&gt;left = newnode(4);
+    root-&gt;left-&gt;right = newnode(5);
+    root-&gt;right-&gt;left = newnode(6);
+    root-&gt;right-&gt;right = newnode(7);
+    root-&gt;right-&gt;left-&gt;right = newnode(8);
+ 
+ 
+ int maxlevel=0;
+ 
+ cout&lt;&lt;"\nRight view : ";
+ rightview(root,1,&amp;maxlevel);
+ 
+ cout&lt;&lt;endl;
+ return 0;
+}
+  
+  
+</pre>

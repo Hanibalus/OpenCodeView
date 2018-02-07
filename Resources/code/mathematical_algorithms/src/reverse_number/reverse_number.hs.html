@@ -1,0 +1,5 @@
+<pre>
+reverseInt :: Integer -&gt; Integer
+reverseInt x | x &lt; 0     = 0 - (read . reverse . tail . show $ x)
+             | otherwise = read . reverse . show $ x
+</pre>

@@ -1,0 +1,21 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+// Code written by Adeen Shukla (adeen-s)
+#include&lt;stdio.h&gt;
+
+int main() {
+	int n, sum = 0, tmp = 0, i;
+    
+    printf("Enter the total number of inputs : ");
+    scanf("%d", &amp;n);
+	printf("\nEnter the numbers\n");
+    
+    for (i = 0; i &lt; n; i++) {
+	   scanf("%d", &amp;tmp);
+	   sum += tmp;		
+    }
+
+    float avg = (float) sum / n;
+    printf("\nAverage = %f\n", avg);
+}
+</pre>

@@ -1,0 +1,23 @@
+<pre>
+#include &lt;iostream&gt;
+
+int main()
+{
+    int d = 1;
+    
+    while (!(
+        (d % 11 == 0) &amp;&amp;
+        (d % 12 == 0) &amp;&amp;
+        (d % 13 == 0) &amp;&amp;
+        (d % 14 == 0) &amp;&amp;
+        (d % 15 == 0) &amp;&amp;
+        (d % 16 == 0) &amp;&amp;
+        (d % 17 == 0) &amp;&amp;
+        (d % 18 == 0) &amp;&amp;
+        (d % 19 == 0) &amp;&amp;
+        (d % 20 == 0)
+    ))
+        ++d;
+    
+    std::cout &lt;&lt; d &lt;&lt; "\n";
+}</pre>

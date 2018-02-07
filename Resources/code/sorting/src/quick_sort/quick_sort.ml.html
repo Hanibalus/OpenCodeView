@@ -1,0 +1,9 @@
+<pre>
+(* Part of Cosmos by OpenGenus Foundation *)
+
+let rec quick_sort = function
+  | [] -&gt; []
+  | hd :: tl -&gt;
+    let lower, higher = List.partition (fun x -&gt; x &lt; hd) tl in
+    quick_sort lower @ (hd :: quick_sort higher);;
+</pre>

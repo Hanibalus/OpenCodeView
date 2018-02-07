@@ -1,0 +1,298 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;vector&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+using namespace std;
+
+class Node{
+	public:
+		int value;
+		int degree;
+		Node* parent;
+		Node* child;
+		Node* sibling;
+        Node():value(0),degree(0),parent(0),child(0),sibling(0){};
+	~Node(){};
+};
+
+class BinomialHeap{
+	public:
+		BinomialHeap():head(NULL){
+		}
+		Node* getHead(){
+			return head;
+		}
+		void insert(int value){
+			BinomialHeap tempHeap;
+			Node* tempNode = new Node();
+			tempNode-&gt;value = value;
+			tempHeap.setHead(&amp;tempNode);
+			bHeapUnion(tempHeap);
+		}
+		void deleteMin(){
+			int min = head-&gt;value;
+			Node* tmp = head;
+			Node* minPre = NULL;
+			Node* minCurr = head;
+
+			//find the root x with the minimum key in the root list of H
+			// remove x from the root list of H
+			while(tmp-&gt;sibling){
+				if(tmp-&gt;sibling-&gt;value &lt; min){
+					min = tmp-&gt;sibling-&gt;value;
+					minPre = tmp;
+					minCurr = tmp-&gt;sibling;
+				}
+				tmp = tmp-&gt;sibling;
+			}
+			if(!minPre &amp;&amp; minCurr)
+				head = minCurr-&gt;sibling;
+			else if(minPre &amp;&amp; minCurr)
+				minPre-&gt;sibling = minCurr-&gt;sibling;
+			//H' Make-BINOMIAL-HEAP()
+			BinomialHeap bh ;
+			Node *pre,*curr;
+			//reverse the order of the linked list of x's children
+			pre = tmp = NULL;
+			curr = minCurr-&gt;child;
+			while(curr){
+				tmp = curr-&gt;sibling;
+				curr-&gt;sibling = pre;
+				curr-&gt;parent = NULL;
+				pre = curr;
+				curr = tmp;
+			}
+			//set head[H'] to point to the head of the resulting list
+			bh.setHead(&amp;pre);
+			//H &lt;- BINOMIAL-HEAP-UNION
+			bHeapUnion(bh);
+		}
+		int getMin(){
+			int min = 2&lt;&lt;20;
+			Node* tmp = head;
+			while(tmp){
+				if(tmp-&gt;value &lt; min)
+					min = tmp-&gt;value;
+				tmp = tmp-&gt;sibling;
+			}
+			return min;
+
+		}
+		void preorder(){
+			puts("");
+			Node* tmp = head;
+			while(tmp){
+				_preorder(tmp);
+				tmp=tmp-&gt;sibling;
+			}
+			puts("");
+		}
+		void BFS() {
+			puts("");
+			queue&lt;Node*&gt; nodeQueue;
+			Node *tmp = head;
+			
+			while(tmp) {
+				nodeQueue.push(tmp);
+				tmp = tmp-&gt;sibling;
+			}
+
+			while(!nodeQueue.empty()) {
+				Node *node = nodeQueue.front();
+				nodeQueue.pop();
+
+				if (node)
+					printf("%d ",node-&gt;value);
+
+				node = node-&gt;child;
+				while(node) {
+					nodeQueue.push(node);
+					node = node-&gt;sibling;
+				}
+			}
+			puts("");
+
+		}
+		void bHeapUnion(BinomialHeap &amp;bh){
+			
+			_mergeHeap(bh);
+			Node* prev = NULL;
+			Node* x = head;
+			Node* next = x-&gt;sibling;
+			while(next){
+				if( x-&gt;degree != next-&gt;degree) {
+					prev = x;  //Case 1 and 2
+					x = next;  //Case 1 and 2
+				}
+				else if (next-&gt;sibling &amp;&amp; next-&gt;sibling-&gt;degree == x-&gt;degree) { //three BT has the same degree
+					if (next-&gt;value &lt; x-&gt;value &amp;&amp; next-&gt;value &lt; next-&gt;sibling-&gt;value) { //312, need to trans to 132
+						x-&gt;sibling = next-&gt;sibling;
+						next-&gt;sibling = x;
+						if (prev) 
+							prev-&gt;sibling = next;
+						else 
+							head = next;
+
+						prev = x;
+						x = next;
+					}
+					else if (next-&gt;sibling-&gt;value &lt; x-&gt;value &amp;&amp; next-&gt;sibling-&gt;value &lt; next-&gt;value) { //321, need to trans to 123
+						x-&gt;sibling = next-&gt;sibling-&gt;sibling;
+						next-&gt;sibling-&gt;sibling = next;
+						if (prev) 
+							prev-&gt;sibling = next-&gt;sibling;
+						else 
+							head = next-&gt;sibling;
+						prev = next-&gt;sibling;
+						next-&gt;sibling = x;
+						x = next;
+					}
+					else {
+						prev = x;  //Case 1 and 2
+						x = next;  //Case 1 and 2
+					}
+				}
+				else if( x-&gt;value &lt;= next-&gt;value){
+					x-&gt;sibling = next-&gt;sibling;  //Case 3
+					_mergeTree(next,x);			 //Case 3
+					next = x;
+				}
+				else{
+					if(!prev){					 //Case 4
+						head = next;				 //Case 4
+					}
+					else{
+						prev-&gt;sibling = next;        //Case 4
+					}
+					_mergeTree(x,next);			 //Case 4
+					x = next;					 //Case 4
+				}
+				next = next-&gt;sibling;			 //Case 4
+			}
+		}
+		int size(){
+			return _size(head);
+		}
+		void setHead(Node** node){
+			head = *node;
+		}
+
+	private:
+		int _size(Node* node){
+			if(!node)
+				return 0;
+			return 1+_size(node-&gt;child)+_size(node-&gt;sibling);
+		}
+		void _preorder(Node* node){
+			if(!node)
+				return;
+			printf("%d ",node-&gt;value);
+			_preorder(node-&gt;child);
+			if(node-&gt;parent)
+			_preorder(node-&gt;sibling);
+			//printf("%d(%d) ",node-&gt;value,node-&gt;degree);
+		}
+		void _mergeTree(Node* tree1,Node* tree2){
+			tree1-&gt;parent = tree2;
+			tree1-&gt;sibling = tree2-&gt;child;
+			tree2-&gt;child = tree1;
+			tree2-&gt;degree++;
+		}
+		void _mergeHeap(BinomialHeap &amp;bh){
+			Node* head2 = bh.getHead();
+			Node* head1 = head;
+			//for new pointer
+			Node *newHead,*newCurr;
+			if(!head1){
+				head = head2;
+				return;
+			}
+			if(head1-&gt;degree &gt; head2-&gt;degree){
+				newHead = newCurr = head2;
+				head2 = head2-&gt;sibling;
+			}
+			else{
+				newHead = newCurr = head1;
+				head1 = head1-&gt;sibling;
+			}
+			//Sorted by degree into monotonically increasing order
+			while(head1 &amp;&amp; head2){
+				if(head1-&gt;degree &lt; head2-&gt;degree){
+					newCurr-&gt;sibling = head1;
+					newCurr = head1;
+					head1 = head1-&gt;sibling;
+				}
+				else{
+					newCurr-&gt;sibling = head2;
+					newCurr = head2;
+					head2 = head2-&gt;sibling;
+				}
+			}
+			while(head1){
+				newCurr-&gt;sibling = head1;
+				newCurr = head1;
+				head1 = head1-&gt;sibling;
+			}
+			while(head2){
+				newCurr-&gt;sibling = head2;
+				newCurr = head2;
+				head2 = head2-&gt;sibling;
+			}
+			head = newHead;
+		}
+
+		Node* head;
+};
+
+int main(){
+	vector&lt;int&gt; heap1{5,4,3,2,1};
+	vector&lt;int&gt; heap2{4,3,2,1,8};
+	BinomialHeap bh1,bh2;
+
+    for (auto v: heap1) {
+        bh1.insert(v);
+    }
+
+    for (auto v: heap2) {
+        bh2.insert(v);
+    }
+
+	printf("preorder traversal of first binomialheap: ");
+	bh1.preorder();
+	printf("BFS of first binomialheap: ");
+	bh1.BFS();
+
+	printf("\n");
+
+	printf("preorder traversal of second binomialheap: ");
+	bh2.preorder();
+	printf("BFS of second binomialheap: ");
+	bh2.BFS();
+
+	printf("-----------Union------------------\n");;
+	bh1.bHeapUnion(bh2);
+	printf("preorder traversal of union: ");
+	bh1.preorder();
+	printf("BFS of union: ");
+	bh1.BFS();
+
+	printf("-----------Delete min = 1 --------\n");
+	bh1.deleteMin();
+	printf("preorder traversal of delete min: ");
+	bh1.preorder();
+	printf("BFS of union: ");
+	bh1.BFS();
+
+	printf("-----------Delete min = 2 --------\n");
+	bh1.deleteMin();
+	printf("preorder traversal of delete min: ");
+	bh1.preorder();
+	printf("BFS of union: ");
+	bh1.BFS();
+
+	printf("binomialheap min:%d\n",bh1.getMin());
+	printf("binomailheap size %d\n",bh1.size());
+}
+</pre>

@@ -1,0 +1,14 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+// Find of average of numbers in an array
+// Contributed by: Michele Riva (micheleriva)
+
+export const average = (numbers) =&gt; {
+	const sum = numbers.reduce((a,b) =&gt; a+b, 0);
+	return sum / numbers.length
+}
+
+/* Test */
+const n = [10,20,30,40]
+average(n) // =&gt; 25
+</pre>

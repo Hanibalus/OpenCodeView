@@ -1,0 +1,29 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+ 
+unsigned int russianPeasant(unsigned int a, unsigned int b)
+{
+    int res = 0;  // initialize result
+ 
+    
+    while (b &gt; 0)
+    {
+        
+         if (b &amp; 1)
+             res = res + a;
+ 
+        
+         a = a &lt;&lt; 1;
+         b = b &gt;&gt; 1;
+     }
+     return res;
+}
+
+int main()
+{
+    cout &lt;&lt; russianPeasant(18, 1) &lt;&lt; endl;
+    cout &lt;&lt; russianPeasant(20, 12) &lt;&lt; endl;
+    return 0;
+}
+</pre>

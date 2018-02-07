@@ -1,0 +1,31 @@
+<pre>
+#include&lt;iostream&gt;
+// Part of Cosmos by OpenGenus Foundation
+using namespace std;
+int limit;
+int N;
+int counter;
+void Backtracking(int position,int left, int right,int depth){
+	if(depth == N){
+		counter++;
+		return;
+	}
+	int currentPos = position | left | right;
+	int newPos;
+	while( currentPos &lt; limit ){
+		newPos = (currentPos+1) &amp; ~currentPos;
+		Backtracking( position | newPos, limit &amp; ((left | newPos)&lt;&lt;1), limit&amp;((right | newPos)&gt;&gt;1),depth+1);
+		currentPos = currentPos | newPos;
+	}
+}
+
+int main(){
+    cout &lt;&lt; "Please Enter the size of board" &lt;&lt; endl;
+	cin &gt;&gt; N;
+	counter = 0;
+	limit = (1&lt;&lt;(N))-1;
+	Backtracking(0,0,0,0);
+	cout &lt;&lt; "There are " &lt;&lt; counter &lt;&lt; " ways" &lt;&lt;endl;
+}
+
+</pre>

@@ -1,0 +1,76 @@
+<pre>
+//Tree Sort implemented using C++
+// Part of Cosmos by OpenGenus Foundation
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+struct Node
+{
+	int data;
+	struct Node *left,*right;
+};
+//Function to create new Node
+struct Node *newnode(int key)
+{
+	struct Node *temp=new Node;
+	temp-&gt;data=key;
+	temp-&gt;left=NULL;
+	temp-&gt;right=NULL;
+	return temp;
+}
+
+Node* insert(Node *node,int key)
+{
+	if(node==NULL) return newnode(key);//If tree is empty return new node
+	if(key &lt; node-&gt;data)
+	  node-&gt;left=insert(node-&gt;left,key);
+	else
+	  node-&gt;right=insert(node-&gt;right,key);
+	return node;
+}
+void store(Node *root,int a[],int &amp;i)
+{
+	if(root!=NULL)
+	{
+		store(root-&gt;left,a,i);
+		a[i++]=root-&gt;data;
+		store(root-&gt;right,a,i);
+	}
+}
+void TreeSort(vector&lt;int&gt;&amp; a)
+{
+    struct Node *root = NULL;
+ 
+    //Construct binary search tree
+    root = insert(root, a[0]);
+    for (int i=1; i&lt;a.size(); i++)
+        insert(root, a[i]);
+ 
+    //Sorting the array using inorder traversal on BST
+    int i = 0;
+    store(root, a.data() , i);
+}
+
+int main()
+{
+    
+    vector&lt;int&gt; a{1,6,8,3,10,2,12};
+ 
+    TreeSort(a);
+    
+    cout&lt;&lt;"The sorted array is :\n";
+    //Printing the sorted array
+    for(int i=0;i&lt;a.size();i++)
+    {
+    	cout&lt;&lt;a[i]&lt;&lt;" ";
+    }
+ 
+    return 0;
+}
+
+/* output:
+The sorted array is :
+1 2 3 6 8 10 12
+*/
+</pre>

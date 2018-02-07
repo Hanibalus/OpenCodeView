@@ -1,0 +1,25 @@
+<pre>
+extern crate rand;
+use rand::Rng;
+
+fn swap(arr: &amp;mut Vec&lt;i64&gt;, i: usize) {
+    let a = &amp;arr[i];
+    arr[i] = arr[i + 1];
+    arr[i + 1] = *a;
+}
+
+fn randomize(arr: &amp;Vec&lt;i64&gt;) -&gt; Vec&lt;i64&gt; {
+    let mut rng = rand::thread_rng();
+    let mut temp = arr.clone();
+    for i in 0..arr.len() - 1 {
+        let random_num = rng.gen::&lt;u8&gt;() % 2;
+        if random_num == 1 {
+            swap(&amp;mut temp, i);
+        }
+    }
+    return temp;
+}
+
+fn main() {
+    println!("{:?}", randomize(&amp;vec![1, 2, 3, 4, 5]));
+}</pre>

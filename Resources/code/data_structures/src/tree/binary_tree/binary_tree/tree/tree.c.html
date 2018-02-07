@@ -1,0 +1,140 @@
+<pre>
+//Author: Praveen Gupta
+// Part of Cosmos by OpenGenus Foundation
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+//Defining Node
+typedef struct node{
+	int data;
+	struct node *left;
+	struct node *right;
+
+}node;
+
+//Creates a new Node
+node *newNode(int data){
+	node *temp=(node *)malloc(sizeof(node));
+	temp-&gt;data=data;
+	temp-&gt;left=temp-&gt;right=NULL;
+
+	return temp;
+}
+
+//Adds the new node to the appropriate position
+node *create(node *head,int data){
+
+	if (head==NULL){
+		head = newNode(data);
+	}
+	else if(data&lt;=head-&gt;data){
+		head-&gt;left = create(head-&gt;left,data);
+	}
+	else{
+		head-&gt;right = create(head-&gt;right,data);
+	}
+	return head;
+}
+
+//Prints tree
+void print(node *head){
+	if(head==NULL)
+	{
+		return;
+	}
+	printf("%d(",head-&gt;data );
+	print(head-&gt;left);
+	printf(" , ");
+	print(head-&gt;right);
+	printf(")");
+}
+
+//Searches for an element in the tree
+int search(node *head, int data){
+	if(head==NULL)
+		return 0;
+	if(head-&gt;data==data)
+		return 1;
+	if(data&lt;head-&gt;data)
+		return search(head-&gt;left, data);
+	else
+		return search(head-&gt;right, data);
+}
+
+//Deletes a subtree with root as the parameter
+node *deleteTree(node *head){
+	if(head==NULL)
+		return NULL;
+
+	deleteTree(head-&gt;left);
+	deleteTree(head-&gt;right);
+	free(head);
+	return NULL;
+}
+
+//Deletes the node and its children's
+node *delete(node *head, int data){
+	if(head==NULL){
+		printf("Nor found\n");		
+	}
+
+	if(head-&gt;data==data){
+		head = deleteTree(head);
+	}
+	
+	else if(data&lt;head-&gt;data)
+		head-&gt;left = delete(head-&gt;left, data);
+	
+	else
+		head-&gt;right = delete(head-&gt;right, data);
+
+	return head;
+}
+//Finds the height of the tree
+int height(node *head) 
+{
+   if (head==NULL) 
+       return 0;
+   else
+   {
+       /* compute the depth of each subtree */
+       int left_height = height(head-&gt;left);
+       int right_height = height(head-&gt;right);
+ 
+       /* use the larger one */
+       if (left_height &gt; right_height) 
+           return(left_height+1);
+       else return(right_height+1);
+   }
+} 
+int main(){
+node *head=NULL;
+
+	printf("Binary Search Tree\n");
+	int c,data;
+
+	again:
+	printf("\n1. Insert Node         2. Delete Node		  3.Search		4.Find height\n");
+	scanf("%d",&amp;c);
+
+	switch(c){
+		case 1:	printf("Enter data\n");
+				scanf("%d",&amp;data);
+				head=create(head,data);
+				break;
+
+		case 2:	printf("Enter data to delete\n");
+				scanf("%d",&amp;data);
+				head = delete(head,data);
+				break;		
+
+		case 3: printf("Enter data to search\n");
+				scanf("%d",&amp;data);
+				search(head,data) ? printf("Found in tree\n"):printf("Not Found in tree\n");
+		case 4: printf("The height of BST is: %d ",height(head));
+	}
+	print(head);
+	goto again;
+return 0;
+}
+</pre>

@@ -1,0 +1,122 @@
+<pre>
+/*
+    Part of Cosmos by OpenGenus Foundation
+
+    diameter of tree synopsis
+
+template&lt;typename _TreeNode&gt;
+size_t
+diameter(_TreeNode node);
+
+template&lt;typename _TreeNode&gt;
+void
+diameterIterative(_TreeNode const &amp;node, size_t &amp;maximum);
+
+template&lt;typename _TreeNode&gt;
+size_t
+getDiameter(_TreeNode const &amp;node);
+
+template&lt;typename _TreeNode&gt;
+size_t
+getDeep(_TreeNode const &amp;node);
+
+template&lt;typename _TreeNode&gt;
+size_t
+diameterRecursive(_TreeNode node, size_t &amp;maximum);
+ */
+
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+#include &lt;stack&gt;
+#include "../tree_node/tree_node.cpp"
+
+template&lt;typename _TreeNode&gt;
+size_t
+diameter(_TreeNode node)
+{
+    size_t res{};
+    diameterIterative(node, res);
+
+    return res;
+}
+
+template&lt;typename _TreeNode&gt;
+void
+diameterIterative(_TreeNode const &amp;node, size_t &amp;maximum)
+{
+    maximum = 0;
+    if (node != nullptr)
+    {
+        std::stack&lt;_TreeNode&gt; diameters;
+        diameters.push(node);
+
+        // DFS
+        while (!diameters.empty())
+        {
+            while (diameters.top()-&gt;left() != nullptr)
+                diameters.push(diameters.top()-&gt;left());
+            while (!diameters.empty()
+                   &amp;&amp; (diameters.top() == nullptr
+                       || diameters.top()-&gt;right() == nullptr))
+            {
+                if (diameters.top() == nullptr) // if back from right hand
+                    diameters.pop();
+                auto top = diameters.top();
+                maximum = std::max(maximum, static_cast&lt;size_t&gt;(getDiameter(top)));
+                top-&gt;value(static_cast&lt;int&gt;(getDeep(top)));
+                diameters.pop();
+            }
+            if (!diameters.empty())
+            {
+                auto right = diameters.top()-&gt;right();
+                diameters.push(nullptr);    // prevent visit two times when return to parent
+                diameters.push(right);
+            }
+        }
+    }
+}
+
+template&lt;typename _TreeNode&gt;
+size_t
+getDiameter(_TreeNode const &amp;node)
+{
+    size_t res = 1;
+    res += node-&gt;left() ? node-&gt;left()-&gt;value() : 0;
+    res += node-&gt;right() ? node-&gt;right()-&gt;value() : 0;
+
+    return res;
+}
+
+template&lt;typename _TreeNode&gt;
+size_t
+getDeep(_TreeNode const &amp;node)
+{
+    size_t res = 1;
+    res += std::max(node-&gt;left() ? node-&gt;left()-&gt;value() : 0,
+                    node-&gt;right() ? node-&gt;right()-&gt;value() : 0);
+
+    return res;
+}
+
+template&lt;typename _TreeNode&gt;
+size_t
+diameterRecursive(_TreeNode node, size_t &amp;maximum)
+{
+    if (node != nullptr)
+    {
+        size_t leftMax{}, rightMax{};
+
+        // DFS
+        size_t leftHeight = diameterRecursive(node-&gt;left(), leftMax);
+        size_t rightHeight = diameterRecursive(node-&gt;right(), rightMax);
+
+        maximum = leftHeight + rightHeight + 1;
+        maximum = std::max(maximum, leftMax);
+        maximum = std::max(maximum, rightMax);
+
+        return std::max(leftHeight, rightHeight) + 1;
+    }
+
+    return 0;
+}
+</pre>

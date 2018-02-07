@@ -1,0 +1,90 @@
+<pre>
+#include&lt;iostream&gt;
+using namespace std;
+
+struct node
+{
+    int key;
+    struct node *left, *right;
+};
+
+struct node *newNode(int item)
+{
+    struct node *temp =  new node;
+    temp-&gt;key = item;
+    temp-&gt;left = temp-&gt;right = NULL;
+    return temp;
+}
+
+//Inorder traversal
+void inorder(struct node *root)
+{
+    if (root != NULL)
+    {
+        inorder(root-&gt;left);
+        cout&lt;&lt;root-&gt;key&lt;&lt;" ";
+        inorder(root-&gt;right);
+    }
+}
+
+//Preorder traversal
+void preorder(struct node *root)
+{
+    if(root == NULL)
+        return;
+    cout&lt;&lt;root-&gt;key&lt;&lt;" ";
+    preorder(root-&gt;left);
+    preorder(root-&gt;right);
+}
+
+//Postorder traversal
+void postorder(struct node *root)
+{
+    if(root == NULL)
+        return;
+    postorder(root-&gt;left);
+    postorder(root-&gt;right);
+    cout&lt;&lt;root-&gt;key&lt;&lt;" ";
+}
+
+//Insert key
+struct node* insert(struct node* node, int key)
+{
+    if (node == NULL) return newNode(key);
+    if (key &lt; node-&gt;key)
+        node-&gt;left  = insert(node-&gt;left, key);
+    else if (key &gt; node-&gt;key)
+        node-&gt;right = insert(node-&gt;right, key);
+    return node;
+}
+
+// Driver Code
+int main()
+{
+    /* Let us create following BST
+             50
+           /    \
+          30     70
+         /  \   /  \
+       20   40 60   80 */
+    struct node *root = NULL;
+    root = insert(root, 50);
+    insert(root, 30);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 70);
+    insert(root, 60);
+    insert(root, 80);
+
+    cout&lt;&lt;"Inorder traversal: ";
+    inorder(root);
+
+    cout&lt;&lt;"\nPreorder traversal: ";
+    preorder(root);
+
+    cout&lt;&lt;"\nPostorder traversal: ";
+    postorder(root);
+    cout&gt;&gt;endl;
+    return 0;
+}
+</pre>

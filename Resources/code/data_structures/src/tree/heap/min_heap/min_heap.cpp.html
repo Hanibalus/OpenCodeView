@@ -1,0 +1,79 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+using namespace std;
+
+class minHeap{
+    vector&lt;int&gt; v;
+
+    void heapify(int i){
+        int l = 2*i;
+        int r = 2*i + 1;
+        int min = i;
+        if(l &lt; v.size() &amp;&amp; v[l] &lt; v[min]){
+            min = l;
+        }
+        if(r &lt; v.size() &amp;&amp; v[r] &lt; v[min]){
+            min = r;
+        }
+
+        if(min!=i){
+            swap(v[i],v[min]);
+            heapify(min);
+        }
+    }
+
+public:
+    minHeap(){
+        v.push_back(-1);
+    }
+    void insert(int data){
+        v.push_back(data);
+        int i = v.size() - 1;
+        int parent = i/2;
+
+        while(v[i] &lt; v[parent] &amp;&amp; i &gt; 1){
+            swap(v[i],v[parent]);
+            i = parent;
+            parent = parent/2;
+        }
+
+    }
+    int top(){
+        return v[1];
+    }
+
+    void extractTop(){
+
+        int last = v.size()-1;
+        swap(v[1],v[last]);
+        v.pop_back();
+        heapify(1);
+    }
+
+    bool isEmpty(){
+        return v.size() == 1;
+    }
+
+};
+
+int main(){
+
+    int data;
+    cout&lt;&lt;"\nEnter data : ";
+    cin &gt;&gt; data;
+    minHeap h;
+    while( data != -1){
+        h.insert(data);
+        cout&lt;&lt;"\nEnter data(-1 to exit) : ";
+        cin &gt;&gt; data;
+    }
+
+    while(!h.isEmpty()){
+        cout &lt;&lt; h.top() &lt;&lt; " ";
+        h.pop();
+    }
+    return 0;
+}
+</pre>

@@ -1,0 +1,246 @@
+<pre>
+/**
+ * Soft Heap
+ * Author: JonNRb
+ *
+ * Original paper: https://www.cs.princeton.edu/~chazelle/pubs/sheap.pdf
+ * Binary heap version by Kaplan and Zwick
+ */
+
+#include &lt;functional&gt;
+#include &lt;iterator&gt;
+#include &lt;limits&gt;
+#include &lt;list&gt;
+#include &lt;memory&gt;
+#include &lt;stdexcept&gt;
+
+using namespace std;
+
+#if __cplusplus &lt;= 201103L
+namespace {
+template &lt;typename T, typename... Args&gt;
+unique_ptr&lt;T&gt; make_unique(Args&amp;&amp;... args) {
+  return unique_ptr&lt;T&gt;(new T(forward&lt;Args&gt;(args)...));
+}
+}  // namespace
+#endif
+
+// `T` is a comparable type and higher values of `corruption` increase the
+// orderedness of the soft heap
+template &lt;typename T&gt;
+class SoftHeap {
+ private:
+  // `node`s make up elements in the soft queue, which is a binary heap with
+  // "corrupted" entries
+  struct node {
+    typename list&lt;T&gt;::iterator super_key;
+    unsigned rank;
+
+    // `target_size` is a target for the number of corrupted nodes. the number
+    // increases going up the heap and should be between 1 and 2 times the
+    // `target_size` of its children -- unless it is `corruption` steps from the
+    // bottom, in which case it is 1.
+    unsigned target_size;
+
+    // `link[0]` is the left node and `link[1]` is the right node
+    unique_ptr&lt;node&gt; link[2];
+
+    // if `l` contains more than 1 entry, the node is "corrupted"
+    list&lt;T&gt; l;
+  };
+
+  struct head {
+    // the root of a "soft queue": a binary heap of nodes
+    unique_ptr&lt;node&gt; q;
+
+    // iterator to the tree following this one with the minimum `super_key` at
+    // the root. may be the current `head`.
+    typename list&lt;head&gt;::iterator suffix_min;
+  };
+
+  // doubly-linked list of all binary heaps (soft queues) in the soft heap
+  list&lt;head&gt; l;
+  unsigned corruption;
+
+ public:
+  SoftHeap(unsigned corruption) : corruption(corruption) {}
+
+  bool empty() { return l.empty(); }
+
+  void push(T item) {
+    auto item_node = make_unique&lt;node&gt;();
+    item_node-&gt;rank = 0;
+    item_node-&gt;target_size = 1;
+    item_node-&gt;link[0] = nullptr;
+    item_node-&gt;link[1] = nullptr;
+    item_node-&gt;l.push_front(move(item));
+    item_node-&gt;super_key = item_node-&gt;l.begin();
+
+    l.emplace_front();
+    auto h = l.begin();
+    h-&gt;q = move(item_node);
+    h-&gt;suffix_min = next(h) != l.end() ? next(h)-&gt;suffix_min : h;
+
+    repeated_combine(1);
+  }
+
+  T pop() {
+    if (l.empty()) throw invalid_argument("empty soft heap");
+
+    auto it = l.begin()-&gt;suffix_min;
+    node* n = it-&gt;q.get();
+
+    T ret = move(*n-&gt;l.begin());
+    n-&gt;l.pop_front();
+
+    if (n-&gt;l.size() &lt; n-&gt;target_size) {
+      if (n-&gt;link[0] || n-&gt;link[1]) {
+        sift(n);
+        update_suffix_min(it);
+      } else if (n-&gt;l.empty()) {
+        if (it == l.begin()) {
+          l.erase(it);
+        } else {
+          auto p = prev(it);
+          l.erase(it);
+          update_suffix_min(p);
+        }
+      }
+    }
+
+    return ret;
+  }
+
+ private:
+  void update_suffix_min(typename list&lt;head&gt;::iterator it) const {
+    if (it == l.end()) return;
+    while (true) {
+      if (next(it) == l.end()) {
+        it-&gt;suffix_min = it;
+      } else if (*it-&gt;q-&gt;super_key &lt;= *next(it)-&gt;suffix_min-&gt;q-&gt;super_key) {
+        it-&gt;suffix_min = it;
+      } else {
+        it-&gt;suffix_min = next(it)-&gt;suffix_min;
+      }
+      if (it == l.begin()) {
+        return;
+      }
+      --it;
+    }
+  }
+
+  unique_ptr&lt;node&gt; combine(unique_ptr&lt;node&gt; a, unique_ptr&lt;node&gt; b) const {
+    auto n = make_unique&lt;node&gt;();
+    n-&gt;rank = a-&gt;rank + 1;
+    n-&gt;target_size = n-&gt;rank &lt;= corruption ? 1 : (3 * a-&gt;target_size + 1) / 2;
+    n-&gt;link[0] = move(a);
+    n-&gt;link[1] = move(b);
+    sift(n.get());
+    return n;
+  }
+
+  void repeated_combine(unsigned max_rank) {
+    auto it = l.begin();
+    for (auto next_it = next(l.begin()); next_it != l.end();
+         it = next_it, ++next_it) {
+      if (it-&gt;q-&gt;rank == next_it-&gt;q-&gt;rank) {
+        if (next(next_it) == l.end() || next(next_it)-&gt;q-&gt;rank != it-&gt;q-&gt;rank) {
+          it-&gt;q = combine(move(it-&gt;q), move(next_it-&gt;q));
+          next_it = l.erase(next_it);
+          if (next_it == l.end()) break;
+        }
+      } else if (it-&gt;q-&gt;rank &gt; max_rank) {
+        break;
+      }
+    }
+
+    update_suffix_min(it);
+  }
+
+  static void sift(node* n) {
+    while (n-&gt;l.size() &lt; n-&gt;target_size) {
+      if (n-&gt;link[1]) {
+        if (!n-&gt;link[0] || *n-&gt;link[0]-&gt;super_key &gt; *n-&gt;link[1]-&gt;super_key) {
+          swap(n-&gt;link[0], n-&gt;link[1]);
+        }
+      } else if (!n-&gt;link[0]) {
+        return;
+      }
+
+      n-&gt;super_key = n-&gt;link[0]-&gt;super_key;
+      n-&gt;l.splice(n-&gt;l.end(), n-&gt;link[0]-&gt;l);
+
+      if (!n-&gt;link[0]-&gt;link[0] &amp;&amp; !n-&gt;link[0]-&gt;link[1]) {
+        n-&gt;link[0] = nullptr;
+      } else {
+        sift(n-&gt;link[0].get());
+      }
+    }
+  }
+};
+
+#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+#include &lt;random&gt;
+#include &lt;vector&gt;
+
+int run_test_with_corruption(unsigned corruption, unsigned k_num_elems) {
+  using namespace std::chrono;
+
+  cout &lt;&lt; "making soft heap with corruption " &lt;&lt; corruption &lt;&lt; " and "
+       &lt;&lt; k_num_elems &lt;&lt; " elements..." &lt;&lt; endl;
+  SoftHeap&lt;unsigned&gt; sh(corruption);
+
+  // create a random ordering of the numbers [0, k_num_elems)
+  vector&lt;bool&gt; popped_nums(k_num_elems);
+  vector&lt;unsigned&gt; nums(k_num_elems);
+  random_device rd;
+  mt19937 gen(rd());
+
+  for (unsigned i = 0; i &lt; k_num_elems; ++i) {
+    nums[i] = i;
+  }
+  for (unsigned i = 0; i &lt; k_num_elems; ++i) {
+    uniform_int_distribution&lt;unsigned&gt; dis(i, k_num_elems - 1);
+    swap(nums[i], nums[dis(gen)]);
+  }
+
+  auto start = steady_clock::now();
+
+  for (unsigned i = 0; i &lt; k_num_elems; ++i) {
+    sh.push(nums[i]);
+  }
+
+  // this notion of `num_errs` is not rigorous in any way
+  unsigned num_errs = 0;
+  unsigned last = 0;
+  while (!sh.empty()) {
+    unsigned i = sh.pop();
+    if (popped_nums[i]) {
+      cerr &lt;&lt; "  popped number " &lt;&lt; i &lt;&lt; " already" &lt;&lt; endl;
+      return -1;
+    }
+    popped_nums[i] = true;
+    if (i &lt; last) {
+      ++num_errs;
+    }
+    last = i;
+    // cout &lt;&lt; i &lt;&lt; endl;
+  }
+
+  auto end = steady_clock::now();
+
+  cout &lt;&lt; "  error rate: " &lt;&lt; ((double)num_errs / k_num_elems) &lt;&lt; endl;
+  cout &lt;&lt; "  took " &lt;&lt; duration_cast&lt;milliseconds&gt;(end - start).count() &lt;&lt; " ms"
+       &lt;&lt; endl;
+
+  return 0;
+}
+
+int main() {
+  for (unsigned i = 0; i &lt; 20; ++i) {
+    if (run_test_with_corruption(i, 1 &lt;&lt; 18)) return -1;
+  }
+  return 0;
+}
+</pre>

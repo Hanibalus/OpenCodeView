@@ -1,0 +1,79 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+const int MAX = 2000000000;
+const int MAX_NODES = 20;
+
+int optimalWayLength[1 &lt;&lt; MAX_NODES][MAX_NODES];
+
+bool was[1 &lt;&lt; MAX_NODES][MAX_NODES];
+
+int cameFrom[1 &lt;&lt; MAX_NODES][MAX_NODES];
+
+int distances[MAX_NODES][MAX_NODES];
+
+int n;
+
+
+int findAns (int last, int mask) {
+  if (mask == (1 &lt;&lt; last)) {
+    return 0;
+  }
+
+  if (was[mask][last]) return optimalWayLength[mask][last];
+  was[mask][last] = true;
+
+  int optimal = MAX;
+
+  for (int next = 0; next &lt; n; next++) {
+    if (next == last) continue;
+    if ((mask &amp; (1 &lt;&lt; next)) != 0) {
+      int distance = distances[next][last] + findAns (next, mask ^ (1 &lt;&lt; last));
+      if (distance &lt; optimal) {
+        optimal = distance;
+        cameFrom[mask][last] = next;
+      }
+    }
+  }
+
+  optimalWayLength[mask][last] = optimal;
+
+  return optimalWayLength[mask][last];
+}
+
+int main() {
+  std::cin &gt;&gt; n;
+  for (int i = 0; i &lt; n; i++) {
+    for (int j = 0; j &lt; n; j++) {
+      std::cin &gt;&gt; distances[i][j];
+    }
+  }
+  int optimal = MAX;
+  int last = 0;
+
+  for (int start = 0; start &lt; n; start++) {
+    int distance = findAns (start, (1 &lt;&lt; n) - 1);
+    if (distance &lt; optimal) {
+      optimal = distance;
+      last = start;
+    }
+  }
+
+  int mask = (1 &lt;&lt; n) - 1;
+  std::vector&lt;int&gt; way;
+
+  while(mask != 0) {
+    way.push_back(last);
+
+    int previous = cameFrom[mask][last];
+
+    mask ^= 1 &lt;&lt; last;
+
+    last = previous;
+  }
+
+  std::cout &lt;&lt; optimal &lt;&lt; '\n';
+  for (int i = way.size() - 1; i &gt;= 0; i--) std::cout &lt;&lt; way[i] + 1 &lt;&lt; ' ';
+}
+</pre>

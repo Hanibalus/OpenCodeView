@@ -1,0 +1,68 @@
+<pre>
+package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func Encrypt(str string, key int) string {
+	if err := checkKey(key); err != nil {
+		fmt.Println("Error: ", err.Error())
+		return ""
+	}
+	shift := rune(key)
+	dec := strings.Map(func(r rune) rune {
+		if r &gt;= 'a' &amp;&amp; r &lt;= 'z'-shift || r &gt;= 'A' &amp;&amp; r &lt;= 'Z'-shift {
+			return r + shift
+		} else if r &gt; 'z'-shift &amp;&amp; r &lt;= 'z' || r &gt; 'Z'-shift &amp;&amp; r &lt;= 'Z' {
+			return r + shift - 26
+		}
+		return r
+	}, str)
+	return dec
+}
+
+func Decrypt(str string, key int) string {
+	if err := checkKey(key); err != nil {
+		fmt.Println("Error: ", err.Error())
+		return ""
+	}
+	shift := rune(key)
+	dec := strings.Map(func(r rune) rune {
+		if r &gt;= 'a'+shift &amp;&amp; r &lt;= 'z' || r &gt;= 'A'+shift &amp;&amp; r &lt;= 'Z' {
+			return r - shift
+		} else if r &gt;= 'a' &amp;&amp; r &lt; 'a'+shift || r &gt;= 'A' &amp;&amp; r &lt; 'A'+shift {
+			return r - shift + 26
+		}
+		return r
+	}, str)
+	return dec
+}
+
+func checkKey(k int) error {
+	if k &lt;= 26 {
+		return nil
+	}
+	return fmt.Errorf("Invalid key\n 0 &lt;= Key &lt;= 26")
+}
+
+func main() {
+	var msg string
+	var key int
+	var mode rune
+	fmt.Println("Enter text to encrypt\\decrypt")
+	fmt.Scanf("%s\n", &amp;msg)
+	fmt.Println("Enter key")
+	fmt.Scanf("%d\n", &amp;key)
+	fmt.Println("Enter 'e' to encrypt or 'd' to decrypt")
+	fmt.Scanf("%c", &amp;mode)
+	if mode == rune('e') {
+		fmt.Println("Encrypted Message: ", Encrypt(msg, key))
+	} else if mode == rune('d') {
+		fmt.Println("Deccrypted Message: ", Decrypt(msg, key))
+	} else {
+		fmt.Println("Unknown mode")
+	}
+}
+</pre>

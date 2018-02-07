@@ -1,0 +1,17 @@
+<pre>
+import Data.Maybe (listToMaybe)
+
+type Board = [Int]
+
+nQueens :: Int -&gt; Maybe Board
+nQueens = listToMaybe . nQueens'
+
+nQueens' :: Int -&gt; [Board]
+nQueens' n = go n []
+  where
+    go 0 bs = [bs]
+    go k bs = concatMap (go (k - 1)) [ x : bs | x &lt;- [1..n], placeable x bs]
+
+    placeable n xs = null [ i | (i,x) &lt;- zip [1..] xs, n == x || abs (n - x) == i]
+
+</pre>

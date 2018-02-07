@@ -1,0 +1,337 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+// Author : ABDOUS Kamel
+// Implementation of a disk-stored B-Tree
+
+#include "btree.h"
+#include &lt;stdlib.h&gt;
+
+/*
+ * Binary search in a node.
+ * Returns 1 in success and stores the position in i.
+ * Otherwise returns 0 and i contains the position where the value is supposed to be.
+ */
+int bnode_search(TVal v, int* i, BNode* n)
+{
+    int bi = 0, bs = n-&gt;nb_n - 1;
+
+    while(bi &lt;= bs)
+    {
+        *i = (bi + bs) / 2;
+        if(n-&gt;vals[*i] == v)
+            return 1;
+
+        else if(n-&gt;vals[*i] &lt; v)
+            bi = *i + 1;
+
+        else
+            bs = *i - 1;
+    }
+
+    *i = bi;
+    return 0;
+}
+
+/*
+ * Inserts v in n and keeps the values sorted.
+ * rc is the right child of the value (-1 if it hasn't).
+ */
+void bnode_ins(TVal v, int rc, BNode* n)
+{
+    if(n-&gt;nb_n == MAX_N)
+        return ;
+
+    int i = n-&gt;nb_n - 1;
+
+    while(i &gt;= 0 &amp;&amp; n-&gt;vals[i] &gt; v)
+    {
+        n-&gt;vals[i + 1] = n-&gt;vals[i];
+        n-&gt;childs[i + 2] = n-&gt;childs[i + 1];
+        i--;
+    }
+
+    n-&gt;vals[i + 1] = v;
+    n-&gt;childs[i + 2] = rc;
+
+    n-&gt;nb_n++;
+}
+
+/*
+ * Deletes v from the node n.
+ */
+void bnode_del(TVal v, BNode* n)
+{
+    int i = 0;
+
+    if(!bnode_search(v, &amp;i, n))
+        return;
+
+    n-&gt;nb_n--;
+    while(i &lt; n-&gt;nb_n)
+    {
+        n-&gt;vals[i] = n-&gt;vals[i + 1];
+        n-&gt;childs[i + 1] = n-&gt;childs[i + 2];
+    }
+}
+
+void inordre(BTree* f, int i)
+{
+    BNode buff;
+    ReadBlock(f, &amp;buff, i);
+
+    int j;
+    for(j = 0; j &lt; buff.nb_n; ++j)
+    {
+        if(buff.childs[j] != -1)
+            inordre(f, buff.childs[j]);
+
+        printf("%d ", buff.vals[j]);
+    }
+
+    if(buff.childs[j] != -1)
+        inordre(f, buff.childs[j]);
+}
+
+/*
+ * Returns 1 and the block that contains c in buff, and its num in i, and the position of c in j.
+ * If the value doesn't exist, returns 0.
+ */
+int btree_find(BTree* bt, TVal c, int* i, int* j, BNode* buff)
+{
+    *i = BTreeRoot(bt);
+    *j = 0;
+
+    initStack(&amp;bt-&gt;stack);
+
+    while(*i != -1)
+    {
+        ReadBlock(bt, buff, *i);
+        if(bnode_search(c, j, buff))
+            return 1;
+
+        pushStack(&amp;bt-&gt;stack, *i, buff);
+        *i = buff-&gt;childs[*j];
+    }
+
+    if(bt-&gt;stack.head != -1)
+        popStack(&amp;bt-&gt;stack, i, buff);
+
+    return 0;
+}
+
+void btree_ins(BTree* bt, TVal c)
+{
+    int i, j, k, median;
+    BNode buff, brother;
+
+    if(btree_find(bt, c, &amp;i, &amp;j, &amp;buff))
+        return;
+
+    bt-&gt;fileHeader.nbVals++;
+
+    if(i == -1)
+    {
+        bt-&gt;fileHeader.root = AllocBlock(bt);
+        buff.vals[0] = c;
+        buff.nb_n = 1;
+
+        buff.childs[0] = buff.childs[1] = -1;
+        WriteBlock(bt, &amp;buff, BTreeRoot(bt));
+    }
+
+    int stop = 0, rc = -1;
+    while(!stop)
+    {
+        if(buff.nb_n != MAX_N)
+        {
+            stop = 1;
+            bnode_ins(c, rc, &amp;buff);
+            WriteBlock(bt, &amp;buff, i);
+        }
+
+        else
+        {
+            for(j = MAX_N / 2 + 1, k = 0; j &lt; MAX_N; ++j, ++k)
+            {
+                brother.vals[k] = buff.vals[j];
+                brother.childs[k] = buff.childs[j];
+            }
+
+            brother.childs[k] = buff.childs[j];
+            brother.nb_n = buff.nb_n = MAX_N / 2;
+
+            median = buff.vals[MAX_N / 2];
+
+            if(c &lt; median)
+                bnode_ins(c, rc, &amp;buff);
+
+            else
+                bnode_ins(c, rc, &amp;brother);
+
+            rc = AllocBlock(bt);
+
+            WriteBlock(bt, &amp;buff, i);
+            WriteBlock(bt, &amp;brother, rc);
+
+            if(bt-&gt;stack.head != -1)
+            {
+                c = median;
+                popStack(&amp;bt-&gt;stack, &amp;i, &amp;buff);
+            }
+
+            else
+            {
+                bt-&gt;fileHeader.height++;
+                bt-&gt;fileHeader.root = AllocBlock(bt);
+                buff.childs[0] = i;
+                buff.childs[1] = rc;
+                buff.vals[0] = median;
+                buff.nb_n = 1;
+
+                WriteBlock(bt, &amp;buff, BTreeRoot(bt));
+                stop = 1;
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------------------------ //
+void initStack(BStack* stack)
+{
+    stack-&gt;head = -1;
+}
+
+void pushStack(BStack* stack, int adr, BNode* n)
+{
+    if(stack-&gt;head == MAX_S - 1)
+        return;
+
+    stack-&gt;head++;
+    stack-&gt;adrs[stack-&gt;head] = adr;
+    stack-&gt;nodes[stack-&gt;head] = *n;
+}
+
+void popStack(BStack* stack, int* adr, BNode* n)
+{
+    if(stack-&gt;head == -1)
+        return;
+
+    *adr = stack-&gt;adrs[stack-&gt;head];
+    *n = stack-&gt;nodes[stack-&gt;head];
+
+    stack-&gt;head--;
+}
+
+void getStackHead(BStack* stack, int* adr, BNode* n)
+{
+    if(stack-&gt;head == -1)
+        return;
+
+    *adr = stack-&gt;adrs[stack-&gt;head];
+    *n = stack-&gt;nodes[stack-&gt;head];
+}
+
+/*
+ * Function to call to open a disk-stored b-tree.
+ * if mode = 'N' : it creates a new btree.
+ * else (you can put 'O') : it reads the btree stored in fpath.
+ */
+BTree* OpenBTree(char* fpath, char mode)
+{
+    BTree* bt = malloc(sizeof(BTree));
+
+    if(mode == 'N')
+    {
+        bt-&gt;treeFile = fopen(fpath, "wb+");
+        if(bt-&gt;treeFile == NULL)
+        {
+            free(bt);
+            return NULL;
+        }
+
+        bt-&gt;fileHeader.root = bt-&gt;fileHeader.freeBlocksHead = -1;
+        bt-&gt;fileHeader.nbNodes = bt-&gt;fileHeader.nbVals = bt-&gt;fileHeader.height = 0;
+
+        fwrite(&amp;(bt-&gt;fileHeader), sizeof(FileHeader), 1, bt-&gt;treeFile);
+    }
+
+    else
+    {
+        bt-&gt;treeFile = fopen(fpath, "rb+");
+        if(bt-&gt;treeFile == NULL)
+        {
+            free(bt);
+            return NULL;
+        }
+
+        fread(&amp;(bt-&gt;fileHeader), sizeof(FileHeader), 1, bt-&gt;treeFile);
+    }
+
+    return bt;
+}
+
+/*
+ * Close the btree.
+ * Writes the tree header in the file.
+ */
+void CloseBTree(BTree* f)
+{
+    fseek(f-&gt;treeFile, 0, SEEK_SET);
+    fwrite(&amp;(f-&gt;fileHeader), sizeof(FileHeader), 1, f-&gt;treeFile);
+
+    fclose(f-&gt;treeFile);
+    free(f);
+}
+
+void ReadBlock(BTree* f, BNode* buff, int i)
+{
+    fseek(f-&gt;treeFile, sizeof(FileHeader) + i * sizeof(BNode), SEEK_SET);
+    fread(buff, sizeof(BNode), 1, f-&gt;treeFile);
+}
+
+void WriteBlock(BTree* f, BNode* buff, int i)
+{
+    fseek(f-&gt;treeFile, sizeof(FileHeader) + i * sizeof(BNode), SEEK_SET);
+    fwrite(buff, sizeof(BNode), 1, f-&gt;treeFile);
+}
+
+/*
+ * If the freeBlocks list isn't empty, takes the head of the list as a new block.
+ * Else, it allocs a new block on the disk.
+ */
+int AllocBlock(BTree* f)
+{
+    int i = f-&gt;fileHeader.freeBlocksHead;
+    BNode buf;
+
+    if(i != -1)
+    {
+        ReadBlock(f, &amp;buf, i);
+        f-&gt;fileHeader.freeBlocksHead = buf.childs[0];
+    }
+
+    else
+    {
+        i = f-&gt;fileHeader.nbNodes++;
+        buf.nb_n = 0;
+        WriteBlock(f, &amp;buf, i);
+    }
+
+    return i;
+}
+
+/*
+ * This function also adds the block to the freeBlocks list.
+ */
+void FreeBlock(BTree* f, BNode* buff, int i)
+{
+    buff-&gt;childs[0] = f-&gt;fileHeader.freeBlocksHead;
+    f-&gt;fileHeader.freeBlocksHead = i;
+    WriteBlock(f, buff, i);
+}
+
+int BTreeRoot(BTree* f)
+{
+    return f-&gt;fileHeader.root;
+}
+</pre>

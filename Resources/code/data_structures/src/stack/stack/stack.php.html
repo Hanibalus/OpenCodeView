@@ -1,0 +1,105 @@
+<pre>
+&lt;?php
+
+/**
+ * Stack implementation
+ * Part of Cosmos by OpenGenus Foundation
+ * Note: To run this script, you need PHP &gt;= 7.1
+ * 
+ * @author Lucas Soares Candalo &lt;candalolucas@gmail.com&gt;
+ */
+class Stack
+{
+    /**
+     * @var array
+     */
+    private $elements = [];
+
+    /**
+     * Removes an item from the stack
+     *
+     * @return void
+     */
+    public function pop(): void
+    {
+        if (!$this-&gt;isEmpty()) {
+            array_pop($this-&gt;elements);
+        }
+    }
+
+    /**
+     * Adds an item to the stack
+     *
+     * @param int $element
+     * @return void
+     */
+    public function push(int $element): void
+    {
+        array_push($this-&gt;elements, $element);
+    }
+
+    /**
+     * Gets the top element of the stack
+     *
+     * @return int
+     */
+    public function peek(): int
+    {
+        return end($this-&gt;elements);
+    }
+
+    /**
+     * Checks if the stack is empty
+     *
+     * @return bool true if is empty, false otherwise
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this-&gt;elements);
+    }
+}
+
+class StackPrinter
+{
+    /**
+     * Print stack elements
+     *
+     * @param Stack $stack
+     * @return void
+     */
+    public function print(Stack $stack): void
+    {
+        $stackClone = clone $stack;
+
+        echo "Stack elements:\n\n";
+        while(!$stackClone-&gt;isEmpty()) {
+            echo $stackClone-&gt;peek()."\n";
+            $stackClone-&gt;pop();
+        }
+        echo "\n\n";
+    }
+}
+
+$stack = new Stack();
+$stackPrinter = new StackPrinter();
+
+// Add a few elements to the stack
+$stack-&gt;push(10);
+$stack-&gt;push(20);
+$stack-&gt;push(30);
+
+// Print stack elements
+$stackPrinter-&gt;print($stack);
+
+// Remove top element from the stack
+$stack-&gt;pop();
+
+// Print stack elements again
+$stackPrinter-&gt;print($stack);
+
+// Remove top element from the stack
+$stack-&gt;pop();
+
+// Print stack elements again
+$stackPrinter-&gt;print($stack);
+</pre>

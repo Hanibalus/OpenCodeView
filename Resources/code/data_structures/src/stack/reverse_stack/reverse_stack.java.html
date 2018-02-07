@@ -1,0 +1,58 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+import java.util.Stack;
+// Assuming that you already know how the Stack works,
+// if not, see here (code/data_structures/stack/stack)
+
+
+class reverseStack{
+	public static void main(String[] args){
+		// Examples
+		Integer[] intArr = {1, 3, 2, 5, 4};
+		String[] stringArr = {"alpha", "beta", "gamma", "echo", "delta"};
+		Double[] doubleArr = {1.1, 3.2, 1.2, 4.3, 5.4};
+		Character[] charArr = {'D', 'E', 'L', 'T', 'A'};
+		Object[] mixArr = {1, "alpha", 2.1, 'D', true};
+		
+		// Collecting all examples in single array
+		Object[][] examples = {intArr, stringArr, doubleArr, charArr, mixArr};
+		
+		// Convert each array of examples to stack
+		// and store them in single stack
+		Stack&lt;Stack&lt;Object&gt;&gt; stacks = new Stack&lt;Stack&lt;Object&gt;&gt;();
+		for(int i=examples.length-1; i&gt;=0; i--)
+			stacks.push(arrayToStack(examples[i]));
+		
+		// Print formatted output for each example
+		while(!stacks.isEmpty())
+			print(stacks.pop());
+		
+		// Print each example without storing it first
+		System.out.println("\nWithout Storing:");
+		for(Object[] item: examples)
+			print(arrayToStack(item));
+	}
+	
+	public static &lt;T&gt; void print(Stack&lt;T&gt; stack){
+		System.out.println("Original stack: "+stack);
+		// Print stack after reverse
+		System.out.println("Reversed stack: "+reverse(stack)+"\n");
+	}
+	
+	public static &lt;T&gt; Stack&lt;T&gt; arrayToStack(T[] arr){
+		// Push each item into stack
+		Stack&lt;T&gt; stack = new Stack&lt;T&gt;();
+		for(T item: arr)
+			stack.push(item);
+		return stack;
+	}
+	
+	public static &lt;T&gt; Stack&lt;T&gt; reverse(Stack&lt;T&gt; ori){
+		// Push each item from last to first item of ori into rev
+		Stack&lt;T&gt; rev = new Stack&lt;T&gt;();
+		while(!ori.isEmpty())
+			rev.push(ori.pop());
+		return rev;
+	}
+}
+</pre>

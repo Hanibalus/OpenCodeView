@@ -1,0 +1,30 @@
+<pre>
+//Part of Cosmos by OpenGenus Foundation
+
+object PrintReverse {
+
+  case class Node[T](value: T, next: Option[Node[T]]) {
+    // append new node at the end
+    def :~&gt;(tail: Node[T]): Node[T] = next match {
+      case None =&gt; new Node(value, Some(tail))
+      case Some(x) =&gt; new Node(value, Some(x :~&gt; tail))
+    }
+  }
+
+  object Node {
+    def apply[T](value: T): Node[T] = new Node(value, None)
+  }
+
+  def printReverse[T](node: Node[T]): Unit = {
+    node.next.foreach(printReverse)
+    println(node.value)
+  }
+
+  def main(args: Array[String]): Unit = {
+    val integerLinkedList = Node(1) :~&gt; Node(2) :~&gt; Node(3)
+    val stringLinkedList = Node("hello") :~&gt; Node("world") :~&gt; Node("good") :~&gt; Node("bye")
+    printReverse(integerLinkedList)
+    printReverse(stringLinkedList)
+  }
+}
+</pre>

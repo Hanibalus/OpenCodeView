@@ -1,0 +1,21 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+  int n, max, tmp;
+  cout &lt;&lt; "Enter numbers of elements : ";
+  cin &gt;&gt; n;
+  cout &lt;&lt; "Enter numbers\n";
+  cin &gt;&gt; tmp;
+  max = tmp;
+  for (int i = 0; i &lt; n - 1; i++) {
+    cin &gt;&gt; tmp;
+    if (max &lt; tmp) {
+      max = tmp;
+    }
+  }
+  cout &lt;&lt; "Maximum is " &lt;&lt; max &lt;&lt; "\n";
+  return 0;
+}
+</pre>

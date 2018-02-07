@@ -1,0 +1,357 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+ avl tree synopsis
+
+template&lt;typename _Tp, typename _Comp = std::less&lt;_Tp&gt; &gt;
+class avl_tree {
+private:
+    struct AVLNode {
+        _Tp data;
+        std::shared_ptr&lt;AVLNode&gt; left;
+        std::shared_ptr&lt;AVLNode&gt; right;
+        int height;
+    };
+
+    typedef _Tp                      value_type;
+    typedef AVLNode                  node_type;
+    typedef std::shared_ptr&lt;AVLNode&gt; p_node_type;
+
+public:
+    avl_tree() :root_(nullptr);
+
+    // function to insert a node into the AVL tree
+    void insert(int data);
+
+    // function to delete a node from the AVL tree
+    void erase(int data);
+
+    // helper function to return height of a node
+    int getHeight(p_node_type node);
+
+    // function to find the minimum element in the tree (lefftmost node)
+    p_node_type findMin(p_node_type root_);
+
+    // function to find the maximum element in the tree (rightmost node)
+    p_node_type findMax(p_node_type root_);
+
+    // preorder traversal of the AVL tree
+    void preOrder(std::ostream &amp;out) const;
+
+    // inorder traversal of the AVL tree
+    void inOrder(std::ostream &amp;out) const;
+
+    // postorder traversal of the AVL tree
+    void postOrder(std::ostream &amp;out) const;
+
+private:
+    p_node_type root_;
+    _Comp comp_;
+
+    // LL rotation root_ed at X
+    p_node_type rotateLL(p_node_type &amp;X);
+
+    // RR rotation root_ed at X
+    p_node_type rotateRR(p_node_type &amp;X);
+
+    // LR rotation root_ed at X
+    p_node_type rotateLR(p_node_type &amp;X);
+
+    // RL rotation root_ed at X
+    p_node_type rotateRL(p_node_type &amp;X);
+
+    // function to insert a node into the AVL tree
+    p_node_type insert(p_node_type root_, int data);
+
+    // function to delete a node from the AVL tree
+    p_node_type erase(p_node_type root_, int data);
+
+    // preorder traversal of the AVL tree
+    void preOrder(p_node_type root_, std::ostream &amp;out) const;
+
+    // inorder traversal of the AVL tree
+    void inOrder(p_node_type root_, std::ostream &amp;out) const;
+
+    // postorder traversal of the AVL tree
+    void postOrder(p_node_type root_, std::ostream &amp;out) const;
+};
+ */
+
+#include &lt;algorithm&gt;
+#include &lt;memory&gt;
+#include &lt;ostream&gt;
+
+template&lt;typename _Tp, typename _Comp = std::less&lt;_Tp&gt; &gt;
+class avl_tree {
+private:
+    struct AVLNode {
+        _Tp data;
+        std::shared_ptr&lt;AVLNode&gt; left;
+        std::shared_ptr&lt;AVLNode&gt; right;
+        int height;
+    };
+
+    typedef _Tp                      value_type;
+    typedef AVLNode                  node_type;
+    typedef std::shared_ptr&lt;AVLNode&gt; p_node_type;
+
+public:
+    avl_tree() :root_(nullptr) {;}
+
+    // function to insert a node into the AVL tree
+    void insert(int data) {
+        root_ = insert(root_, data);
+    }
+
+    // function to delete a node from the AVL tree
+    void erase(int data) {
+        root_ = erase(root_, data);
+    }
+
+    // helper function to return height of a node
+    int getHeight(p_node_type node) {
+        if (node)
+            return node-&gt;height;
+
+        return -1;
+    }
+
+    // function to find the minimum element in the tree (lefftmost node)
+    p_node_type findMin(p_node_type root_) {
+        if (root_ != nullptr)
+            while (root_-&gt;left != nullptr)
+                root_ = root_-&gt;left;
+
+        return root_;
+    }
+
+    // function to find the maximum element in the tree (rightmost node)
+    p_node_type findMax(p_node_type root_) {
+        if (root_ != nullptr)
+            while (root_-&gt;right != nullptr)
+                root_ = root_-&gt;right;
+
+        return root_;
+    }
+
+    // preorder traversal of the AVL tree
+    void preOrder(std::ostream &amp;out) const {
+        preOrder(root_, out);
+    }
+
+    // inorder traversal of the AVL tree
+    void inOrder(std::ostream &amp;out) const {
+        inOrder(root_, out);
+    }
+
+    // postorder traversal of the AVL tree
+    void postOrder(std::ostream &amp;out) const {
+        postOrder(root_, out);
+    }
+
+private:
+    p_node_type root_;
+    _Comp comp_;
+
+    // LL rotation root_ed at X
+    p_node_type rotateLL(p_node_type &amp;X) {
+        p_node_type W = X-&gt;left;
+        X-&gt;left = W-&gt;right;
+        W-&gt;right = X;
+        X-&gt;height = std::max(getHeight(X-&gt;left), getHeight(X-&gt;right)) + 1;
+        W-&gt;height = std::max(getHeight(W-&gt;left), getHeight(X)) + 1;
+
+        return W;   // new root_
+    }
+
+    // RR rotation root_ed at X
+    p_node_type rotateRR(p_node_type &amp;X) {
+        p_node_type W = X-&gt;right;
+        X-&gt;right = W-&gt;left;
+        W-&gt;left = X;
+        X-&gt;height = std::max(getHeight(X-&gt;left), getHeight(X-&gt;right)) + 1;
+        W-&gt;height = std::max(getHeight(X), getHeight(W-&gt;right));
+
+        return W;   // new root_
+    }
+
+    // LR rotation root_ed at X
+    p_node_type rotateLR(p_node_type &amp;X) {
+        X-&gt;left = rotateRR(X-&gt;left);
+
+        return rotateLL(X);
+    }
+
+    // RL rotation root_ed at X
+    p_node_type rotateRL(p_node_type &amp;X) {
+        X-&gt;right = rotateLL(X-&gt;right);
+
+        return rotateRR(X);
+    }
+
+    // function to insert a node into the AVL tree
+    p_node_type insert(p_node_type root_, int data) {
+        if (root_ == nullptr)
+        {
+            p_node_type newNode = std::make_shared&lt;node_type&gt;();
+            newNode-&gt;data = data;
+            newNode-&gt;height = 0;
+            newNode-&gt;left = newNode-&gt;right = nullptr;
+            root_ = newNode;
+        }
+        else if (comp_(data, root_-&gt;data))
+        {
+            root_-&gt;left = insert(root_-&gt;left, data);
+            if (getHeight(root_-&gt;left) - getHeight(root_-&gt;right) == 2)
+            {
+                if (comp_(data, root_-&gt;left-&gt;data))
+                    root_ = rotateLL(root_);
+                else
+                    root_ = rotateLR(root_);
+            }
+        }
+        else if (comp_(root_-&gt;data, data))
+        {
+            root_-&gt;right = insert(root_-&gt;right, data);
+            if (getHeight(root_-&gt;right) - getHeight(root_-&gt;left) == 2)
+            {
+                if (comp_(root_-&gt;right-&gt;data, data))
+                    root_ = rotateRR(root_);
+                else
+                    root_ = rotateRL(root_);
+            }
+        }
+        root_-&gt;height = std::max(getHeight(root_-&gt;left), getHeight(root_-&gt;right)) + 1;
+
+        return root_;
+    }
+
+    // function to delete a node from the AVL tree
+    p_node_type erase(p_node_type root_, int data) {
+        if (root_ == nullptr)
+            return nullptr;
+        else if (comp_(data, root_-&gt;data))
+        {
+            root_-&gt;left = erase(root_-&gt;left, data);
+            if (getHeight(root_-&gt;right) - getHeight(root_-&gt;left) == 2)
+            {
+                if (getHeight(root_-&gt;right-&gt;right) &gt; getHeight(root_-&gt;right-&gt;left))
+                    root_ = rotateRR(root_);
+                else
+                    root_ = rotateRL(root_);
+            }
+        }
+        else if (comp_(root_-&gt;data, data))
+        {
+            root_-&gt;right = erase(root_-&gt;right, data);
+            if (getHeight(root_-&gt;left) - getHeight(root_-&gt;right) == 2)
+            {
+                if (getHeight(root_-&gt;left-&gt;left) &gt; getHeight(root_-&gt;left-&gt;right))
+                    root_ = rotateLL(root_);
+                else
+                    root_ = rotateLR(root_);
+            }
+        }
+        else
+        {
+            p_node_type temp = nullptr;
+            if (root_-&gt;left &amp;&amp; root_-&gt;right)
+            {
+                temp = findMin(root_-&gt;right);
+                root_-&gt;data = temp-&gt;data;
+                root_-&gt;right = erase(root_-&gt;right, root_-&gt;data);
+                if (getHeight(root_-&gt;left) - getHeight(root_-&gt;right) == 2)
+                {
+                    if (getHeight(root_-&gt;left-&gt;left) &gt; getHeight(root_-&gt;left-&gt;right))
+                        root_ = rotateLL(root_);
+                    else
+                        root_ = rotateLR(root_);
+                }
+            }
+            else if (root_-&gt;left)
+            {
+                temp = root_;
+                root_ = root_-&gt;left;
+            }
+            else if (root_-&gt;right)
+            {
+                temp = root_;
+                root_ = root_-&gt;right;
+            }
+            else
+                return nullptr;
+        }
+
+        return root_;
+    }
+
+    // preorder traversal of the AVL tree
+    void preOrder(p_node_type root_, std::ostream &amp;out) const {
+        if (root_ != nullptr)
+        {
+            out &lt;&lt; (root_)-&gt;data &lt;&lt; " ";
+            preOrder((root_)-&gt;left, out);
+            preOrder((root_)-&gt;right, out);
+        }
+    }
+
+    // inorder traversal of the AVL tree
+    void inOrder(p_node_type root_, std::ostream &amp;out) const {
+        if (root_ != nullptr)
+        {
+            inOrder((root_)-&gt;left, out);
+            out &lt;&lt; (root_)-&gt;data &lt;&lt; " ";
+            inOrder((root_)-&gt;right, out);
+        }
+    }
+
+    // postorder traversal of the AVL tree
+    void postOrder(p_node_type root_, std::ostream &amp;out) const {
+        if (root_ != nullptr)
+        {
+            postOrder((root_)-&gt;left, out);
+            postOrder((root_)-&gt;right, out);
+            out &lt;&lt; (root_)-&gt;data &lt;&lt; " ";
+        }
+    }
+};
+
+/*
+// for test
+ #include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int ch, data;
+    shared_ptr&lt;avl_tree&lt;int&gt; &gt; avlt = make_shared&lt;avl_tree&lt;int&gt; &gt;();
+    while (1)
+    {
+        cout &lt;&lt; "1. Insert 2. Delete 3. Preorder 4. Inorder 5. Postorder 6. Exit\n";
+        cin &gt;&gt; ch;
+        switch (ch) {
+        case 1: cout &lt;&lt; "Enter data\n";
+            cin &gt;&gt; data;
+            avlt-&gt;insert(data);
+            break;
+        case 2: cout &lt;&lt; "Enter data\n";
+            cin &gt;&gt; data;
+            avlt-&gt;erase(data);
+            break;
+        case 3: avlt-&gt;preOrder(cout);
+            cout &lt;&lt; endl;
+            break;
+        case 4: avlt-&gt;inOrder(cout);
+            cout &lt;&lt; endl;
+            break;
+        case 5: avlt-&gt;postOrder(cout);
+            cout &lt;&lt; endl;
+            break;
+        }
+        if (ch == 6)
+            break;
+    }
+
+    return 0;
+}
+
+// */
+</pre>

@@ -1,0 +1,18 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+long long powmod(long long base, long long exp, long long mod) {
+	long long ans = 1 % mod;
+	while (exp &gt; 0) {
+		if (exp &amp; 1) ans = (ans * base) % mod;
+		base = (base * base) % mod;
+		exp /= 2;
+	}
+	return ans;
+}
+int main() {
+	long long base, exp, mod;
+	cin &gt;&gt; base &gt;&gt; exp &gt;&gt; mod;
+	cout &lt;&lt; powmod(base, exp, mod) &lt;&lt; endl;
+	return 0;
+}</pre>

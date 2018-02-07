@@ -1,0 +1,42 @@
+<pre>
+// C++ program to sort an array using bucket sort
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// Part of Cosmos by OpenGenus Foundation
+// Function to sort arr[] of size n using bucket sort
+void bucketSort(vector&lt;float&gt;&amp; arr)
+{
+	// 1) Create n empty buckets
+	vector&lt;float&gt; b[arr.size()];
+	
+	// 2) Put array elements in different buckets
+	for (int i=0; i&lt;arr.size(); i++)
+	{
+	    int bi = arr.size()*arr[i]; // Index in bucket
+	    b[bi].push_back(arr[i]);
+	}
+
+	// 3) Sort individual buckets
+	for (int i=0; i&lt;arr.size(); i++) sort(b[i].begin(), b[i].end());
+
+	// 4) Concatenate all buckets into arr[]
+	int index = 0;
+	for (int i = 0; i &lt; arr.size(); i++)
+		for (int j = 0; j &lt; b[i].size(); j++)
+		arr[index++] = b[i][j];
+}
+
+/* Driver program to test above funtion */
+int main()
+{
+	vector&lt;float&gt; arr{0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434};
+	bucketSort(arr);
+
+	cout &lt;&lt; "Sorted array is \n";
+	for (int i=0; i&lt;arr.size(); i++)
+	    cout &lt;&lt; arr[i] &lt;&lt; " ";
+	return 0;
+}</pre>

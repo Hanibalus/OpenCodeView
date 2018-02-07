@@ -1,0 +1,20 @@
+<pre>
+def factor_finder(num)
+  i = 1
+  fact = []
+  while i &lt;= num
+    fact &lt;&lt; i if num.modulo(i) == 0
+    i += 1
+  end
+  fact
+end
+
+def is_coprime?(num1, num2)
+  f1 = factor_finder(num1)
+  f2 = factor_finder(num2)
+  common = f1 &amp; f2
+  common.length == 1
+end
+
+print is_coprime?(22, 21).to_s # output &gt;&gt; true
+</pre>

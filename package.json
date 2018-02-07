@@ -1,0 +1,56 @@
+{
+    "name": "opencodeview",
+    "displayName": "OpenCodeView",
+    "description": "You can, now, search code for any algorithm or data-structure in your favorite language even when you are not connected to the internet.",
+    "version": "0.0.1",
+    "publisher": "zhoulv",
+    "engines": {
+        "vscode": "^1.19.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/linkxzhou/OpenCodeView"
+    },
+    "bugs": {
+        "url": "https://github.com/linkxzhou/OpenCodeView/issues"
+    },
+    "license": "MIT",
+    "icon": "images/icon.png",
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:extension.OpenCodeView"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "commands": [{
+            "command": "extension.OpenCodeView",
+            "title": "OpenCode View"
+        }],
+        "menus": {
+			"editor/title": [
+				{
+					"command": "extension.OpenCodeView"
+				}
+			]
+		}
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42",
+        "live-server": "^1.2.0"
+    },
+    "dependencies": {
+        "live-server": "^1.2.0"
+    }
+}

@@ -1,0 +1,25 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+  int decimal;
+  cout &lt;&lt; "Enter a decimal: ";
+  cin &gt;&gt; decimal;
+
+  stringstream oct;
+
+  cout &lt;&lt; "The number in octal: ";
+  // This fixes the grouping issue for the first set, which
+  // only contains two bits.
+  oct &lt;&lt; (((decimal &gt;&gt; 30) &amp; ~(1 &lt;&lt; 2)) &amp; 07);
+  for(int i = 27; i &gt;= 0; i-=3)
+    oct &lt;&lt; ((decimal &gt;&gt; i) &amp; 07);
+
+  cout &lt;&lt; oct.str() &lt;&lt; endl;
+
+  return 0;
+}
+</pre>

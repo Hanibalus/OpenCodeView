@@ -1,0 +1,38 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+// Time complexity: O(n)
+std::vector&lt;int&gt; sieve_linear(int n) {
+    std::vector&lt;int&gt; min_divider(n + 1); // min_divider[i] is the minimum prime divider of i
+    std::vector&lt;int&gt; primes;
+    
+    for (int i = 2; i &lt;= n; i++) {
+        if (!min_divider[i]) {
+            min_divider[i] = i;
+            primes.push_back(i);
+        }
+        
+        for (int p : primes) {
+            if (p &gt; n / i) {
+                break;
+            }
+            min_divider[p * i] = p;
+        }
+    }
+    
+    return primes;
+}
+
+int main() {
+    std::cout &lt;&lt; "Enter the number:" &lt;&lt; std::endl;
+    int n;
+    std::cin &gt;&gt; n;
+    std::cout &lt;&lt; "List of prime numbers less or equal than " &lt;&lt; n &lt;&lt; ":\n";
+    for (int num : sieve_linear(n)) {
+        std::cout &lt;&lt; num &lt;&lt; "\n";
+    }
+    return 0;
+}
+</pre>

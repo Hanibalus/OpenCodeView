@@ -1,0 +1,20 @@
+<pre>
+module QuickSort exposing (sort)
+
+
+sort : List a -&gt; (a -&gt; a -&gt; Order) -&gt; List a
+sort list order =
+    case list of
+        [] -&gt;
+            []
+
+        x :: xs -&gt;
+            let
+                less =
+                    List.filter (order x &gt;&gt; (==) GT) xs
+
+                greater =
+                    List.filter (order x &gt;&gt; (/=) GT) xs
+            in
+            sort less order ++ [ x ] ++ sort greater order
+</pre>

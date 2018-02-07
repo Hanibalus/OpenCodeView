@@ -1,0 +1,57 @@
+<pre>
+#include &lt;iostream&gt;
+// Part of Cosmos by OpenGenus Foundation
+using namespace std;
+
+int main()
+{
+
+struct node{
+	int info;
+	node *next;
+}*ptr,*head,*start;
+
+int c=1,data;
+
+ptr=new node;
+ptr-&gt;next=NULL;
+
+start=head=ptr;
+
+while(c&lt;3 &amp;&amp; c&gt;0){
+	cout&lt;&lt;"1.Insert\n2.Link List\n";
+	cin&gt;&gt;c;
+
+	switch(c){
+		case 1:
+			cout&lt;&lt;"Enter Data\n";
+			cin&gt;&gt;data;
+
+			ptr=new node;
+			ptr-&gt;next=start;
+			ptr-&gt;info=data;
+
+			head-&gt;next=ptr;
+			head=ptr;
+
+		break;
+
+		case 2:
+			ptr=start-&gt;next;
+
+			while(ptr!=start &amp;&amp; ptr!=NULL){
+				cout&lt;&lt;ptr-&gt;info&lt;&lt;"-&gt;";
+				ptr=ptr-&gt;next;
+			}
+			cout&lt;&lt;"\n";
+		break;
+
+		default:
+			cout&lt;&lt;"Wrong Choice\nExiting...\n";
+	}
+
+}
+
+return 0;
+}
+</pre>

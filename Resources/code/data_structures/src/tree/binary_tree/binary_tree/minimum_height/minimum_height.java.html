@@ -1,0 +1,35 @@
+<pre>
+class TreeNode&lt;T&gt;
+{
+	T data;
+	TreeNode&lt;T&gt; left,right;
+	public TreeNode(T data)
+	{
+		this.data = data;
+	}
+}
+
+public class BinaryTree {
+
+	public static &lt;T&gt; int minHeight(TreeNode&lt;T&gt; root)
+	{
+		if(root == null)
+			return 0;
+		
+		return Math.min(minHeight(root.left), minHeight(root.right)) + 1;
+	}
+	
+	public static void main(String[] args) {
+		TreeNode&lt;Integer&gt; root = new TreeNode&lt;Integer&gt;(1);
+		root.left = new TreeNode&lt;Integer&gt;(2);
+		root.right = new TreeNode&lt;Integer&gt;(3);
+		root.left.left = new TreeNode&lt;Integer&gt;(4);
+		root.left.right = new TreeNode&lt;Integer&gt;(5);
+		root.right.left = new TreeNode&lt;Integer&gt;(6);
+		
+		System.out.println(minHeight(root));
+
+	}
+
+}
+</pre>

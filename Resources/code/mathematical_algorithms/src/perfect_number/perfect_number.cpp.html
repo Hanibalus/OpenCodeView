@@ -1,0 +1,32 @@
+<pre>
+#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+        int num,sum=0,i;
+ 
+        cout&lt;&lt;"ENTER A NUMBER: ";
+        cin&gt;&gt;num;
+ 
+        for(i=1;i&lt;num;i++)
+       {
+                if(num % i==0)
+               {
+                        sum = sum + i;
+               }
+       }
+ 
+       cout&lt;&lt;"\n";
+ 
+        if(sum==num)
+       {
+                cout&lt;&lt;num&lt;&lt;" IS A PERFECT NUMBER\n";
+        }
+        else
+        {
+               cout&lt;&lt;num&lt;&lt;" IS NOT A PERFECT NUMBER\n";
+        }
+        return 0;
+}</pre>

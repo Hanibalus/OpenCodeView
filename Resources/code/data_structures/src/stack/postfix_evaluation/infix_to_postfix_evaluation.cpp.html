@@ -1,0 +1,150 @@
+<pre>
+
+#include&lt;iostream&gt;
+using namespace std;
+#include&lt;cctype&gt;
+#define MAX_SIZE 100
+char a[MAX_SIZE], top = -1;
+bool isEmpty()
+{
+    if(top == -1)
+        return true;
+    return false;
+}
+void push(char x)
+{
+    if(top == MAX_SIZE-1)
+    {
+        cout&lt;&lt;"Stack is full"&lt;&lt;endl;
+        return;
+    }
+    a[++top] = x;
+}
+char pop()
+{
+    char x;
+    if(isEmpty())
+    {
+        cout&lt;&lt;"Stack is empty"&lt;&lt;endl;
+    }
+    else
+    {
+        x = a[top];
+        top--;
+    }
+    return x;
+}
+int atop()
+{
+    return a[top];
+}
+int presedence(char x)
+{
+    switch(x)
+    {
+    case '+':
+    case '-':
+        return 1;
+    case '*':
+    case '/':
+        return 2;
+    case '^':
+        return 3;
+    }
+    return -1;
+}
+string InToPostfix(string x)
+{
+    string r = "";
+    for(int i=0; i&lt;x.length(); i++)
+    {
+        char c = x[i];
+        if(isalnum(c))
+        {
+            r += c;
+        }
+        else if(c == '(')
+        {
+            push(c);
+        }
+        else if(c == ')')
+        {
+            while(!isEmpty() &amp;&amp; atop() != '(')
+            {
+                r += pop();
+            }
+            if(atop() == '(')
+            {
+                pop();
+            }
+            else
+                cout&lt;&lt;"Invalid Expression"&lt;&lt;endl;
+        }
+        else
+        {
+            while(!isEmpty() &amp;&amp; presedence(c)&lt;=presedence(atop()))
+            {
+                r += pop();
+            }
+            push(c);
+        }
+    }
+    while(!isEmpty())
+    {
+        r += pop();
+    }
+    return r;
+}
+int postfixEval(string x)
+{
+    int r;
+    for(int i=0; i&lt;x.length(); i++)
+    {
+        char c = x[i];
+        if(isalnum(c))
+        {
+            push(c - '0');
+        }
+        else
+        {
+            int a = pop();
+            int b = pop();
+            switch(c)
+            {
+            case '+':
+                push(a+b);
+                break;
+            case '-':
+                push(b-a);
+                break;
+            case '*':
+                push(a*b);
+                break;
+            case '/':
+                push(b/a);
+                break;
+            case '^':
+                push(b^a);
+            }
+        }
+    }
+    return pop();
+}
+int main()
+{
+    string i,p;
+    int flag = 0;
+    cout&lt;&lt;"Enter infix expression: ";
+    cin&gt;&gt;i;
+    p = InToPostfix(i);
+    cout&lt;&lt;"Postfix expression: "&lt;&lt;p&lt;&lt;"\nEnter 1 to evaluate postfix expression: ";
+    cin&gt;&gt;flag;
+    if(flag == 1)
+    {
+        int r = postfixEval(p);
+        cout&lt;&lt;"Postfix evaluated ans: "&lt;&lt;r&lt;&lt;endl;
+    }
+    return 0;
+}
+
+</pre>

@@ -1,0 +1,125 @@
+<pre>
+///Bubble sort a linked list
+#include&lt;iostream&gt;
+#include&lt;stack&gt;
+using namespace std;
+
+class node{
+public:
+    int data;
+    node* next;
+
+public:
+    node(int d){
+        data=d;
+        next=NULL;
+    }
+};
+
+void print(node*head){
+    while(head!=NULL){
+        cout&lt;&lt;head-&gt;data&lt;&lt;"--&gt;";
+        head=head-&gt;next;
+    }
+}
+
+void insertAtHead(node*&amp;head,int d){
+    node* n=new node(d);
+    n-&gt;next=head;
+    head=n;
+}
+
+void insertInMiddle(node*&amp;head,int d,int p){
+    if(p==0){
+        insertAtHead(head,d);
+    }
+    else{
+        //assuming p&lt;=length of LL
+        int jump=1;
+        node*temp=head;
+        while(jump&lt;=p-1){
+            jump++;
+            temp=temp-&gt;next;
+        }
+        node*n=new node(d);
+        n-&gt;next=temp-&gt;next;
+        temp-&gt;next=n;
+    }
+}
+
+void takeInput(node*&amp;head){
+    int d;
+    cin&gt;&gt;d;
+    while(d!=-1){
+        insertAtHead(head,d);
+        cin&gt;&gt;d;
+    }
+}
+
+///overloading to print LL
+ostream&amp; operator&lt;&lt;(ostream&amp;os, node*head){
+    print(head);
+    cout&lt;&lt;endl;
+    return os;
+}
+istream&amp; operator&gt;&gt;(istream&amp;is, node*&amp;head){
+    takeInput(head);
+    return is;
+}
+
+int length(node*head){
+    int len=0;
+    while(head!=NULL){
+        len++;
+        head=head-&gt;next;
+    }
+    return len;
+}
+
+void bubbleSort(node*&amp;head){
+    int n=length(head);
+    for(int i=0;i&lt;n-1;i++){ //n-1 times
+        node*current=head;
+        node*prev=NULL;
+        node*next;
+
+        while(current!=NULL &amp;&amp; current-&gt;next!=NULL){
+            if(current-&gt;data&gt;current-&gt;next-&gt;data){
+                //swapping
+                if(prev==NULL){
+                    next=current-&gt;next;
+                    current-&gt;next=next-&gt;next;
+                    next-&gt;next=current;
+
+                    head=next;
+                    prev=next;
+                }
+                else{
+                    next=current-&gt;next;
+                    prev-&gt;next=next;
+                    current-&gt;next=next-&gt;next;
+                    next-&gt;next=current;
+                    prev=next;
+                }
+            }
+            else{
+                prev=current;
+                current=current-&gt;next;
+            }
+        }
+    }
+}
+
+
+int main(){
+    node*head=NULL;
+    cin&gt;&gt;head;
+    cout&lt;&lt;head;
+    bubbleSort(head);
+    cout&lt;&lt;"BUBBLE SORTED LINKED LIST"&lt;&lt;endl;
+    cout&lt;&lt;head;
+
+
+    return 0;
+}
+</pre>

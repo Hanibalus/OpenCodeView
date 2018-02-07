@@ -1,0 +1,25 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main()
+{
+    int l = 0;
+    
+    for (int i = 100; i &lt;= 999; ++i)
+    {
+        for (int j = 100; j &lt;= 999; ++j)
+        {
+            int c = i * j;
+            std::string cS = std::to_string(c);
+
+            if ((cS == std::string{ cS.rbegin(), cS.rend() }) &amp;&amp; (c &gt; l)
+            )
+            {
+                l = c;
+            }
+        }
+    }
+    
+    std::cout &lt;&lt; l &lt;&lt; "\n";
+}</pre>

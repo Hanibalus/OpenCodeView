@@ -1,0 +1,19 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+
+typedef std::pair&lt;double, double&gt; point;
+
+#define x first
+#define y second
+
+double calcDistance (point a, point b) {
+  return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+
+int main () {
+  point a, b, c;
+  std::cin &gt;&gt; a.x &gt;&gt; a.y &gt;&gt; b.x &gt;&gt; b.y;
+  std::cout &lt;&lt; calcDistance(a, b);
+}
+</pre>

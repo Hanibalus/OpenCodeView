@@ -1,0 +1,44 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cctype&gt;
+
+using namespace std;
+
+/// @brief Run rotation cipher on a string
+/// @param text Text to encrypt
+/// @param n Amount to shift by
+/// @brief Encoded text
+std::string rotN(const std::string &amp;text, int n) {
+  std::string output;
+  
+  // Loop through input text
+  for (auto c : text) {
+    // Check if character is a letter
+    if (isalpha(c)) {
+      // Subtract 'A' if uppercase, 'a' if lowercase
+      char sub = (c &gt;= 65 &amp;&amp; c &lt;= 90) ? 'A' : 'a';
+      // Convert character to alphabet index starting from zero (0 - 25)
+      c -= sub;
+      // Shift
+      c += n;
+      // Wrap around
+      c %= 26;
+      // Convert back into ASCII and add to output
+      output += (c + sub);
+    } else {
+      output += c;
+    }
+  }
+
+  return output;
+}
+
+int main() {
+  // Example
+  cout &lt;&lt; rotN("Hello, world!", 13) &lt;&lt; endl;  // Outputs "Uryyb, jbeyq!"
+
+  return 0;
+}
+
+</pre>

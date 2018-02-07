@@ -1,0 +1,39 @@
+<pre>
+/*
+ * Compute the transitive closure of a given directed graph
+ * using Warshall's algorithm.
+ */
+
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+
+#define max(a, b) (a &gt; b ? a : b)
+
+void warshal(int p[10][10], int n)
+{
+	int i, j, k; 
+	for(k = 1; k &lt;= n; k++)
+		for(i = 1; i &lt;= n; i++)
+			for(j = 1; j &lt;= n; j++)
+				p[i][j] = max(p[i][j], p[i][k] &amp;&amp; p[k][j]); 
+}
+
+void main()
+{
+	int p[10][10] = {0}, n, i, j; 
+	printf("Enter the size of matrix\n");
+	scanf("%d", &amp;n);
+	printf ("Enter the Adjacency matrix\n");
+	for(i = 1; i &lt;= n; i++)
+		for(j = 1; j &lt;= n; j++)
+			scanf("%d", p[i][j]);
+	warshal(p, n); 
+	printf("\n Transitive closure: \n"); 
+	for(i = 1; i &lt;= n; i++)
+	{
+		for(j = 1; j &lt;= n; j++)
+			printf("%d\t", p[i][j]); 
+		printf("\n"); 
+	}
+}
+</pre>

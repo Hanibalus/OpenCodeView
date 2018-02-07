@@ -1,0 +1,20 @@
+<pre>
+function binarySearch(array, key) {
+    var lo = 0,
+        hi = array.length - 1,
+        mid,
+        element;
+    while (lo &lt;= hi) {
+        mid = Math.floor((lo + hi) / 2, 10);
+        element = array[mid];
+        if (element &lt; key) {
+            lo = mid + 1;
+        } else if (element &gt; key) {
+            hi = mid - 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+}
+</pre>

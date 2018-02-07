@@ -1,0 +1,43 @@
+<pre>
+#include&lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+    char message[100], ch;
+    int i, key;
+
+    cout &lt;&lt; "Enter a message to decrypt: ";
+    cin.getline(message, 100);
+    cout &lt;&lt; "Enter key: ";
+    cin &gt;&gt; key;
+
+    for(i = 0; message[i] != '\0'; ++i){
+        ch = message[i];
+
+        if(ch &gt;= 'a' &amp;&amp; ch &lt;= 'z'){
+            ch = ch - key;
+
+            if(ch &lt; 'a'){
+                ch = ch + 'z' - 'a' + 1;
+            }
+
+            message[i] = ch;
+        }
+        else if(ch &gt;= 'A' &amp;&amp; ch &lt;= 'Z'){
+            ch = ch - key;
+
+            if(ch &gt; 'a'){
+                ch = ch + 'Z' - 'A' + 1;
+            }
+
+            message[i] = ch;
+        }
+    }
+
+    cout &lt;&lt; "Decrypted message: " &lt;&lt; message;
+
+    return 0;
+}
+</pre>

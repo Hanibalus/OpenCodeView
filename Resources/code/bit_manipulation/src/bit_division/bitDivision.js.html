@@ -1,0 +1,51 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+function divide(dividend, divisor) {
+
+    if (divisor === 0) {
+        return "undefined";
+    }
+
+    const isPositive = (dividend &gt; 0) &amp;&amp; (divisor &gt; 0);
+    dividend = Math.abs(dividend);
+    divisor = Math.abs(divisor);
+
+    var answer = 0
+    while (dividend &gt;= divisor) {
+        let temp = divisor;
+        let i = 1;
+        while (dividend &gt;= temp) {
+            dividend -= temp;
+            answer += i;
+            i &lt;&lt;= 1;
+            temp &lt;&lt;= 1;
+        }
+    }
+
+    if (!isPositive) {
+        answer = -answer;
+    }
+
+    return answer;
+}
+
+
+function test() {
+
+    var testCases = [
+        [9, 4],
+        [-10, 3],
+        [103, -10],
+        [-9, -4],
+        [0, -3],
+        [2, 0]
+    ];
+
+    testCases.forEach(test =&gt; 
+        console.log(`${test[0]} / ${test[1]} = ${divide(test[0], test[1])}`));
+}
+
+
+test();
+</pre>

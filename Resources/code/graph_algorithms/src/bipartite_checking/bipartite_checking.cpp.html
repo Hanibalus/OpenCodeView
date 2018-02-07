@@ -1,0 +1,64 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+
+bool dfs(int v, std::vector&lt;std::vector&lt;int&gt;&gt; &amp;g, std::vector&lt;int&gt; &amp;dp) {    
+    for (int u : g[v]) {
+        if (!dp[u]) {
+            dp[u] = 3 - dp[v]; // 3 - 1 = 2; 3 - 2 = 1
+            dfs(u, g, dp);
+        }
+        if (dp[u] != 3 - dp[v]) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Time complexity: O(|V| + |E|)
+bool check_bipartite(std::vector&lt;std::vector&lt;int&gt;&gt; &amp;g) {
+    int n = (int) g.size();
+    std::vector&lt;int&gt; dp(n);
+    
+    for (int i = 0; i &lt; n; i++) {
+        if (!dp[i]) {
+            dp[i] = 1;
+            if (!dfs(i, g, dp)) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
+int main() {
+    std::cout &lt;&lt; "Enter the number of vertexes:" &lt;&lt; std::endl;
+    int n;
+    std::cin &gt;&gt; n;
+    
+    std::cout &lt;&lt; "Enter the number of edges:" &lt;&lt; std::endl;
+    int m;
+    std::cin &gt;&gt; m;
+    
+    std::cout &lt;&lt; "Enter the edges in the following format: u v. 0 &lt;= u, v &lt; n" &lt;&lt; std::endl;
+    std::vector&lt;std::vector&lt;int&gt;&gt; g(n);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v;
+        std::cin &gt;&gt; u &gt;&gt; v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    
+    if (check_bipartite(g)) {
+        std::cout &lt;&lt; "This graph is bipartite.\n";
+    } else {
+        std::cout &lt;&lt; "This graph is not bipartite.\n";
+    }
+    return 0;
+}
+</pre>

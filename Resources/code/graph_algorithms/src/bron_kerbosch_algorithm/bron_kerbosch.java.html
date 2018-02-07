@@ -1,0 +1,67 @@
+<pre>
+import java.util.*;
+
+public class BronKerbosh {
+
+	public static int BronKerbosch(long[] g, long cur, long allowed, long forbidden, int[] weights) {
+		if (allowed == 0 &amp;&amp; forbidden == 0) {
+			int res = 0;
+			for (int u = Long.numberOfTrailingZeros(cur); u &lt; g.length; u += Long.numberOfTrailingZeros(cur &gt;&gt; (u + 1)) + 1)
+				res += weights[u];
+			return res;
+		}
+		if (allowed == 0)
+			return -1;
+		int res = -1;
+		int pivot = Long.numberOfTrailingZeros(allowed | forbidden);
+		long z = allowed &amp; ~g[pivot];
+		for (int u = Long.numberOfTrailingZeros(z); u &lt; g.length; u += Long.numberOfTrailingZeros(z &gt;&gt; (u + 1)) + 1) {
+			res = Math.max(res, BronKerbosch(g, cur | (1L &lt;&lt; u), allowed &amp; g[u], forbidden &amp; g[u], weights));
+			allowed ^= 1L &lt;&lt; u;
+			forbidden |= 1L &lt;&lt; u;
+		}
+		return res;
+	}
+
+	// random test
+	public static void main(String[] args) {
+		Random rnd = new Random(1);
+		for (int step = 0; step &lt; 1000; step++) {
+			int n = rnd.nextInt(16) + 1;
+			long[] g = new long[n];
+			int[] weights = new int[n];
+			for (int i = 0; i &lt; n; i++)
+				weights[i] = rnd.nextInt(1000);
+			for (int i = 0; i &lt; n; i++)
+				for (int j = 0; j &lt; i; j++)
+					if (rnd.nextBoolean()) {
+						g[i] |= 1L &lt;&lt; j;
+						g[j] |= 1L &lt;&lt; i;
+					}
+			int res1 = BronKerbosch(g, 0, (1L &lt;&lt; n) - 1, 0, weights);
+			int res2 = maxCliqueSlow(g, weights);
+			if (res1 != res2)
+				throw new RuntimeException();
+		}
+	}
+
+	static int maxCliqueSlow(long[] g, int[] weights) {
+		int res = 0;
+		int n = g.length;
+		for (int set = 0; set &lt; 1 &lt;&lt; n; set++) {
+			boolean ok = true;
+			for (int i = 0; i &lt; n; i++)
+				for (int j = 0; j &lt; i; j++)
+					ok &amp;= (set &amp; (1 &lt;&lt; i)) == 0 || (set &amp; (1 &lt;&lt; j)) == 0 || (g[i] &amp; (1L &lt;&lt; j)) != 0;
+			if (ok) {
+				int cur = 0;
+				for (int i = 0; i &lt; n; i++)
+					if ((set &amp; (1 &lt;&lt; i)) != 0)
+						cur += weights[i];
+				res = Math.max(res, cur);
+			}
+		}
+		return res;
+	}
+}
+</pre>

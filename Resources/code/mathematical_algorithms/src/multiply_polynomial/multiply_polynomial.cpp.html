@@ -1,0 +1,145 @@
+<pre>
+// Templated Implementation of FFT.
+// Used to multiply 2 polynomials of size N in O(N logN).
+// Polynomials are passed as vectors with index of "i" is
+// coefficient of x^i in polynomial.
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+const int MAX = 131100;		//2^ceil(log2(N)) where N = Maximum size of Polynomial
+
+//Complex class: Quite faster than in-built C++ library as it uses
+// only functions required
+template&lt;typename T&gt; class cmplx {
+private:
+	T x, y;
+public:
+	cmplx () : x(0.0), y(0.0) {}
+	cmplx (T a) : x(a), y(0.0) {}
+	cmplx (T a, T b) : x(a), y(b) {}
+	T get_real() { return this-&gt;x; }
+	T get_img() { return this-&gt;y; }
+	cmplx conj() { return cmplx(this-&gt;x, -(this-&gt;y)); }
+	cmplx operator = (const cmplx&amp; a) { this-&gt;x = a.x; this-&gt;y = a.y; return *this; }
+	cmplx operator + (const cmplx&amp; b) { return cmplx(this-&gt;x + b.x, this-&gt;y + b.y); }
+	cmplx operator - (const cmplx&amp; b) { return cmplx(this-&gt;x - b.x, this-&gt;y - b.y); }
+	cmplx operator * (const T&amp; num) { return cmplx(this-&gt;x * num, this-&gt;y * num); }
+	cmplx operator / (const T&amp; num) { return cmplx(this-&gt;x / num, this-&gt;y / num); }
+	cmplx operator * (const cmplx&amp; b) {
+		return cmplx(this-&gt;x * b.x - this-&gt;y * b.y, this-&gt;y * b.x + this-&gt;x * b.y);
+	}
+	cmplx operator / (const cmplx&amp; b) {
+		cmplx temp(b.x, -b.y); cmplx n = (*this) * temp;
+		return n / (b.x * b.x + b.y * b.y);
+	}
+};
+
+//T = int/long long as per polynomial coefficients
+//S = double/long double as per precision required
+template&lt;typename T, typename S&gt; struct FFT {
+	S PI;
+	int n, L, *rev, last;
+	cmplx&lt;S&gt; ONE, ZERO;
+	cmplx&lt;S&gt; *omega_powers;
+
+	FFT() {
+		PI = acos(-1.0);
+		ONE = cmplx&lt;S&gt;(1.0, 0.0);
+		ZERO = cmplx&lt;S&gt;(0.0, 0.0);
+		last = -1;
+		int req = 1 &lt;&lt; (32 - __builtin_clz(MAX));
+		rev = new int[req];
+		omega_powers = new cmplx&lt;S&gt;[req];
+	}
+
+	~FFT() {
+		delete rev;
+		delete omega_powers;
+	}
+
+	void ReverseBits() {
+		if (n != last) {
+			for (int i = 1, j = 0; i &lt; n; ++i) {
+				int bit = n &gt;&gt; 1;
+				for (; j &gt;= bit; bit &gt;&gt;= 1) j -= bit;
+				j += bit;
+				rev[i] = j;
+			}
+		}
+	}
+
+	void DFT(vector&lt;cmplx&lt;S&gt;&gt; &amp;A, bool inverse = false) {
+		for(int i = 0; i &lt; n; ++i)
+			if (rev[i] &gt; i) swap(A[i], A[rev[i]]);
+		for (int s = 1; s &lt;= L; s++) {
+			int m = 1 &lt;&lt; s, half = m / 2;
+			cmplx&lt;S&gt; wm(cosl(2.0 * PI / m), sinl(2.0 * PI / m));
+			if (inverse) wm = ONE / wm;
+			omega_powers[0] = ONE;
+			for(int k = 1; k &lt; half; ++k) {
+				omega_powers[k] = omega_powers[k-1] * wm;
+			}
+			for (int k = 0; k &lt; n; k += m) {
+				for (int j = 0; j &lt; half; j++) {
+					cmplx&lt;S&gt; t = omega_powers[j] * A[k + j + half];
+					cmplx&lt;S&gt; u = A[k + j];
+					A[k + j] = u + t;
+					A[k + j + half] = u - t;
+				}
+			}
+		}
+		if (inverse) {
+			for (int i = 0; i &lt; n; i++) A[i] = A[i] / n;
+		}
+	}
+
+	// c[k] = sum_{i=0}^k a[i] b[k-i]
+	vector&lt;T&gt; multiply(const vector&lt;T&gt; &amp;a, const vector&lt;T&gt; &amp;b) {
+		L = 0;
+		int sa = a.size(), sb = b.size(), sc = sa + sb - 1;
+		while ((1 &lt;&lt; L) &lt; sc) L++;
+		n = 1 &lt;&lt; L;
+		ReverseBits();
+		last = n;
+		vector&lt;cmplx&lt;S&gt;&gt; aa(n, ZERO), bb(n, ZERO), cc;
+		for (int i = 0; i &lt; sa; ++i) aa[i] = cmplx&lt;S&gt;(a[i], 0);
+		for (int i = 0; i &lt; sb; ++i) bb[i] = cmplx&lt;S&gt;(b[i], 0);
+		DFT(aa, false); DFT(bb, false);
+		for (int i = 0; i &lt; n; ++i) cc.push_back(aa[i] * bb[i]);
+		DFT(cc, true);
+		vector&lt;T&gt; ans(sc);
+		for (int i = 0; i &lt; sc; ++i) ans[i] = cc[i].get_real() + 0.5;
+		return ans;
+	}
+};
+
+int main() {
+	vector&lt;int&gt; poly_1(4);		//1 + 3x^2 + 2x^3
+	poly_1[0] = 1;
+	poly_1[1] = 0;
+	poly_1[2] = 3;
+	poly_1[3] = 2;
+
+	vector&lt;int&gt; poly_2(3);		//2 + x + x^2
+	poly_2[0] = 2;
+	poly_2[1] = 1;
+	poly_2[2] = 1;
+
+	// int = final datatype in which coefficients should fit.
+	// double = internal calculations done in double but has precision loss.
+	// use "long double" to get less precision issues, but constant factor
+	// of algorithm increases.
+	FFT&lt;int, double&gt; fft;
+
+	// Product should be 2 + x + 7x^2 + 7x^3 + 5x^4 + 2x^5
+	vector&lt;int&gt; poly_mul = fft.multiply(poly_1, poly_2);
+	for(int i = 0; i &lt; poly_mul.size(); ++i) {
+		cout &lt;&lt; poly_mul[i] &lt;&lt; " ";
+	}
+	cout &lt;&lt; "\n";
+	return 0;
+}
+</pre>

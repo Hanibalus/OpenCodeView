@@ -1,0 +1,95 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+#include &lt;cstdlib&gt;
+#include &lt;climits&gt;
+using namespace std;
+
+template &lt;typename T&gt;
+struct node
+{
+    T n;
+    node *next;
+};
+
+template &lt;class T&gt;
+class Stack
+{
+private:
+    node&lt;T&gt; *top;
+public:
+    Stack();
+    void push(T);
+    T pop();
+    void display();
+};
+
+template &lt;class T&gt; Stack&lt;T&gt;::Stack()
+{
+    top=nullptr;
+}
+
+template &lt;class T&gt; void Stack&lt;T&gt;::push(T n)
+{
+    node&lt;T&gt; *ptr=new node&lt;T&gt;;
+    ptr-&gt;n=n;
+    ptr-&gt;next=top;
+    top=ptr;
+}
+
+template &lt;class T&gt; T Stack&lt;T&gt;::pop()
+{
+    if(top==nullptr)
+        return INT_MIN;
+    node&lt;T&gt; *ptr=top;
+    T n=ptr-&gt;n;
+    top=top-&gt;next;
+    delete ptr;
+    return n;
+}
+
+template &lt;class T&gt; void Stack&lt;T&gt;::display()
+{
+    node&lt;T&gt; *ptr=top;
+    while(ptr!=nullptr)
+    {
+        cout &lt;&lt; ptr-&gt;n &lt;&lt; "-&gt; ";
+        ptr=ptr-&gt;next;
+    }
+    cout &lt;&lt; "NULL" &lt;&lt; endl;
+}
+
+int main()
+{
+    Stack&lt;int&gt; S;
+    int n,choice;
+    while(true)
+    {
+        system("cls");
+        cout &lt;&lt; "1.Push" &lt;&lt; endl
+             &lt;&lt; "2.Pop" &lt;&lt; endl
+             &lt;&lt; "3.Display" &lt;&lt; endl
+             &lt;&lt; "4.Exit" &lt;&lt; endl;
+        cin &gt;&gt; choice;
+        switch(choice)
+        {
+        case 1:
+            cout &lt;&lt; "Enter the element to be entered. ";
+            cin &gt;&gt; n;
+            S.push(n);
+            break;
+        case 2:
+            S.pop();
+            break;
+        case 3:
+            S.display();
+            system("pause");
+            break;
+        default:
+            exit(0);
+        }
+    }
+    return 0;
+}
+</pre>

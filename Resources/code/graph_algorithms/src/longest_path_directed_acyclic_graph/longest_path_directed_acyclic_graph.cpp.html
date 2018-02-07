@@ -1,0 +1,73 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+
+void dfs(int v, std::vector&lt;std::vector&lt;int&gt;&gt; &amp;g, std::vector&lt;int&gt; &amp;dp) {
+    if (dp[v]) {
+        return;
+    }
+    
+    dp[v] = 1;
+    for (int u : g[v]) {
+        dfs(u, g, dp);
+        dp[v] = std::max(dp[v], dp[u] + 1);
+    }
+}
+
+// Time complexity: O(|V| + |E|)
+std::vector&lt;int&gt; longest_path_directed_acyclic_graph(std::vector&lt;std::vector&lt;int&gt;&gt; &amp;g) {
+    int n = (int) g.size();
+    std::vector&lt;int&gt; dp(n);
+    
+    for (int i = 0; i &lt; n; i++) {
+        if (!dp[i]) {
+            dfs(i, g, dp);
+        }
+    }
+    
+    int start = (int) (max_element(dp.begin(), dp.end()) - dp.begin());
+    int dist = dp[start] - 1;
+    std::vector&lt;int&gt; res;
+    res.push_back(start);
+    while (dist &gt; 0) {
+        for (int nxt : g[start]) {
+            if (dp[nxt] == dist) {
+                start = nxt;
+                dist--;
+                res.push_back(start);
+                break;
+            }
+        }
+    }
+    
+    return res;
+}
+
+int main() {
+    std::cout &lt;&lt; "Enter the number of vertexes:" &lt;&lt; std::endl;
+    int n;
+    std::cin &gt;&gt; n;
+    
+    std::cout &lt;&lt; "Enter the number of edges:" &lt;&lt; std::endl;
+    int m;
+    std::cin &gt;&gt; m;
+    
+    std::cout &lt;&lt; "Enter the edges in the following format: u v -- an edge from u to v. 0 &lt;= u, v &lt; n" &lt;&lt; std::endl;
+    std::vector&lt;std::vector&lt;int&gt;&gt; g(n);
+    for (int i = 0; i &lt; m; i++) {
+        int u, v;
+        std::cin &gt;&gt; u &gt;&gt; v;
+        g[u].push_back(v);
+    }
+    
+    std::cout &lt;&lt; "Longest path:\n";
+    for (int v : longest_path_directed_acyclic_graph(g)) {
+        std::cout &lt;&lt; v &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+    return 0;
+}
+</pre>

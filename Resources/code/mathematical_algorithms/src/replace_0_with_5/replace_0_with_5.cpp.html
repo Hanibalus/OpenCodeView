@@ -1,0 +1,33 @@
+<pre>
+#include &lt;iostream&gt;
+// Part of Cosmos by OpenGenus Foundation
+using namespace std;
+
+int main(){
+
+	int n; cin &gt;&gt; n;
+
+	int a = 1;
+
+	while( n / a &gt;= 1){
+
+		a = a* 10;
+
+		int temp = n % a - n % (a / 10);
+
+		temp = temp / (a/10);
+
+		int temp2;
+
+		if(temp == 0){
+
+			temp2 = 5 * (a/ 10);
+
+			n = n - temp + temp2;
+		}
+		
+	}
+
+	cout &lt;&lt; n &lt;&lt; endl;
+}
+</pre>

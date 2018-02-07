@@ -1,0 +1,172 @@
+<pre>
+/*
+The method of steepest descent
+-------------------
+An algorithm for finding the nearest local minimum of a function.
+It solves an equation in quadratic form: Ax = b where x is the values we seek.
+A is a matrix of size NxN, and b is a vector of N values.
+
+Time complexity
+---------------
+O(e^-2), where e is an error we can accept (indicates how far we are from solution).
+
+Space complexity
+----------------
+O(2*N), where N is a size of matrix
+*/
+
+#include &lt;iostream&gt;
+#include &lt;array&gt;
+#include &lt;math.h&gt;
+
+/*
+Evalutates euclidean norm
+*/
+template &lt;unsigned int S&gt;
+double norm(const std::array&lt;double, S&gt; &amp;x, const std::array&lt;double, S&gt; &amp;y)
+{
+    double result = 0;
+    for (unsigned int i=0; i&lt;S; ++i)
+    {
+        result += (x[i] - y[i])*(x[i] - y[i]);
+    }
+    return std::move(sqrt(result));
+}
+
+/*
+Method of Steepest Descent
+*/
+template &lt;unsigned int S&gt;
+std::array&lt;double, S&gt; steepestdescent(const std::array&lt;std::array&lt;double, S&gt;, S&gt; &amp;A, const std::array&lt;double, S&gt; &amp;b,
+    const double e = 0.0001, const double step = 0.1, const unsigned int IterMax = 10000)
+{
+    std::array&lt;double, S&gt; x = {0.0};
+    unsigned int k = 0;
+
+    do
+    {
+        std::array&lt;double, S&gt; xp = x;
+        std::array&lt;double, S&gt; residual = b - A * xp;
+        x = x + step * residual;
+        if (norm(x, xp) &lt; e)
+            break;
+        k += 1;
+    }
+    while (k &lt; IterMax);
+
+    return std::move(x);
+}
+
+/*
+Overloads operator &lt;&lt; to display NxN size array
+*/
+template &lt;unsigned int S&gt;
+std::ostream &amp;operator&lt;&lt;(std::ostream &amp;stream, const std::array&lt;std::array&lt;double, S&gt;, S&gt; &amp;A)
+{
+    for (std::array&lt;double, S&gt; tmp : A)
+    {
+        for (double i : tmp)
+        {
+            stream &lt;&lt; i &lt;&lt; '\t';
+        }
+        stream &lt;&lt; '\n';
+    }
+    return stream;
+}
+
+/*
+Overloads operator &lt;&lt; to display Nx1 size array
+*/
+template &lt;unsigned int S&gt;
+std::ostream &amp;operator&lt;&lt;(std::ostream &amp;stream, const std::array&lt;double, S&gt; &amp;x)
+{
+    for (double i : x)
+    {
+        stream &lt;&lt; i &lt;&lt; '\n';
+    }
+    return stream;
+}
+
+/*
+Multiplication of NxN and Nx1 matrix
+*/
+template &lt;unsigned int S&gt;
+std::array&lt;double, S&gt; operator*(const std::array&lt;std::array&lt;double, S&gt;, S&gt; &amp;A, const std::array&lt;double, S&gt; &amp;b)
+{
+    std::array&lt;double, S&gt; result = {0.0};
+
+    for (unsigned int i = 0; i &lt; S; ++i)
+    {
+        for (unsigned int j = 0; j &lt; S; ++j)
+        {
+            result[i] += A[i][j] * b[j];
+        }
+    }
+
+    return result;
+}
+
+/*
+Adds up two matrix
+*/
+template &lt;unsigned int S&gt;
+std::array&lt;double, S&gt; operator+(const std::array&lt;double, S&gt; &amp;x, const std::array&lt;double, S&gt; &amp;y)
+{
+    std::array&lt;double, S&gt; result;
+
+    for (unsigned int i = 0; i &lt; S; ++i)
+    {
+        result[i] = x[i] + y[i];
+    }
+    return std::move(result);
+}
+
+/*
+Subtrack two matrix
+*/
+template &lt;unsigned int S&gt;
+std::array&lt;double, S&gt; operator-(const std::array&lt;double, S&gt; &amp;x, const std::array&lt;double, S&gt; &amp;y)
+{
+    std::array&lt;double, S&gt; result;
+
+    for (unsigned int i = 0; i &lt; S; ++i)
+    {
+        result[i] = x[i] - y[i];
+    }
+    return std::move(result);
+}
+
+/*
+Multiplication of matrix and constant value
+*/
+template &lt;unsigned int S&gt;
+std::array&lt;double, S&gt; operator*(const double x, const std::array&lt;double, S&gt; &amp;y)
+{
+    std::array&lt;double, S&gt; result;
+
+    for (unsigned int i = 0; i &lt; S; ++i)
+    {
+        result[i] = x * y[i];
+    }
+    return std::move(result);
+}
+
+int main()
+{
+    const unsigned int S = 3;
+    const std::array&lt;std::array&lt;double, S&gt;, S&gt; A = {1, -1, 1, 1, 1, 0, 1, 2, 0};
+    const std::array&lt;double, S&gt; b = {9, 1, -2};
+    std::array&lt;double, S&gt; x;
+    std::array&lt;double, S&gt; tmp;
+
+
+    std::cout &lt;&lt; "Maxtrix A:\n"&lt;&lt; A &lt;&lt; '\n';
+    std::cout &lt;&lt; "Vector b:\n" &lt;&lt; b &lt;&lt; '\n';
+    x = steepestdescent(A, b, 0.0000001);
+    std::cout &lt;&lt; "Result:\n"&lt;&lt; x &lt;&lt; '\n';
+    tmp = A*x;
+    std::cout &lt;&lt; "Ax = :\n"&lt;&lt; tmp &lt;&lt; '\n';
+
+    return 0;
+}
+</pre>

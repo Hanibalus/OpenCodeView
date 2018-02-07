@@ -1,0 +1,56 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+/*Added by arpank10 */
+#include &lt;stdio.h&gt;
+#include &lt;stdbool.h&gt;
+/*
+Shaker sorting implementation in C
+*/
+void shaker_sort(int a[],int n)
+{
+	int i=0,j;
+	bool swapped=false;
+	for(i=0;i&lt;n/2;i++)
+	{
+		for(j=i;j&lt;n-1-i;j++)
+		{
+			if(a[j+1]&lt;a[j])
+			{
+				int temp=a[j];
+				a[j]=a[j+1];
+				a[j+1]=temp;
+				swapped=true;
+			}
+		}
+		for(j=n-i-2;j&gt;i;j--)	
+		{
+			if(a[j-1]&gt;a[j])
+			{
+				int temp=a[j];
+				a[j]=a[j-1];
+				a[j-1]=temp;
+				swapped=true;
+			}
+		}
+		if(!swapped)	//If no elements are swapped in the iteration array is sorted
+			break;
+	}
+}
+int main()
+{
+	int n;
+	printf("Enter size of array:\n");
+	scanf("%d",&amp;n);
+	printf("Enter the array elements:\n");
+	int a[n];
+	int i;
+	for(i=0;i&lt;n;i++)
+			scanf("%d",&amp;a[i]);
+	shaker_sort(a,n);
+	printf("Sorted Array:\n");
+	for(i=0;i&lt;n;i++)
+		printf("%d ",a[i]);
+	printf("\n");
+	return 0;
+}
+</pre>

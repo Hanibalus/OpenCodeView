@@ -1,0 +1,222 @@
+<pre>
+/**
+ * skip list C++ implementation
+ *
+ *          Average     Worst-case
+ * Space    O(n)        O(n log n)
+ * Search   O(log n)    0(n)
+ * Insert   O(log n)    0(n)
+ * Delete   O(log n)    0(n)
+ * Part of Cosmos by OpenGenus Foundation
+ */
+
+#include &lt;algorithm&gt;    // std::less, std::max
+#include &lt;cassert&gt;      // assert
+#include &lt;iostream&gt;     // std::cout, std::endl, std::ostream
+#include &lt;map&gt;          // std::map
+#include &lt;stdlib.h&gt;     // rand, srand
+#include &lt;time.h&gt;       // time
+
+template &lt;typename val_t&gt; class skip_list;
+template &lt;typename val_t&gt;
+std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, const skip_list&lt;val_t&gt; &amp;jls);
+
+template &lt;typename val_t&gt;
+class skip_list
+{
+private:
+    /**
+     * skip_node
+     */
+    struct skip_node
+    {
+        val_t       data;
+        skip_node   **forward;
+        int         height;
+
+        skip_node(int ht)
+            : forward{new skip_node*[ht]}, height{ht}
+        {
+            for (int i = 0; i &lt; ht; ++i) { forward[i] = nullptr; }
+        }
+        
+        skip_node(const val_t &amp;ele, int ht)
+            : skip_node(ht)
+        {
+            data = ele;
+        }
+
+        ~skip_node()
+        {
+            if (forward[0]) {
+                delete forward[0];
+            }
+            delete[] forward;
+        }
+
+    };
+
+    /* member variables */
+    skip_node                       *head_;
+    int                             size_,
+                                    cur_height_;
+    constexpr const static int      MAX_HEIGHT = 10;
+    constexpr const static float    PROB = 0.5f;
+    /* private functions */
+
+    bool coin_flip()
+    {
+        return ((float) rand() / RAND_MAX) &lt; PROB;
+    }
+
+    int rand_height()
+    {
+        int height = 1;
+        for (; height &lt; MAX_HEIGHT &amp;&amp; coin_flip(); ++height) {}
+        return height;
+    }
+
+    skip_node ** find(const val_t &amp;ele)
+    {
+        auto comp = std::less&lt;val_t&gt;();
+        skip_node **result = new skip_node*[cur_height_],
+                  *cur_node = head_;
+        for (int lvl = cur_height_ - 1; lvl &gt;= 0; --lvl) {
+            while (cur_node-&gt;forward[lvl] 
+                    &amp;&amp; comp(cur_node-&gt;forward[lvl]-&gt;data, ele)) {
+                cur_node = cur_node-&gt;forward[lvl];
+            }
+            result[lvl] = cur_node;
+        }
+        return result;
+    }
+
+    void print(std::ostream &amp;os) const
+    {
+        int i;
+        for (skip_node *n = head_; n != nullptr; n = n-&gt;forward[0]) {
+            os &lt;&lt; n-&gt;data &lt;&lt; ": ";
+            for (i = 0; i &lt; cur_height_; ++i) {
+                if (i &lt; n-&gt;height) {
+                    os &lt;&lt; "[ ] ";
+                } else {
+                    os &lt;&lt; " |  ";
+                }
+            }
+            os &lt;&lt; std::endl;
+            os &lt;&lt; "   ";
+            for (i = 0; i &lt; cur_height_; ++i) {
+                os &lt;&lt; " |  ";
+            }
+            os &lt;&lt; std::endl;
+        }
+    }
+
+public:
+    /* Default C'tor */
+    skip_list()
+        : head_{new skip_node(MAX_HEIGHT)}, size_{0}, cur_height_{0}
+    {
+        srand((unsigned)time(0));
+    }
+
+    /* D'tor */
+    ~skip_list()
+    {
+        delete head_;
+    }
+
+    /**
+     * size
+     * @return - the number of elements in the list
+     */
+    int size()
+    {
+        return size_;
+    }
+
+    /**
+     * insert
+     * @param ele - the element to be inserted into the list
+     */
+    void insert(const val_t &amp;ele)
+    {
+        int new_ht = rand_height();
+        skip_node *new_node = new skip_node(ele, new_ht);
+        cur_height_ = std::max(new_ht, cur_height_);
+        skip_node **pre = find(ele);
+        for (int i = 0; i &lt; new_ht; ++i) {
+            new_node-&gt;forward[i] = pre[i]-&gt;forward[i];
+            pre[i]-&gt;forward[i] = new_node;
+        }
+        ++size_;
+        delete[] pre;
+    }
+
+    /**
+     * contains
+     * @param ele - the element to search for
+     * @retrun - true if the element is in the list, false otherwise
+     */
+    bool contains(const val_t &amp;ele)
+    {
+        skip_node **pre = find(ele);
+        bool result = pre[0] &amp;&amp;
+            pre[0]-&gt;forward[0] &amp;&amp; 
+            pre[0]-&gt;forward[0]-&gt;data == ele;
+        delete[] pre;
+        return result;
+    }
+
+    /**
+     * remove
+     * @param ele - the element to delete if found
+     */
+    void remove(const val_t &amp;ele)
+    {
+        if (!contains(ele)) {
+            std::cout &lt;&lt; ele &lt;&lt; " not found!" &lt;&lt; std::endl;
+            return;
+        }
+        skip_node *tmp, **pre = find(ele), *del = pre[0]-&gt;forward[0];
+        for (int i = 0; i &lt; cur_height_; ++i) {
+            tmp = pre[i]-&gt;forward[i];
+            if (tmp != nullptr &amp;&amp; tmp-&gt;data == ele) {
+                pre[i]-&gt;forward[i] = tmp-&gt;forward[i];
+                tmp-&gt;forward[i] = nullptr;
+            }
+        }
+        --size_;
+        delete del;
+        delete[] pre;
+    }
+
+    friend std::ostream &amp; operator&lt;&lt; &lt;val_t&gt;(std::ostream &amp;os, 
+                                             const skip_list&lt;val_t&gt; &amp;ls);
+}; // skip_node
+
+template&lt;typename val_t&gt;
+std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, const skip_list&lt;val_t&gt; &amp;ls)
+{
+    ls.print(os);
+    return os;
+}
+
+int main()
+{
+    auto ints = { 1, 4, 2, 7, 9, 3, 5, 8, 6 };
+    skip_list&lt;int&gt; isl;
+    for (auto i : ints) {
+        isl.insert(i);
+        std::cout &lt;&lt; isl &lt;&lt; std::endl;
+    }
+    for (auto i : ints) {
+        assert(isl.contains(i));
+        std::cout &lt;&lt; "removing " &lt;&lt; i &lt;&lt; std::endl;
+        isl.remove(i);
+        std::cout &lt;&lt; isl &lt;&lt; std::endl;
+    }
+    return 0;
+}
+
+</pre>

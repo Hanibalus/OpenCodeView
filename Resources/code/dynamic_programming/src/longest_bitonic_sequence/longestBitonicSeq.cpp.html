@@ -1,0 +1,61 @@
+<pre>
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+int lBitconSeq(vector&lt;int&gt; v, int n)
+{
+	vector&lt;int&gt; lis, lds; // lis stands for longest increasing subsequence and lds stands for longest decreasing subsequence
+	if(n==0)
+	return 0; // in case tha array is empty longest length will also be empty
+	// finding lis
+    for(int i=0;i&lt;n;i++)
+    lis.push_back(1);
+	for(int i=1;i&lt;n;i++)
+	{
+		for(int j=0;j&lt;i;j++)
+		{
+			if(v[i]&gt;v[j] &amp;&amp; lis[j]+1&gt;lis[i])
+			lis[i]=lis[j]+1;
+			
+		}
+	}
+	//findin lds
+	for(int i=0;i&lt;n;i++)
+    lds.push_back(1);
+	for(int i=1;i&lt;n;i++)
+	{
+		for(int j=0;j&lt;i;j++)
+		{
+			if(v[i]&lt;v[j] &amp;&amp; lds[j]+1&gt;lds[i])
+			lds[i]=lds[j]+1;
+			
+		}
+	}
+	// result wil be max(lis[i] + lds[i] -1)
+	int res=lis[0]+lds[0]-1;
+	for(int i=1;i&lt;n;i++)
+	{
+		if((lis[i] + lds[i] -1)&gt; res)
+		res=lis[i] + lds[i] -1;
+	}
+	return res;
+}
+
+int main()
+{
+	vector&lt;int&gt; v;
+	int n;
+	cout&lt;&lt;"enter no. of elements in array\n";
+	cin&gt;&gt;n;
+	cout&lt;&lt;"enter elements of the array\n";
+	for(int i=0;i&lt;n;i++)
+	{
+		int temp;
+		cin&gt;&gt;temp;
+		v.push_back(temp); // filling the array with numbers
+		
+	}
+	cout&lt;&lt;"max length of the lingest bitconic sequence is "&lt;&lt;lBitconSeq(v,n);
+}
+</pre>

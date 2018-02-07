@@ -1,0 +1,36 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+using namespace std;
+
+int BIT[101000], A[101000],n;
+
+int query(int i){
+	int ans = 0;
+	for(;i &gt; 0;i-=i&amp;(-i)){
+		ans += BIT[i];
+	}
+	return ans;
+}
+void update(int i){
+	for(;i &lt;=n;i += i&amp;(-i)){
+		BIT[i]++;
+	}
+}
+int main(){
+	int ans,i;
+	while(cin &gt;&gt; n and n){
+		memset(BIT,0,(n+1)*(sizeof(int)));
+		for(int i=0;i&lt;n;i++){
+			cin &gt;&gt; A[i];
+		}
+		ans = 0;
+		for(i=n-1;i&gt;=0;i--){
+			ans += query(A[i]-1);
+			update(A[i]);
+		}
+		cout &lt;&lt; ans &lt;&lt; endl;
+	}
+	return 0;
+}
+</pre>

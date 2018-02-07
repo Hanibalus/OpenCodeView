@@ -1,0 +1,143 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;math.h&gt;
+
+using namespace std;
+
+typedef struct VEB {
+  int u;
+  int min, max;
+  int count;
+  struct VEB *summary, **cluster;
+} VEB;
+
+int high(int x, int u) {
+  return (int)(x / (int) sqrt(u));
+}
+
+int low(int x, int u) {
+  return (x % (int) sqrt(u));
+}
+
+int VEBmin(VEB*V) {
+  return V-&gt;min;
+}
+
+int VEBmax(VEB*V) {
+  return V-&gt;max;
+}
+
+VEB* insert(VEB*V, int x, int u) {
+  if (!V) {
+    V = (VEB*) malloc(sizeof(VEB));
+    V-&gt;min = V-&gt;max = x;
+    V-&gt;u = u;
+    V-&gt;count = 1;
+    if (u &gt; 2) {
+      V-&gt;summary = NULL;
+      V-&gt;cluster = (VEB**) calloc(sqrt(u), sizeof(VEB*));
+    } else {
+      V-&gt;summary = NULL;
+      V-&gt;cluster = NULL;
+    }
+  } else if (V-&gt;min == x || V-&gt;max == x) {
+    V-&gt;count = 1;
+  } else {
+    if (x &lt; V-&gt;min) {
+      if (V-&gt;min == V-&gt;max) {
+        V-&gt;min = x;
+        V-&gt;count = 1;
+        return V;
+      }
+    } else if (x &gt; V-&gt;max) {
+      int aux = V-&gt;max;
+      V-&gt;max = x;
+      x = aux;
+      V-&gt;count = 1;
+      if (V-&gt;min == x)
+        return V;
+    }
+    if (V-&gt;u &gt; 2) {
+      if (V-&gt;cluster[high(x, V-&gt;u)] == NULL)
+        V-&gt;summary = insert(V-&gt;summary, high(x, V-&gt;u), sqrt(V-&gt;u));
+      V-&gt;cluster[high(x, V-&gt;u)] =
+        insert(V-&gt;cluster[high(x, V-&gt;u)], low(x, V-&gt;u), sqrt(V-&gt;u));
+    }
+  }
+  return V;
+}
+
+VEB* deleteVEB(VEB*V, int x) {
+  if (V-&gt;min == V-&gt;max) {
+    free(V);
+    return NULL;
+  } 
+  else if (x == V-&gt;min || x == V-&gt;max) {
+      if (!--V-&gt;count) {
+        if (V-&gt;summary) {
+          int cluster = VEBmin(V-&gt;summary);
+          int new_min = VEBmin(V-&gt;cluster[cluster]);
+          V-&gt;min = cluster*(int) sqrt(V-&gt;u) + new_min;
+          V-&gt;count = V-&gt;cluster[cluster]-&gt;count;
+          (V-&gt;cluster[cluster])-&gt;count = 1;
+          if ((V-&gt;cluster[cluster])-&gt;min == (V-&gt;cluster[cluster])-&gt;max)
+            (V-&gt;cluster[cluster])-&gt;count = 1;
+          V-&gt;cluster[cluster] = deleteVEB(V-&gt;cluster[cluster], new_min);
+          if (V-&gt;cluster[cluster] == NULL)
+            V-&gt;summary = deleteVEB(V-&gt;summary, cluster);
+        } else {
+          V-&gt;min = V-&gt;max;
+          V-&gt;count = 1;
+        }
+      }
+    }
+  else {
+      V-&gt;cluster[high(x, V-&gt;u)] = deleteVEB(V-&gt;cluster[high(x, V-&gt;u)], low(x, V-&gt;u));
+      if (V-&gt;cluster[high(x, V-&gt;u)] == NULL)
+        V-&gt;summary = deleteVEB(V-&gt;summary, high(x, V-&gt;u));
+  }
+  return V;
+}
+
+int elements(VEB*V, int x) {
+  if (!V)
+    return 0;
+  else if (V-&gt;min == x || V-&gt;max == x)
+    return V-&gt;count;
+  else {
+    if (V-&gt;cluster)
+      return elements(V-&gt;cluster[high(x, V-&gt;u)], low(x, V-&gt;u));
+    else
+      return 0;
+  }
+}
+
+void printVEB(VEB*V, int u) {
+  for (int i = 0; i &lt; u; ++i) {
+    printf("VEB[%d] = %d\n", i, elements(V, i));
+  }
+}
+
+int main() {
+  int u = 4;
+  int sqrt_u = sqrt(u);
+  VEB* V = NULL;
+
+  if (sqrt_u*sqrt_u != u) {
+    printf("Invalid 'u' : Must be a perfect square\n");
+    return 0;
+  }
+
+  V = insert(V, 0, u);
+  V = insert(V, 1, u);
+  V = insert(V, 2, u);
+
+  printVEB(V, u);
+  printf("\n\n");
+
+  V = deleteVEB(V, 0);
+  V = deleteVEB(V, 1);
+
+  printVEB(V, u);
+  return 0;
+}</pre>

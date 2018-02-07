@@ -1,0 +1,37 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+import java.util.*;
+
+public class PrimeFactors {
+    public static List&lt;Integer&gt; primeFactors(int numbers) {
+        int n = numbers;
+        List&lt;Integer&gt; factors = new ArrayList&lt;Integer&gt;();
+        for (int i = 2; i &lt;= n / i; i++) {
+            while (n % i == 0) {
+                factors.add(i);
+                n /= i;
+            }
+        }
+        if (n &gt; 1) {
+            factors.add(n);
+        }
+        return factors;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        System.out.println("Primefactors of " + n);
+        List&lt;Integer&gt; al =  primeFactors(n);
+        //remove duplicate 
+        // if you want the duplicate remove the following 3 lines
+        Set&lt;Integer&gt; hs = new HashSet&lt;&gt;();
+        hs.addAll(al);
+        al.clear();
+        al.addAll(hs);
+        for (Integer integer : al) {
+            System.out.println(integer);
+        }
+    }
+}
+</pre>

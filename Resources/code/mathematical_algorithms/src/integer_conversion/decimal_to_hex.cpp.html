@@ -1,0 +1,25 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+  int decimal;
+  cout &lt;&lt; "Enter a decimal: ";
+  cin &gt;&gt; decimal;
+
+  stringstream hex;
+
+  cout &lt;&lt; "The number in hexadecimal: ";
+  for(int i = 28; i &gt;= 0; i-=4) {
+    int val = (decimal &gt;&gt; i) &amp; 0xf;
+    if(val &gt; 9) hex &lt;&lt; (char)('a' + (val - 10));
+    else hex &lt;&lt; val;
+  }
+  
+  cout &lt;&lt; hex.str() &lt;&lt; endl;
+
+  return 0;
+}
+</pre>

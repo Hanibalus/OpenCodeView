@@ -1,0 +1,7 @@
+<pre>
+quicksort :: (Ord a) =&gt; [a] -&gt; [a]
+quicksort []        = []
+quicksort (x:xs)    = smaller ++ [x] ++ larger
+    where   smaller = quicksort $ filter (&lt;=x) xs
+            larger  = quicksort $ filter (&gt;x) xs
+</pre>

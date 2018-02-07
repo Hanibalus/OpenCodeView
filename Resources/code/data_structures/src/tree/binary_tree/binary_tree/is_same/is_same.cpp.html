@@ -1,0 +1,86 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+
+ tree comparer synopsis
+
+template&lt;typename _Tp, typename _Comp = std::equal_to&lt;_Tp&gt; &gt;
+class TreeComparer
+{
+public:
+    using CNodeType = TreeNode&lt;_Tp&gt; const;
+    using PCNodeType = std::shared_ptr&lt;CNodeType&gt;;
+
+    bool isSameTree(PCNodeType p, PCNodeType q) const;
+
+private:
+    _Comp comp_;
+};
+ */
+
+#include &lt;stack&gt;
+#include &lt;functional&gt;
+#include &lt;memory&gt;
+#include "../tree_node/tree_node.cpp"
+
+#ifndef TREE_COMPARER
+#define TREE_COMPARER
+
+template&lt;typename _Tp, typename _Comp = std::equal_to&lt;_Tp&gt;&gt;
+class TreeComparer
+{
+public:
+    using CNodeType = TreeNode&lt;_Tp&gt; const;
+    using PCNodeType = std::shared_ptr&lt;CNodeType&gt;;
+
+    bool isSameTree(PCNodeType const &amp;f, PCNodeType const &amp;s) const {
+        std::stack&lt;PCNodeType&gt; first, second;
+        first.push(f);
+        second.push(s);
+
+        // DFS
+        while (!first.empty() || !second.empty())
+        {
+            // mining left
+            while (first.top()!=nullptr
+                   || second.top()!=nullptr)
+            {
+                // check not same node and not same value
+                if (first.top()==nullptr
+                    || second.top()==nullptr
+                    || !comp_(first.top()-&gt;val, second.top()-&gt;val))
+                    return false;
+
+                first.push(first.top()-&gt;left);
+                second.push(second.top()-&gt;left);
+            }
+
+            // escape if top is empty or right is empty
+            while (!first.empty()
+                   &amp;&amp; ((first.top()==nullptr &amp;&amp; second.top()==nullptr)
+                       || (first.top()-&gt;right==nullptr &amp;&amp; second.top()-&gt;right==nullptr)))
+            {
+                first.pop();
+                second.pop();
+            }
+
+            if (!first.empty())
+            {
+                auto first_right = first.top()-&gt;right,
+                     second_right = second.top()-&gt;right;
+                first.pop();
+                second.pop();
+                first.push(first_right);
+                second.push(second_right);
+            }
+        }
+
+        return true;
+    }
+
+private:
+    _Comp comp_;
+};
+
+#endif // TREE_COMPARER
+</pre>

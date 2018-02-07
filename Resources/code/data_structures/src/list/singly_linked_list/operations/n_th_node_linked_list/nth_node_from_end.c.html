@@ -1,0 +1,83 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define NUM_NODES 100 
+// Part of Cosmos by OpenGenus Foundation
+typedef struct node {
+		int value;
+		struct node* next;
+	}node;
+
+node* head = NULL;
+
+node* create_node(int val)
+{
+   node *tmp = (node *) malloc(sizeof(node));
+   tmp-&gt;value = val;
+   tmp-&gt;next = NULL;
+   return tmp;
+}
+
+void create_list(int val)
+{
+        static node* tmp = NULL;
+        if (!head)
+        {
+           head = create_node(val);
+           tmp = head;
+        }
+        else
+        {
+           tmp-&gt;next = create_node(val);
+           tmp = tmp-&gt;next;
+        }
+}
+
+node* ptr = NULL;
+void  get_nth_node(int node_num,node* curr)
+{
+	static int ctr = 0;
+        if (curr-&gt;next)
+        {
+          get_nth_node(node_num,curr-&gt;next );
+        }
+        ctr++;
+        if (ctr == node_num)
+          ptr = curr;
+}
+
+void cleanup_list()
+{
+  node* tmp = NULL;
+  while (head-&gt;next)
+  {
+    tmp = head;
+    head = head-&gt;next;
+    free(tmp);
+  }
+  free(head);
+  head = NULL;
+}
+
+
+int main()
+{
+      int node_num,ctr;
+      node* tmp = NULL;
+      printf("Enter node number\n");
+      scanf("%d",&amp;node_num);
+      for (ctr = 0; ctr &lt; NUM_NODES; ctr++)
+         create_list(ctr); 
+      get_nth_node(node_num, head);
+      if ((node_num &gt; 0) &amp;&amp; (node_num &lt;= NUM_NODES))
+        printf("curr-&gt;value = %d\n",ptr-&gt;value);
+      else
+        printf("node number has to be greater than 0\n");
+      cleanup_list();
+      return 0;
+}
+
+
+
+	
+</pre>

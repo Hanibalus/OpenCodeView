@@ -1,0 +1,73 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation 
+
+/* 
+**
+** @AUTHOR: VINAY BADHAN
+** @GREEDY PROBLEM: COUNT SET BITS
+** @GITHUB LINK: https://github.com/vinayb21
+*/
+
+import java.util.*;
+import java.io.*;
+
+class CountSetBits {
+    
+    public static int countSetBits(int n)
+    {
+        int count = 0,bit;
+        while(n&gt;0)
+        {
+            bit = n&amp;1;
+            if(bit==1)
+                count++;
+            n &gt;&gt;= 1;
+        }
+        return count;
+    }
+    
+    /**
+    * Counts the number of set bits in parallel.
+    * @param n 32-bit integer whose set bits are to be counted
+    * @return the number of set bits in (n)
+    * @see &lt;a href="https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel"&gt;Bit Twiddling Hacks&lt;/a&gt;
+    */
+    public static int countSetBitsParallel(int n)
+    {
+        final int[] S = {
+            1,
+            2,
+            4,
+            8,
+            16
+        };
+
+        final int[] B = {
+            0x55555555,
+            0x33333333,
+            0x0F0F0F0F,
+            0x00FF00FF,
+            0x0000FFFF
+        };
+
+        int C = n - ((n &gt;&gt;&gt; 1) &amp; B[0]);
+        C = ((C &gt;&gt;&gt; S[1]) &amp; B[1]) + (C &amp; B[1]);
+        C = ((C &gt;&gt;&gt; S[2]) + C) &amp; B[2];
+        C = ((C &gt;&gt;&gt; S[3]) + C) &amp; B[3];
+        C = ((C &gt;&gt;&gt; S[4]) + C) &amp; B[4];
+        return C;
+    }
+    
+
+    public static void main(String[] args) throws IOException {
+        int n;
+    	InputStreamReader in = new InputStreamReader(System.in);
+    	BufferedReader buffer = new BufferedReader(in);
+    	PrintWriter out = new PrintWriter(System.out, true);
+    	String line = buffer.readLine().trim();
+    	n = Integer.parseInt(line);
+    	int ans = countSetBitsParallel(n);
+    	out.println("No. of set bits in "+n+" is "+ans);
+    }
+}
+</pre>

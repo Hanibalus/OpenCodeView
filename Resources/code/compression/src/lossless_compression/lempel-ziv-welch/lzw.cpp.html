@@ -1,0 +1,86 @@
+<pre>
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;iostream&gt;
+#include &lt;iterator&gt;
+#include &lt;vector&gt;
+ 
+ 
+/* Compress a string to a list of output symbols.
+ * The result will be written to the output iterator
+ * starting at "result"; the final iterator is returned.
+ */
+template &lt;typename Iterator&gt;
+Iterator compress(const std::string &amp;uncompressed, Iterator result) {
+  // Build the dictionary.
+  int dictSize = 256;
+  std::map&lt;std::string,int&gt; dictionary;
+  for (int i = 0; i &lt; 256; i++)
+    dictionary[std::string(1, i)] = i;
+ 
+  std::string w;
+  for (std::string::const_iterator it = uncompressed.begin();
+       it != uncompressed.end(); ++it) {
+    char c = *it;
+    std::string wc = w + c;
+    if (dictionary.count(wc))
+      w = wc;
+    else {
+      *result++ = dictionary[w];
+      // Add wc to the dictionary.
+      dictionary[wc] = dictSize++;
+      w = std::string(1, c);
+    }
+  }
+ 
+  // Output the code for w.
+  if (!w.empty())
+    *result++ = dictionary[w];
+  return result;
+}
+ 
+/*
+ * Decompress a list of output ks to a string.
+ * "begin" and "end" must form a valid range of ints
+ */
+template &lt;typename Iterator&gt;
+std::string decompress(Iterator begin, Iterator end) {
+  // Build the dictionary.
+  int dictSize = 256;
+  std::map&lt;int,std::string&gt; dictionary;
+  for (int i = 0; i &lt; 256; i++)
+    dictionary[i] = std::string(1, i);
+ 
+  std::string w(1, *begin++);
+  std::string result = w;
+  std::string entry;
+  for ( ; begin != end; begin++) {
+    int k = *begin;
+    if (dictionary.count(k))
+      entry = dictionary[k];
+    else if (k == dictSize)
+      entry = w + w[0];
+    else
+      throw "Bad compressed k";
+ 
+    result += entry;
+ 
+    // Add w+entry[0] to the dictionary.
+    dictionary[dictSize++] = w + entry[0];
+ 
+    w = entry;
+  }
+  return result;
+}
+
+int main() {
+  //Test Case 1
+  std::vector&lt;int&gt; compressed;
+  compress("Hello world !!", std::back_inserter(compressed));
+  copy(compressed.begin(), compressed.end(), std::ostream_iterator&lt;int&gt;(std::cout, ", "));
+  std::cout &lt;&lt; std::endl;
+  std::string decompressed = decompress(compressed.begin(), compressed.end());
+  std::cout &lt;&lt; decompressed &lt;&lt; std::endl;
+ 
+  return 0;
+}</pre>

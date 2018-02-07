@@ -1,0 +1,58 @@
+<pre>
+﻿// Part of Cosmos by OpenGenus Foundation 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace finding_is_square
+{
+    /// &lt;summary&gt;
+    /// Class to check if number is a perfect square or not
+    /// &lt;/summary&gt;
+    class is_square
+    {
+        /// &lt;summary&gt;
+        /// an array to store numbers
+        /// &lt;/summary&gt;
+        int[] numbers;
+        /// &lt;summary&gt;
+        /// constructor 
+        /// &lt;/summary&gt;
+        /// &lt;param name="number"&gt;numbers to be processed&lt;/param&gt;
+        public is_square(int[] number)
+        {
+            numbers = number;
+        }
+        /// &lt;summary&gt;
+        /// method to check if perfect square or not
+        /// &lt;/summary&gt;
+        public void check_sq()
+        {
+            foreach (int number in numbers) // traversing the whole integer array
+            {
+                if (Math.Sqrt(number).ToString().Contains("."))  // converting double to string to chk if it contains . or not
+                    Console.WriteLine("number {0} is not a perfect square", number);
+                else
+                    Console.WriteLine("number {0} is a perfect square", number);
+            }
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // making an array of numbers to check
+            int[] numbers = { 56, 90, 100, 80, 16 };
+            
+            // creating an object of is_square class and initializing with test inputs
+            is_square sq = new is_square(numbers);
+
+            sq.check_sq(); // checking
+             
+            Console.ReadKey(); // pausing
+        }
+    }
+}
+</pre>

@@ -1,0 +1,47 @@
+<pre>
+/*Part of Cosmos by OpenGenus Foundation*/
+
+#include &lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+struct node
+{
+    int data;
+    struct node *next;
+};
+
+void position()
+{
+    struct node *p,*q;
+    int n,gap;
+    printf("Enter no of horses:\n");
+    scanf("%d",&amp;n);
+    printf("Enter gap:\n");
+    scanf("%d",&amp;gap);
+    p=q=(struct node *)malloc(sizeof(struct node));
+    p-&gt;data=1;
+    for(int i=2;i&lt;=n;i++)
+    {
+        p-&gt;next=malloc(sizeof(struct node));
+        p=p-&gt;next;
+        p-&gt;data=i;
+    }
+    p-&gt;next=q;
+
+    for(int i=n;i&gt;1;)
+    {
+        for(int j=0;j&lt;gap-1;j++)
+        {
+            p=p-&gt;next;
+        }
+        p-&gt;next=p-&gt;next-&gt;next;
+        i--;
+    }
+    printf("Safe position is: %d\n",p-&gt;data);
+}
+
+int main()
+{
+   position();
+   return 0;
+}
+</pre>

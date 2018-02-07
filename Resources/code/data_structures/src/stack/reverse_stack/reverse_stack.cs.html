@@ -1,0 +1,66 @@
+<pre>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+// Part of Cosmos by OpenGenus Foundation
+namespace reversed_stack
+{
+    class Program
+    {
+        /// &lt;summary&gt;
+        /// This will print all elements in stack 
+        /// Format :: [element1] [element2] ... 
+        /// &lt;/summary&gt;
+        /// &lt;param name="STK"&gt;an object of Stack collection of type int is accepted&lt;/param&gt;
+        static void print(Stack&lt;int&gt; STK)
+        {
+            foreach(int val in STK)
+            {
+                Console.Write(val.ToString() + " ");
+            }
+            Console.WriteLine(); // printing new line
+        }
+        /// &lt;summary&gt;
+        /// This will take a stack collection object of int type and returns the reverse of the same
+        /// &lt;/summary&gt;
+        /// &lt;param name="STK"&gt;&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        static Stack&lt;int&gt; reverse(Stack&lt;int&gt; STK)
+        {
+            Stack&lt;int&gt; ret = new Stack&lt;int&gt;(); // a temp object of stack
+            while(STK.Count &gt; 0) // if stack has some value it will execute
+            {
+                ret.Push(STK.Pop()); // STK.pop() returns the top most value which we have to push in temp / reversed stack
+            }
+            return ret;
+        }
+
+        static void Main(string[] args)
+        {
+            Stack&lt;int&gt; stk = new Stack&lt;int&gt;();  // creating a object of inbuilt collection Stack
+            
+            // here i am pushing 5 numbers in stack for demo
+            stk.Push(5);
+            stk.Push(4);
+            stk.Push(3);
+            stk.Push(2);
+            stk.Push(1);
+            
+            // printing original elements in stack 
+            Console.WriteLine("ORIGINAL STACK");
+            print(stk);
+
+            // reversing the stack now
+            stk = reverse(stk);
+
+            // printing original elements in stack 
+            Console.WriteLine("REVERSED STACK");
+            print(stk);
+
+            Console.ReadKey(); // It has stopped till key has not been pressed
+        }
+    }
+}
+</pre>

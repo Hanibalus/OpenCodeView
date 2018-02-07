@@ -1,0 +1,296 @@
+<pre>
+#include&lt;fstream&gt;
+#include&lt;iostream&gt;
+#include&lt;cstdlib&gt;
+#include&lt;cmath&gt;
+#include&lt;string&gt;
+#include&lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;float.h&gt;
+#include &lt;iomanip&gt;
+
+#define MAX_DIMENSION 21705
+
+using namespace std;
+
+class TreeNode {
+   private: 
+       double location[MAX_DIMENSION];					//location or the center
+       double sum[MAX_DIMENSION];						//for cummulative adding
+       int dataNum;										//denominator
+       TreeNode *left;									//left treenode pointer
+       TreeNode *right;									//right treenode pointer
+       TreeNode *next;									//next for a list
+       bool isLegit;									//spam or legit corpus
+       int serialNum;									//ID in the "string of leaves"
+
+   public:
+       TreeNode() {
+           left = NULL;
+           right = NULL;
+           next = NULL;
+           dataNum = 1;
+		   isLegit = false;
+           for(int i = 0; i &lt; MAX_DIMENSION; i++) {
+               location[i] = 0;
+               sum[i] = 0;
+           }
+       }									// end of constructor
+
+       void setLocation(int i,double j) {
+           location[i] = j;
+           sum[i] = j;
+       }									//for entering the data of the treenode
+
+       TreeNode* getNext() {
+           return next;
+       }
+
+       double getLocation(int i) {
+           return location[i];
+       }
+
+       void setNext( TreeNode *input) {
+           next = input;
+       }
+	   
+       void setLegit() {
+           isLegit = true;
+       }
+
+       bool Legitimacy() {
+       	   return isLegit;
+       }
+       
+       friend class HierachicalTree;
+};											//end of TreeNode
+
+struct Subtree {
+	TreeNode *begin;
+	int length;
+	Subtree *next;
+};
+class HierachicalTree {
+      private:
+          TreeNode *root;        
+          TreeNode *listHead;				//for a sequence of temp subtrees
+          TreeNode *listRear;				//for a sequence of temp subtrees  
+          TreeNode *tmp;
+          Subtree *subtreeHead, *subtreeHandle;
+
+      protected: 
+          void createTree ();								//create tree from the sequence of treenodes
+          void dfs (TreeNode *treePtr);					//traverse the tree
+		  Subtree *atLevel(int lvl, TreeNode *parent);
+          
+      public:  
+          HierachicalTree() {
+              root = NULL;
+              listHead = NULL;
+              listRear = NULL;               
+          }									// end of constructor
+
+          void addToList(TreeNode *Item) {
+              if(listHead == NULL &amp;&amp; listRear == NULL ) {
+                  listHead = Item;
+                  listRear = Item;
+              } else {
+                  listRear-&gt;next = Item;
+                  listRear = Item;
+              }
+          }									// put the data into the list
+
+          void organise() {
+              tmp=0;
+              int tok = 0;
+              cout&lt;&lt;"root: "&lt;&lt;root&lt;&lt;endl;
+              system("pause");
+              dfs(root);
+              tmp = listHead;
+              
+              while( tmp != NULL) {
+              	tmp-&gt;serialNum = tok++;
+              	tmp = tmp-&gt;next;
+			  }
+			  
+          }									//access the protected function
+
+          void buildTree()	{
+               createTree();
+          }									//access the protected function
+
+          Subtree *subtreeAt(int level) {
+              subtreeHead = subtreeHandle = NULL;
+              return atLevel(level, root);
+          }
+
+          int rightEnd(TreeNode *p) {
+              if (p-&gt;right == NULL) {
+              	  return p-&gt;serialNum;
+              } else {
+              	  return rightEnd(p-&gt;right);
+              }
+          }
+
+          int leftEnd(TreeNode *p) {
+              if (p-&gt;left == NULL) {
+              	    return p-&gt;serialNum;
+              } else {
+                    return leftEnd(p-&gt;left);
+              }
+          }
+
+};
+
+void HierachicalTree::createTree() {
+    TreeNode *goal;
+    TreeNode *temp,*temp2; 
+    double sum=0;
+    double minimum=MAX_DIMENSION;
+    cout&lt;&lt;"Creating tree"&lt;&lt;endl;
+    while(listHead != listRear) {
+        temp = listHead-&gt;next;
+        while(temp != NULL) {
+            sum = 0;
+            for(int i = 0; i &lt; MAX_DIMENSION; i++) {
+                sum += abs(listHead-&gt;location[i] - temp-&gt;location[i]);	//CAUTION: BIT STREAM ONLY
+																		//FOR NON-INT SCALING, USE EUCLIDEAN DISTANCE
+            }
+            if(sum &lt; minimum) {
+                goal = temp;
+                minimum = sum;        
+            }
+            temp = temp-&gt;next;
+        }
+        cout&lt;&lt;"		Comparison between listHead and others completed"&lt;&lt;endl;
+        temp = new TreeNode;
+        temp-&gt;dataNum = listHead-&gt;dataNum + goal-&gt;dataNum;
+        
+        for(int i = 0; i &lt; MAX_DIMENSION; i++) {
+            temp-&gt;sum[i] = listHead-&gt;sum[i] + goal-&gt;sum[i];
+            temp-&gt;location[i] = temp-&gt;sum[i] / temp-&gt;dataNum;
+        }
+        cout&lt;&lt;"		Subtree built"&lt;&lt;endl;
+        temp2 = listHead;
+        cout&lt;&lt;"		  temp2 = "&lt;&lt;temp2&lt;&lt;endl;
+        cout&lt;&lt;"		  goal = "&lt;&lt;goal&lt;&lt;endl;
+        while(temp2-&gt;next != goal) {
+            cout&lt;&lt;"				temp2 to be set to: "&lt;&lt;temp2-&gt;next&lt;&lt;endl;
+            temp2 = temp2-&gt;next;
+            cout&lt;&lt;"				done."&lt;&lt;endl;
+        }    
+        cout&lt;&lt;"		temp2 allocated"&lt;&lt;endl;
+
+        temp-&gt;left = listHead;
+        temp-&gt;right = goal;
+        
+        if(goal == listRear &amp;&amp; listHead-&gt;next != listRear) {
+            cout&lt;&lt;"		  Subtree: head and rear"&lt;&lt;endl;
+	    temp2-&gt;next = temp;
+            listHead = listHead-&gt;next;
+        }else if(listHead-&gt;next == listRear) {
+            cout&lt;&lt;"		  Subtree: Now root found"&lt;&lt;endl;
+            listHead = temp;
+        }else {
+            cout&lt;&lt;"		  Subtree: head and someone in the middle"&lt;&lt;endl;
+            temp2-&gt;next = goal-&gt;next;
+            listRear-&gt;next = temp;
+            listHead = listHead-&gt;next;
+        }  
+        cout&lt;&lt;"		Subtree mounted to list"&lt;&lt;endl;	
+        minimum = MAX_DIMENSION;
+        listRear=temp;             
+    }
+
+    root = listHead;
+    listHead = NULL;
+    listRear = NULL;
+    temp = NULL;
+    temp2 = NULL;
+    goal = NULL;
+
+}
+
+
+void HierachicalTree::dfs(TreeNode *treePtr) {
+    //=============
+    // This method sequencially "strings" all leaf nodes 
+    //=============
+    if (treePtr-&gt;left == NULL &amp;&amp; treePtr-&gt;right == NULL) {				//Leaf
+        if (listHead) {													
+            treePtr-&gt;next = NULL;
+            tmp-&gt;next = treePtr;
+            tmp = treePtr;
+        } else {
+            listHead = treePtr;
+            tmp = treePtr;
+	}
+    } else {															//2 children
+        dfs(treePtr-&gt;left);
+        dfs(treePtr-&gt;right);
+    }
+    return;
+}										
+
+Subtree *HierachicalTree::atLevel(int lvl, TreeNode *parent) {
+    if(lvl == 0) {
+        Subtree *subtreeTmp = new Subtree;
+        subtreeTmp-&gt;begin = parent;
+        subtreeTmp-&gt;length = rightEnd(parent) - leftEnd(parent);
+        return subtreeTmp;
+    } else {
+        return atLevel(lvl-1, parent-&gt;left);
+    }
+}
+
+int main(void) {
+    int axis, oldAxis, count = 0;
+    int fileSeq = 1;
+    char buffer[10];
+    string fileName;
+    string str;
+    ifstream inf;
+    HierachicalTree hTree;							//hierachical tree
+    TreeNode *tempNode;
+
+    fileName = _itoa(fileSeq, buffer, 10);
+    fileName += ".txt";
+    inf.open(fileName.c_str(), ios::in);
+    
+    while(inf) {
+    	tempNode = new TreeNode;	
+        inf&gt;&gt;str;
+        oldAxis = -1;								//init to a sub-zero number
+        while(inf.eof()) {
+            axis = atof(str.c_str());
+            if(axis &lt; oldAxis) {					//reach the bottom of file
+                cout&lt;&lt;axis&lt;&lt;endl;
+                if(axis) tempNode-&gt;setLegit();
+            }else {
+            	tempNode-&gt;setLocation(axis, 1);
+                oldAxis = axis;
+                cout&lt;&lt;axis&lt;&lt;endl;
+            }
+            inf&gt;&gt;str;
+        }
+        system("pause");
+        hTree.addToList(tempNode);
+        cout&lt;&lt;fileName&lt;&lt;" read"&lt;&lt;endl;
+        inf.close();
+        fileName = _itoa(++fileSeq, buffer, 10);
+        fileName += ".txt";
+        inf.open(fileName.c_str(), ios::in);
+    }
+    inf.close();
+    system("pause");
+    hTree.buildTree();
+    cout&lt;&lt;"Built"&lt;&lt;endl;
+    system("pause");
+    hTree.organise();
+    cout&lt;&lt;"Linked list built"&lt;&lt;endl;
+    Subtree *nastyName = hTree.subtreeAt(2);
+    system("pause");
+
+    return 0;
+}
+</pre>

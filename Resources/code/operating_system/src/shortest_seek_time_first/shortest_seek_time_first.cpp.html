@@ -1,0 +1,44 @@
+<pre>
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;algorithm&gt;
+using namespace std;
+
+int main() {
+  int n;
+  cout&lt;&lt;"Enter number of process: ";
+  cin&gt;&gt;n;
+  vector&lt;int&gt; burstTime(n);    // Array of burst times of processes
+  cout&lt;&lt;"Enter Burst time: \n";
+  for(int i = 0; i &lt; n; i++) {
+    cout&lt;&lt;"Process["&lt;&lt;i+1&lt;&lt;"]: ";
+    cin&gt;&gt;burstTime[i];
+  }
+  sort(burstTime.begin(),burstTime.end());   // Sort the burst times
+  vector&lt;int&gt; waitingTime(n);
+  int total = 0;
+  for(int i = 1; i &lt; n; i++) {
+    waitingTime[i] = 0;
+    for(int j = 0; j &lt; i;j++)
+      waitingTime[i] += burstTime[j];
+    total += waitingTime[i];
+  }
+
+  // Average waiting time = Total waiting time / no of processes
+  int averageWaitingTime = (float)total/n;
+  total = 0;
+  vector&lt;int&gt; turnAroundTime(n);
+  cout&lt;&lt;"\nProcess\t    Burst Time    \tWaiting Time\tTurnaround Time";
+  for(int i = 0; i &lt; n; i++) {
+    turnAroundTime[i] = burstTime[i] + waitingTime[i]; //Calculating Turnaround Time     
+    total += turnAroundTime[i];
+    cout&lt;&lt;"\np"&lt;&lt;i + 1&lt;&lt;"\t\t"&lt;&lt;burstTime[i]&lt;&lt;"\t\t"&lt;&lt;waitingTime[i]&lt;&lt;"\t\t"&lt;&lt;turnAroundTime[i];
+  }
+
+  // Average Turnaround Time = total turn around time / no of processes
+  int averageTurnAroundTime = (float)total/n;    
+  cout&lt;&lt;"\nAverage Waiting Time: "&lt;&lt;averageWaitingTime&lt;&lt;"\n";
+  cout&lt;&lt;"Average Turnaround Time: "&lt;&lt;averageTurnAroundTime&lt;&lt;"\n";
+  return 0;
+}
+</pre>

@@ -1,0 +1,98 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+
+ Ternary Search Uses Divide And Conquer Technique
+
+ ternary search synopsis
+
+namespace ternary_search_impl
+{
+template&lt;typename _RandomAccessIter,
+         typename _ValueType = typename std::iterator_traits&lt;_RandomAccessIter&gt;::value_type,
+         typename _Less&gt;
+_RandomAccessIter
+ternarySearchImpl(_RandomAccessIter first,
+                  _RandomAccessIter last,
+                  const _RandomAccessIter &amp;notFoundSentinel,
+                  const _ValueType &amp;find,
+                  _Less less);
+} // ternary_search_impl
+
+template&lt;typename _RandomAccessIter,
+         typename _ValueType = typename std::iterator_traits&lt;_RandomAccessIter&gt;::value_type,
+         typename _Less&gt;
+_RandomAccessIter
+ternarySearch(_RandomAccessIter begin, _RandomAccessIter end, const _ValueType &amp;find, _Less less);
+
+template&lt;typename _RandomAccessIter,
+         typename _ValueType = typename std::iterator_traits&lt;_RandomAccessIter&gt;::value_type&gt;
+_RandomAccessIter
+ternarySearch(_RandomAccessIter begin, _RandomAccessIter end, const _ValueType &amp;find);
+ */
+
+#include &lt;functional&gt;
+
+namespace ternary_search_impl
+{
+template&lt;typename _RandomAccessIter,
+         typename _ValueType = typename std::iterator_traits&lt;_RandomAccessIter&gt;::value_type,
+         typename _Less&gt;
+_RandomAccessIter
+ternarySearchImpl(_RandomAccessIter first,
+                  _RandomAccessIter last,
+                  const _RandomAccessIter &amp;notFoundSentinel,
+                  const _ValueType &amp;find,
+                  _Less less)
+{
+    if (first &lt;= last)
+    {
+        auto dist = std::distance(first, last);
+
+        auto leftMid = first + dist / 3, rightMid = last - dist / 3;
+
+        auto lessThanLeftMid = less(find, *leftMid), greaterThanLeftMid = less(*leftMid, find),
+             lessThanRightMid = less(find, *rightMid), greaterThanRightMid = less(*rightMid, find);
+
+        if (lessThanLeftMid == greaterThanLeftMid)
+            return leftMid;
+
+        if (lessThanRightMid == greaterThanRightMid)
+            return rightMid;
+
+        if (lessThanLeftMid)
+            return ternarySearchImpl(first, leftMid - 1, notFoundSentinel, find, less);
+        else if (greaterThanRightMid)
+            return ternarySearchImpl(rightMid + 1, last, notFoundSentinel, find, less);
+        else
+            return ternarySearchImpl(leftMid + 1, rightMid - 1, notFoundSentinel, find, less);
+    }
+
+    return notFoundSentinel;
+}
+} // ternary_search_impl
+
+template&lt;typename _RandomAccessIter,
+         typename _ValueType = typename std::iterator_traits&lt;_RandomAccessIter&gt;::value_type,
+         typename _Less&gt;
+_RandomAccessIter
+ternarySearch(_RandomAccessIter begin, _RandomAccessIter end, const _ValueType &amp;find, _Less less)
+{
+    if (begin &lt; end)
+    {
+        auto res = ternary_search_impl::ternarySearchImpl(begin, end - 1, end, find, less);
+
+        return res == end ? end : res;
+    }
+
+    return end;
+}
+
+template&lt;typename _RandomAccessIter,
+         typename _ValueType = typename std::iterator_traits&lt;_RandomAccessIter&gt;::value_type&gt;
+_RandomAccessIter
+ternarySearch(_RandomAccessIter begin, _RandomAccessIter end, const _ValueType &amp;find)
+{
+    return ternarySearch(begin, end, find, std::less&lt;_ValueType&gt;());
+}
+</pre>

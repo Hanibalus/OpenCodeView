@@ -1,0 +1,26 @@
+<pre>
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+long long tiling(int n)
+{
+	vector&lt;long long int&gt; tile(n+1);
+	
+	tile[0]=1;
+	tile[1]=1;
+	tile[2]=2;
+	for(int i=3;i&lt;=n;i++)
+	{
+		tile[i]=tile[i-1]+tile[i-2];
+	}
+	return tile[n];
+}
+
+int main()
+{   int n;
+	cout&lt;&lt;"enter the value of n\n";
+	cin&gt;&gt;n;
+	cout&lt;&lt;"total ways to arrange the tiles is "&lt;&lt;tiling(n);
+}
+</pre>

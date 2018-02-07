@@ -1,0 +1,35 @@
+<pre>
+module PairHeap
+
+type Heap&lt;'a&gt; =
+    | Empty
+    | Heap of 'a * (Heap&lt;'a&gt; list)
+
+let findMin =
+    function
+    | Empty -&gt; failwith "empty"
+    | Heap (c, _) -&gt; c
+
+let merge heap1 heap2 =
+    match heap1, heap2 with
+    | Empty, _ -&gt; heap2
+    | _, Empty -&gt; heap1
+    | Heap (c1, sub1), Heap (c2, sub2) -&gt;
+        if c1 &gt; c2 then
+            Heap (c1, heap2::sub1)
+        else
+            Heap (c2, heap1::sub2)
+
+let insert c heap =
+    merge (Heap (c, [])) heap
+
+let rec mergePairs =
+    function
+    | [] -&gt; Empty
+    | [sub] -&gt; sub
+    | sub1::sub2::rest -&gt; merge (merge sub1 sub2) (mergePairs rest)
+
+let deleteMin =
+    function
+    | Empty -&gt; failwith "empty"
+    | Heap (_, sub) -&gt; mergePairs sub</pre>

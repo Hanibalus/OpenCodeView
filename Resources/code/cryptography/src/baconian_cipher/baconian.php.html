@@ -1,0 +1,86 @@
+<pre>
+&lt;?php
+/**
+* Bacon's (aka Baconian) cipher (PHP)
+* based on https://en.wikipedia.org/wiki/Bacon%27s_cipher
+* implemented by Stefano Amorelli &lt;amoste@outlook.it&gt;
+* Part of Cosmos by OpenGenus Foundation
+*/
+
+class BaconianCipher
+{
+  private $mapping;
+
+  function __construct() {
+    $this-&gt;mapping = [];
+    $this-&gt;initMapping();
+  }
+
+  public function encrypt($plainText) {
+    if (!ctype_alpha($plainText)) {
+      throw new Exception('Plaintext should be alphabetical strings (no spaces, symbols and numbers).');
+    }
+    $plainText      = strtoupper($plainText);
+    $encryptedText  = [];
+    foreach (str_split($plainText) as $character) {
+      array_push($encryptedText, $this-&gt;mapping[$character]);
+    }
+    return implode(' ', $encryptedText);
+  }
+
+  public function decrypt($encryptedText) {
+    $plainText = [];
+    foreach (explode(' ', $encryptedText) as $character) {
+      foreach ($this-&gt;mapping as $key =&gt; $value) {
+        if ($value === $character) {
+          $plainCharacter = $key;
+          continue;
+        }
+      }
+      array_push($plainText, $plainCharacter);
+    }
+    return implode('', $plainText);
+  }
+
+  private function initMapping() {
+    $this-&gt;mapping['A'] = 'aaaaa';
+    $this-&gt;mapping['B'] = 'aaaab';
+    $this-&gt;mapping['C'] = 'aaaba';
+    $this-&gt;mapping['D'] = 'aaabb';
+    $this-&gt;mapping['E'] = 'aabaa';
+    $this-&gt;mapping['F'] = 'aabab';
+    $this-&gt;mapping['G'] = 'aabba';
+    $this-&gt;mapping['H'] = 'aabbb';
+    $this-&gt;mapping['I'] = 'abaaa';
+    $this-&gt;mapping['J'] = 'abaab';
+    $this-&gt;mapping['K'] = 'ababa';
+    $this-&gt;mapping['L'] = 'ababb';
+    $this-&gt;mapping['M'] = 'abbaa';
+    $this-&gt;mapping['N'] = 'abbab';
+    $this-&gt;mapping['O'] = 'abbba';
+    $this-&gt;mapping['P'] = 'abbbb';
+    $this-&gt;mapping['Q'] = 'baaaa';
+    $this-&gt;mapping['R'] = 'baaab';
+    $this-&gt;mapping['S'] = 'baaba';
+    $this-&gt;mapping['T'] = 'baabb';
+    $this-&gt;mapping['U'] = 'babaa';
+    $this-&gt;mapping['V'] = 'babab';
+    $this-&gt;mapping['W'] = 'babba';
+    $this-&gt;mapping['X'] = 'babbb';
+    $this-&gt;mapping['Y'] = 'bbaaa';
+    $this-&gt;mapping['Z'] = 'bbaab';
+  }
+}
+
+
+/* Example usage: 
+
+$cipher    = new BaconianCipher();
+  
+$encrypted = $cipher-&gt;encrypt('LOREMIPSUMDOLOR');
+
+$decrypted = $cipher-&gt;decrypt($encrypted);
+
+echo $decrypted; // output: LOREMIPSUMDOLOR
+
+*/</pre>

@@ -1,0 +1,39 @@
+<pre>
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;cctype&gt;
+
+std::string rot13(const std::string &amp;text)
+{
+  std::string output;
+  
+  // Loop through input text
+  for (auto c : text) {
+    // Check if character is a letter
+    if (isalpha(c)) {
+      // Subtract 'A' if uppercase, 'a' if lowercase
+      char sub = (c &gt;= 65 &amp;&amp; c &lt;= 90) ? 'A' : 'a';
+      // Convert character to alphabet index starting from zero (0 - 25)
+      c -= sub;
+      // Shift
+      c += 13;
+      // Wrap around
+      c %= 26;
+      // Convert back into ASCII and add to output
+      output += (c + sub);
+    } 
+    else 
+    {
+      output += c;
+    }
+  }
+  return output;
+}
+  
+  int main() {
+    // Example
+    std::cout &lt;&lt; rot13("Hello, world!") &lt;&lt; "\n";  // Outputs "Uryyb, jbeyq!"
+
+    return 0;
+}
+</pre>

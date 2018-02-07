@@ -1,0 +1,43 @@
+<pre>
+
+#include &lt;iostream&gt;
+
+#include "../IStack.h"
+#include "ArrayStack.h"
+
+int main() {
+    int s;
+    IStack&lt;int&gt; *stack = new ArrayStack&lt;int&gt;();
+    
+    try {
+        stack-&gt;peek();
+    } catch(char const *e) {
+        std::cout &lt;&lt; e &lt;&lt; std::endl &lt;&lt; std::endl;
+    }
+
+    stack-&gt;push(20);
+    std::cout &lt;&lt; "Added 20" &lt;&lt; std::endl;
+
+    IStack&lt;int&gt; *stack2 = stack;
+    std::cout &lt;&lt; "1 " &lt;&lt; std::endl;
+    std::cout &lt;&lt; stack-&gt;toString() &lt;&lt; std::endl;
+    std::cout &lt;&lt; "2 " &lt;&lt; std::endl;
+    std::cout &lt;&lt; stack2-&gt;toString() &lt;&lt; std::endl;
+ 
+    stack-&gt;push(30);
+    std::cout &lt;&lt; "Added 30" &lt;&lt; std::endl;
+    
+    std::cout &lt;&lt; std::endl &lt;&lt; std::endl &lt;&lt; stack-&gt;toString() &lt;&lt; std::endl &lt;&lt; std::endl;
+    
+    s = stack-&gt;peek();
+    std::cout &lt;&lt; "First element is now: "  &lt;&lt; s &lt;&lt; std::endl;
+    std::cout &lt;&lt; "removed: " &lt;&lt; stack-&gt;pop() &lt;&lt; std::endl;
+        
+    s = stack-&gt;peek();
+    std::cout &lt;&lt; "First element is now: "  &lt;&lt; s &lt;&lt; std::endl;
+        
+    delete stack;
+    
+    return 0;
+}
+</pre>

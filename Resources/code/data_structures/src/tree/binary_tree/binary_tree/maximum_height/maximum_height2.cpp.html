@@ -1,0 +1,104 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+class node {
+		private:
+			int value;
+			node* left, *right;
+		public:
+                        node(){};
+                        ~node(){};
+			node* create_node(int&amp; val);
+			void create_tree(int&amp; val);
+			int height_tree(node* tmp);
+                        void cleanup_tree(node* tmp);
+			inline int maximum(int left_ht, int right_ht){return (left_ht &gt; right_ht ? left_ht : right_ht);}
+	};
+
+static node* root = NULL;
+node* node::create_node(int&amp; val)
+{
+	node* tmp = new node;
+	tmp-&gt;value = val;
+	tmp-&gt;left = tmp-&gt;right = NULL;
+	return tmp;
+}
+
+void node::create_tree(int&amp; val)
+{
+	node* tmp = root;
+	if (!root)
+	  root = create_node(val);
+	else
+        {
+           while (1)
+	   {
+	     if (val &gt; tmp-&gt;value)
+             {
+                if (!tmp-&gt;right)
+                {
+		  tmp-&gt;right = create_node(val);
+                  break;
+                }
+                else
+                  tmp = tmp-&gt;right;
+             }
+	     else
+             {
+                if (!tmp-&gt;left)
+                {
+		  tmp-&gt;left= create_node(val);
+                  break;
+                }
+                else
+                  tmp = tmp-&gt;left;
+             }	
+	   }
+	}
+	
+}
+
+int node::height_tree(node* tmp)
+{
+	if (!tmp)
+          return 0;
+        int left_ht = height_tree(tmp-&gt;left);
+	int right_ht = height_tree(tmp-&gt;right);
+        return 1+max(left_ht, right_ht);
+}
+
+void node::cleanup_tree(node* tmp)
+{
+    if (tmp)
+    {
+	cleanup_tree(tmp-&gt;left);
+	cleanup_tree(tmp-&gt;right);
+        if (tmp-&gt;left)
+          delete tmp-&gt;left;
+        if (tmp-&gt;right)
+          delete tmp-&gt;right;
+    }
+    if (tmp == root)
+      delete root;
+}
+
+
+int main()
+{
+        int val, num;
+        node tmp;
+	cout &lt;&lt;"Enter number of nodes"&lt;&lt;endl;
+	cin &gt;&gt; num;
+        for (int ctr = 0; ctr &lt; num; ctr++)
+        {
+		cout &lt;&lt;"Enter values"&lt;&lt;endl;
+		cin &gt;&gt; val;
+		tmp.create_tree(val);
+        }
+     	int tree_ht = tmp.height_tree(root);
+        cout &lt;&lt;"Height of tree is "&lt;&lt;tree_ht&lt;&lt;endl;
+        tmp.cleanup_tree(root);
+        return 0; 
+}
+</pre>

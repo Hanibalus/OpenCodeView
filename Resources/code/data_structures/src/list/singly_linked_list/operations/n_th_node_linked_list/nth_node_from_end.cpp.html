@@ -1,0 +1,89 @@
+<pre>
+///
+/// Part of Cosmos by OpenGenus Foundation
+/// Contributed by: Pranav Gupta (foobar98)
+/// Print Nth node of a singly linked list in the reverse manner
+///
+
+#include &lt;iostream&gt;
+using namespace std;
+
+// Linked list node
+struct Node{
+    public:
+
+    int data;
+    Node *next;
+
+    Node(int data) {
+        this -&gt; data = data;
+        next = NULL;
+    }
+};
+
+// Create linked list of n nodes
+Node* takeInput(int n)
+{
+    // n is the number of nodes in linked list
+
+    Node *head = NULL, *tail = NULL;
+
+    int i = n;
+    cout &lt;&lt; "Enter elements: ";
+    while(i--){
+        int data;
+        cin &gt;&gt; data;
+        Node *newNode = new Node(data);
+        if(head == NULL) {
+            head = newNode;
+            tail = newNode;
+        }
+        else {
+            tail -&gt; next = newNode;
+            tail = newNode;
+        }
+    }
+    return head;
+}
+
+
+// To find length of linked list
+int length(Node *head)
+{
+    int l = 0;
+    while(head!=NULL){
+        head = head-&gt;next;
+        l++;
+    }
+    return l;
+}
+
+void printNthFromEnd(Node *head,int n)
+{
+    // Get length of linked list
+    int len = length(head);
+
+    // check if n is greater than length
+    if(n&gt;len)
+        return;
+
+    // nth from end = (len-n+1)th node from beginning
+    for(int i=1;i&lt;len-n+1;i++)
+        head = head-&gt;next;
+
+    cout &lt;&lt; "Nth node from end: " &lt;&lt; head-&gt;data &lt;&lt; endl;
+}
+
+int main()
+{
+    cout &lt;&lt; "Enter no. of nodes in linked list: ";
+    int x;
+    cin &gt;&gt; x;
+    Node *head = takeInput(x);
+
+    cout &lt;&lt; "Enter n (node from the end): ";
+    int n;
+    cin &gt;&gt; n;
+    printNthFromEnd(head,n);
+}
+</pre>

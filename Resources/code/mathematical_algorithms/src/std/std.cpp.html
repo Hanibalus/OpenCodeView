@@ -1,0 +1,29 @@
+<pre>
+#include &lt;cmath&gt;
+
+template &lt;typename T&gt;
+typename T::value_type mean(const T&amp; container) {
+  typename T::value_type result;
+  for (const auto&amp; value : container) result += value;
+  if (container.size() &gt; 0) result /= container.size();
+  return result;
+}
+
+template &lt;typename T&gt;
+typename T::value_type var(const T&amp; container) {
+  auto mu = mean(container);
+
+  typename T::value_type result;
+  for (const auto&amp; value : container) {
+    auto res = value - mu;
+    result += res * res;
+  }
+  if (container.size() &gt; 1) result /= container.size() - 1;
+  return result;
+}
+
+template &lt;typename T&gt;
+typename T::value_type stdDev(const T&amp; container) {
+  return std::sqrt(var(container));
+}
+</pre>

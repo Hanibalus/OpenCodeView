@@ -1,0 +1,78 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+//
+//  merge_sort.m
+//  Created by DaiPei on 2017/10/10.
+//
+
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface MergeSort : NSObject
+
+- (void)sort:(NSMutableArray&lt;NSNumber *&gt; *)array;
+
+@end
+
+@implementation MergeSort
+
+- (void)sort:(NSMutableArray&lt;NSNumber *&gt; *)array {
+    [self sort:array withLow:0 high:array.count - 1];
+}
+
+- (void)sort:(NSMutableArray&lt;NSNumber *&gt; *)array withLow:(NSUInteger)low high:(NSUInteger)high {
+    if (low &lt; high) {
+        NSUInteger mid = (low + high) / 2;
+        [self sort:array withLow:low high:mid];
+        [self sort:array withLow:mid + 1 high:high];
+        [self merge:array withLow:low mid:mid high:high];
+    }
+}
+
+- (void)merge:(NSMutableArray&lt;NSNumber *&gt; *)array withLow:(NSUInteger)low mid:(NSUInteger)mid high:(NSUInteger)high {
+    NSArray *tmpArray = [array copy];
+    
+    NSUInteger i = low, j = mid + 1, k = low;
+    while (i &lt;= mid &amp;&amp; j &lt;= high) {
+        if ([tmpArray[i] compare:tmpArray[j]] == NSOrderedAscending) {
+            array[k] = tmpArray[i];
+            i++;
+        } else {
+            array[k] = tmpArray[j];
+            j++;
+        }
+        k++;
+    }
+    while (i &lt;= mid) {
+        array[k] = tmpArray[i];
+        i++;
+        k++;
+    }
+    while (j &lt;= high) {
+        array[k] = tmpArray[j];
+        j++;
+        k++;
+    }
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        int n = 0;
+        NSLog(@"What is the size of the array?");
+        scanf("%d", &amp;n);
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:n];
+        NSLog(@"Enter elements of the array one by one:");
+        for (int i = 0; i &lt; n; i++) {
+            int tmp;
+            scanf("%d", &amp;tmp);
+            [array addObject:@(tmp)];
+        }
+        MergeSort *ms = [[MergeSort alloc] init];
+        [ms sort:array];
+        NSLog(@"%@", array);
+    }
+    return 0;
+}
+</pre>

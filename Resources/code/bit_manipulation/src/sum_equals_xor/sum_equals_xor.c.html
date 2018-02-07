@@ -1,0 +1,29 @@
+<pre>
+#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;stdbool.h&gt;
+/*
+Counts the number of values between 0 and a given number that satisfy the condition x+n = x^n (0&lt;=x&lt;=n)
+*/
+long int solve(long int n) {
+    long c = 0;
+    while(n){
+         c += n%2?0:1;
+         n/=2; 
+    }
+    c=pow(2,c);
+    return c;
+}
+
+int main() {
+    long int n; 
+    scanf("%li", &amp;n);
+    long int result = solve(n);
+    printf("%ld\n", result);
+    return 0;
+}
+</pre>

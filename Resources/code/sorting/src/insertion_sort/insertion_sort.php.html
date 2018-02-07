@@ -1,0 +1,30 @@
+<pre>
+&lt;?php
+// Part of Cosmos by OpenGenus Foundation
+$array = array(0,1,6,7,6,3,4,2);
+
+function insert_sort($array)
+{
+  for($i = 0; $i &lt; count($array); $i++)
+  {
+    $val = $array[$i];
+    $j = $i-1;
+    while($j &gt;= 0 &amp;&amp; $array[$j] &gt; $val)
+    {
+      $array[$j+1] = $array[$j];
+      $j--;
+    }
+    $array[$j+1] = $val;
+  }
+  return $array;
+}
+
+print 'unsorted array';
+echo "\n";
+print_r($array);
+print 'sorted array';
+echo "\n";
+print_r(insert_sort($array));
+
+?&gt;
+</pre>

@@ -1,0 +1,27 @@
+<pre>
+//Part of Cosmos by OpenGenus Foundation
+
+#include &lt;iostream&gt;
+using namespace std;
+
+int josephus(int n, int k) {
+    // Returns the safe position of n items
+    // that have every kth item counted out
+    // Note that the indice returned is zero-indexed
+    if (n == 1)
+        return 0;
+    return (josephus(n - 1, k) + k) % n;
+}
+
+int main(void) 
+{
+    int n, k;
+    cout &lt;&lt; "n: ";
+    cin &gt;&gt; n;
+    cout &lt;&lt; "k: ";
+    cin &gt;&gt; k;
+    cout &lt;&lt; "Safe position: " &lt;&lt; josephus(n, k) &lt;&lt; endl;
+
+    return 0;
+}
+</pre>

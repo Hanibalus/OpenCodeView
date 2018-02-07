@@ -1,0 +1,17 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+object QuickSort extends App {
+
+  def quickSort[A &lt;% Ordered[A]](input: List[A]): List[A] = {
+    input match {
+      case Nil =&gt; Nil
+      case head :: tail =&gt;
+        val (l, g) = tail partition (_ &lt; head)
+        quickSort(l) ::: head :: quickSort(g)
+    }
+  }
+
+  val input = (0 to 1000) map (_ =&gt; scala.util.Random.nextInt(1000))
+  val output = quickSort(input.toList)
+  Console.println(output)
+}</pre>

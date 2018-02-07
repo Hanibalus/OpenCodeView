@@ -1,0 +1,19 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+// @Author: Chanwit Piromplad
+// @Date: 2017-10-15 20:57
+
+package main
+
+import (
+	"fmt"
+)
+
+func isPowerOf2(n int) bool {
+	return n &gt; 0 &amp;&amp; (n&amp;(n-1) == 0)
+}
+
+func main() {
+	fmt.Println(isPowerOf2(64))
+}
+</pre>

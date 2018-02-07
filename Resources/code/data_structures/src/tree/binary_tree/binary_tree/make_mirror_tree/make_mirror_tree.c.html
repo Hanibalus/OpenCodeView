@@ -1,0 +1,124 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef struct node {
+			int value;
+			struct node *left, *right;
+	}node;
+
+node* create_node(int );
+void create_tree(int );
+void cleanup_tree(node* );
+void mirror_image(node* );
+
+node* root = NULL;
+node* create_node(int val)
+{
+	node* tmp = (node *) malloc(sizeof(node));
+	tmp-&gt;value = val;
+	tmp-&gt;left = tmp-&gt;right = NULL;
+	return tmp;
+}
+
+void create_tree(int val)
+{
+	node* tmp = root;
+	if (!root)
+	  root = create_node(val);
+	else
+        {
+           while (1)
+	   {
+	     if (val &gt; tmp-&gt;value)
+             {
+                if (!tmp-&gt;right)
+                {
+		  tmp-&gt;right = create_node(val);
+                  break;
+                }
+                else
+                  tmp = tmp-&gt;right;
+             }
+	     else
+             {
+                if (!tmp-&gt;left)
+                {
+		  tmp-&gt;left= create_node(val);
+                  break;
+                }
+                else
+                  tmp = tmp-&gt;left;
+             }	
+	   }
+	}
+	
+}
+
+void mirror_image(node* tmp)
+{
+   node* tmp1 = NULL;
+   if (tmp)
+   {
+     tmp1 = tmp-&gt;left;
+     tmp-&gt;left = tmp-&gt;right;
+     tmp-&gt;right = tmp1;
+     mirror_image(tmp-&gt;left);
+     mirror_image(tmp-&gt;right);
+   }
+}
+
+void print_mirror_image(node* tmp)
+{
+   if (tmp)
+   {
+     printf("%d\n",tmp-&gt;value);
+     print_mirror_image(tmp-&gt;left);
+     print_mirror_image(tmp-&gt;right);
+   }
+}
+
+void cleanup_tree(node* tmp)
+{
+    if (tmp)
+    {
+	cleanup_tree(tmp-&gt;left);
+	cleanup_tree(tmp-&gt;right);
+        if (tmp-&gt;left)
+        {
+          free(tmp-&gt;left);
+ 	  tmp-&gt;left = NULL;
+        }
+        if (tmp-&gt;right)
+        {
+          free(tmp-&gt;right);
+ 	  tmp-&gt;right= NULL;
+        }
+    }
+    if (tmp == root)
+    {
+      free(root);
+      root = NULL;
+    }
+}
+
+
+int main()
+{
+        int val, num, ctr;
+        node tmp;
+	printf("Enter number of nodes\n");
+        scanf("%d",&amp;num);
+        for (ctr = 0; ctr &lt; num; ctr++)
+        {
+	  printf("Enter values\n");
+	  scanf("%d",&amp;val);
+	  create_tree(val);
+        }
+     	mirror_image(root);
+        print_mirror_image(root);
+        cleanup_tree(root);
+        return 0; 
+}
+</pre>

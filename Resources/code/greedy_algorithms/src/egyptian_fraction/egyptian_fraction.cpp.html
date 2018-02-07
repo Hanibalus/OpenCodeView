@@ -1,0 +1,45 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+void printEgyptian(int numerator, int denominator)
+{
+    if (denominator == 0 || numerator == 0)
+        return;
+ 
+    if (denominator%numerator == 0)
+    {
+        cout &lt;&lt; "1/" &lt;&lt; denominator/numerator;
+        return;
+    }
+ 
+    if (numerator%denominator == 0)
+    {
+        cout &lt;&lt; numerator/denominator;
+        return;
+    }
+ 
+    if (numerator &gt; denominator)
+    {
+        cout &lt;&lt; numerator/denominator &lt;&lt; " + ";
+        printEgyptian(numerator%denominator, denominator);
+        return;
+    }
+ 
+  
+    int n = denominator/numerator + 1;
+    cout &lt;&lt; "1/" &lt;&lt; n &lt;&lt; " + ";
+ 
+    printEgyptian(numerator*n-denominator, denominator*n);
+ }
+ 
+int main()
+{
+    int numerator,denominator ;
+    cin&gt;&gt;numerator&gt;&gt;denominator;
+    cout &lt;&lt; "Egyptian Fraction Representation of "
+         &lt;&lt; numerator &lt;&lt; "/" &lt;&lt; denominator &lt;&lt; " is\n ";
+    printEgyptian(numerator, denominator);
+    return 0;
+}
+</pre>

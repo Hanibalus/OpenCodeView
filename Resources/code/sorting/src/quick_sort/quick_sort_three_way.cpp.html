@@ -1,0 +1,93 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;vector&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+
+/* UTILITY FUNCTIONS */
+void swap(int &amp;a, int &amp;b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+void printarr(vector&lt;int&gt; &amp;v)
+{
+	for (int i = 0; i &lt; v.size(); ++i)
+		cout &lt;&lt; v[i] &lt;&lt; " ";
+	cout &lt;&lt; endl;
+}
+
+void fill(vector&lt;int&gt; &amp;v, int max)
+{
+	for (int i = 0; i &lt; v.size(); ++i)
+		v[i] = rand() % max + 1;
+}
+
+// three-way-partioning
+void partition(vector&lt;int&gt; &amp;v, int low, int high, int &amp;i, int &amp;j)
+{
+	if (high - low &lt;= 1)
+	{
+		if (v[high] &lt; v[low])
+			swap(v[high], v[low]);
+		i = low;
+		j = high;
+		return;
+	}
+
+	int mid = low;
+	int pivot = v[high];
+	while (mid &lt;= high)
+	{
+		if (v[mid]&lt;pivot)
+			swap(v[low++], v[mid++]);
+		else if (v[mid] == pivot)
+			mid++;
+		else if (v[mid] &gt; pivot)
+			swap(v[mid], v[high--]);
+	}
+
+	i = low - 1;
+	j = mid; 
+}
+
+
+void quicksort(vector&lt;int&gt; &amp;v, int low, int high)
+{
+	if (low &gt;= high) 
+		return;
+
+	int i, j;
+
+	partition(v, low, high, i, j);
+
+	// Recursively sort two halves
+	quicksort(v, low, i);
+	quicksort(v, j, high);
+}
+
+// Driver program
+int main()
+{
+	int size = 10;
+	int maxRand = 10;
+	cout &lt;&lt; "Input test array size: ";
+	cin &gt;&gt; size;
+	vector&lt;int&gt; v(size);
+	cout &lt;&lt; "Maximum random number: ";
+	cin &gt;&gt; maxRand;
+
+	fill(v,maxRand);
+	cout &lt;&lt; "Unsorted: ";
+	printarr(v);
+	quicksort(v, 0, size - 1);
+	cout &lt;&lt; "Sorted:   ";
+	printarr(v);
+	return 0;
+}
+</pre>

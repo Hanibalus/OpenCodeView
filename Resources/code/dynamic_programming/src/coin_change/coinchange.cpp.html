@@ -1,0 +1,40 @@
+<pre>
+// dynamic programming | coin change | C++
+// Part of Cosmos by OpenGenus Foundation
+
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+using namespace std;
+
+const int MAX=100;
+
+int coinWays(int amt,vector&lt;int&gt;&amp; coins){
+
+    // init the dp table
+    vector&lt;int&gt; dp(MAX, 0);
+    int n = coins.size();
+    dp[0] = 1; // base case
+    
+    for(int j=0;j&lt;n;j++){
+        for(int i=1;i&lt;=amt;i++){
+            if(i-coins[j]&gt;=0){
+                // if coins[j] &lt; i then add no. of ways - 
+                // - to form the amount by using coins[j]
+                dp[i] += dp[i-coins[j]]; 
+           }
+        }
+    }
+
+    //final result at dp[amt]
+    return dp[amt];
+}
+
+
+int main(){
+
+    vector&lt;int&gt; coins = {1,2,3}; // coin denominations 
+    int amount = 4;  // amount
+    cout&lt;&lt;coinWays(amount,coins)&lt;&lt;endl;
+    return 0;
+}
+</pre>

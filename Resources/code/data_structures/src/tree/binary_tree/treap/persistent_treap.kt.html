@@ -1,0 +1,196 @@
+<pre>
+/**
+ *  Fully persistent Treap implementation (Allows all operations in any version)
+ *  Average complexity for insert, search and remove is O(log N)
+ *  It uses O(N * log N) memory.
+ */
+
+import java.util.*
+
+
+class TreapNode&lt;T : Comparable&lt;T&gt;&gt; {
+    val value: T
+    val priority: Int
+    val leftChild: TreapNode&lt;T&gt;?
+    val rightChild: TreapNode&lt;T&gt;?
+
+    constructor(value: T, priority: Int, leftChild: TreapNode&lt;T&gt;?, rightChild: TreapNode&lt;T&gt;?) {
+        this.value = value
+        this.priority = priority
+        this.leftChild = leftChild
+        this.rightChild = rightChild
+    }
+    constructor(value: T, leftChild: TreapNode&lt;T&gt;?, rightChild: TreapNode&lt;T&gt;?)
+            : this(value, Random().nextInt(), leftChild, rightChild)
+
+    fun cloneReplaceLeft(leftChild: TreapNode&lt;T&gt;?): TreapNode&lt;T&gt; {
+        return TreapNode(this.value, this.priority, leftChild, this.rightChild)
+    }
+
+    fun cloneReplaceRight(rightChild: TreapNode&lt;T&gt;?): TreapNode&lt;T&gt; {
+        return TreapNode(this.value, this.priority, this.leftChild, rightChild)
+    }
+}
+
+
+class PersistentTreap&lt;T : Comparable&lt;T&gt;&gt;(private val root: TreapNode&lt;T&gt;? = null) {
+
+    fun insert(value: T): PersistentTreap&lt;T&gt; {
+        return PersistentTreap(insert(root, value))
+    }
+
+    fun remove(value: T): PersistentTreap&lt;T&gt; {
+        return PersistentTreap(remove(root, value))
+    }
+
+    fun search(value: T): Boolean {
+        return search(root, value)
+    }
+
+    fun inorder(): List&lt;T&gt; {
+        return inorder(root)
+    }
+
+    fun dump() {
+        if (root == null)
+            println("Empty tree")
+        else
+            dump(root, 0)
+    }
+
+    private fun dump(currentNode: TreapNode&lt;T&gt;?, offset: Int) {
+        if (currentNode != null) {
+            dump(currentNode.rightChild, offset + 1)
+            print(" ".repeat(offset))
+            print(String.format("%s\t %20d\n", currentNode.value.toString(), currentNode.priority))
+            dump(currentNode.leftChild, offset + 1)
+
+        }
+    }
+
+    private fun inorder(currentNode: TreapNode&lt;T&gt;?): List&lt;T&gt; {
+        if (currentNode == null)
+            return listOf()
+        val list: MutableList&lt;T&gt; = mutableListOf()
+        list.addAll(inorder(currentNode.leftChild))
+        list.add(currentNode.value)
+        list.addAll(inorder(currentNode.rightChild))
+        return list
+    }
+
+    private fun rotateLeft(currentNode: TreapNode&lt;T&gt;?): TreapNode&lt;T&gt;? {
+        return currentNode?.rightChild?.cloneReplaceLeft(
+                currentNode.cloneReplaceRight(currentNode.rightChild.leftChild))
+    }
+
+    private fun rotateRight(currentNode: TreapNode&lt;T&gt;?): TreapNode&lt;T&gt;? {
+        return currentNode?.leftChild?.cloneReplaceRight(
+                currentNode.cloneReplaceLeft(currentNode.leftChild.rightChild)
+        )
+    }
+
+    private fun balance(currentNode: TreapNode&lt;T&gt;?): TreapNode&lt;T&gt;? {
+        if (currentNode == null) return null
+        if (currentNode.leftChild != null &amp;&amp; currentNode.leftChild.priority &gt; currentNode.priority)
+            return rotateRight(currentNode)
+        if (currentNode.rightChild != null &amp;&amp; currentNode.rightChild.priority &gt; currentNode.priority)
+            return rotateLeft(currentNode)
+        return currentNode
+    }
+
+    private fun insert(currentNode: TreapNode&lt;T&gt;?, value: T): TreapNode&lt;T&gt;? {
+        if (currentNode == null)
+            return TreapNode(value, null, null)
+        return balance(
+            if (value &lt;= currentNode.value)
+                currentNode.cloneReplaceLeft(insert(currentNode.leftChild, value))
+            else
+                currentNode.cloneReplaceRight(insert(currentNode.rightChild, value))
+        )
+    }
+
+    private fun remove(currentNode: TreapNode&lt;T&gt;?, value: T): TreapNode&lt;T&gt;? {
+        if (currentNode == null || (currentNode.leftChild == null &amp;&amp; currentNode.rightChild == null &amp;&amp; currentNode.value == value))
+            return null
+        return when {
+            value &lt; currentNode.value -&gt; currentNode.cloneReplaceLeft(remove(currentNode.leftChild, value))
+            value &gt; currentNode.value -&gt; currentNode.cloneReplaceRight(remove(currentNode.rightChild, value))
+            else -&gt; if (currentNode.leftChild == null ||
+                            (currentNode.rightChild != null &amp;&amp; currentNode.rightChild.priority &gt; currentNode.leftChild.priority))
+                        with (rotateLeft(currentNode)!!) {
+                            cloneReplaceLeft(remove(leftChild, value))
+                        }
+                    else
+                        with (rotateRight(currentNode)!!) {
+                            cloneReplaceRight(remove(rightChild, value))
+                        }
+        }
+    }
+
+    private fun search(currentNode: TreapNode&lt;T&gt;?, value: T): Boolean {
+        if (currentNode == null)
+            return false
+        return when {
+            value &lt; currentNode.value -&gt; search(currentNode.leftChild, value)
+            value &gt; currentNode.value -&gt; search(currentNode.rightChild, value)
+            else -&gt; true
+        }
+    }
+
+}
+
+fun &lt;T : Comparable&lt;T&gt;&gt; List&lt;T&gt;.isSorted(): Boolean {
+    return (0 until this.size-1).none { this[it] &gt; this[it +1] }
+}
+
+fun main(args: Array&lt;String&gt;) {
+    val scan = Scanner(System.`in`)
+    val treapVersions: MutableList&lt;PersistentTreap&lt;Int&gt;&gt; = mutableListOf()
+    var currentTreap = PersistentTreap&lt;Int&gt;()
+    treapVersions.add(currentTreap)
+    println("Treap Test\n")
+    /**  Perform tree operations  **/
+    loop@ while (true) {
+        println("\nTreap Operations\n")
+        println("1. insert ")
+        println("2. delete ")
+        println("3. search")
+        println("4. show tree")
+        println("5. exit")
+
+        print("Choose version: ")
+        val version = scan.nextInt()
+        if (version &gt;= treapVersions.size) {
+            println("Version $version does not exist")
+            continue
+        }
+        currentTreap = treapVersions[version]
+
+        print("Choose operation: ")
+        val choice = scan.nextInt()
+        when (choice) {
+            1 -&gt; {
+                println("Enter integer element to insert")
+                currentTreap = currentTreap.insert(scan.nextInt())
+            }
+            2 -&gt; {
+                println("Enter integer element to delete")
+                currentTreap = currentTreap.remove(scan.nextInt())
+            }
+            3 -&gt; {
+                println("Enter integer element to search")
+                println("Search result : " + currentTreap.search(scan.nextInt()))
+            }
+            4 -&gt; currentTreap.dump()
+            5 -&gt; break@loop
+            else -&gt; println("Invalid operation")
+        }
+        if (!currentTreap.inorder().isSorted())
+            println("SOMETHING WENT WRONG")
+        if (choice == 1 || choice == 2) {
+            println("Created version ${treapVersions.size}")
+            treapVersions.add(currentTreap)
+        }
+    }
+}
+</pre>

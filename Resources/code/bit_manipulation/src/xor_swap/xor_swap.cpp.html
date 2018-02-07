@@ -1,0 +1,24 @@
+<pre>
+#include &lt; iostream &gt;
+using namespace std;
+
+void xor_swap(int * a, int * b)
+{
+    *a = *a ^ *b;
+    *b = *a ^ *b;
+    *a = *a ^ *b;
+}
+
+int main()
+{
+  int a = 10, b = 15;
+
+  cout &lt;&lt; "Before swapping: A = " &lt;&lt; a &lt;&lt; " and B = " &lt;&lt; b &lt;&lt; "\n";
+
+  xor_swap(&amp;a, &amp;b);
+
+  cout &lt;&lt; "After swapping: A = " &lt;&lt; a &lt;&lt; " and B = " &lt;&lt; b &lt;&lt; "\n";
+
+  return 0;
+}
+</pre>

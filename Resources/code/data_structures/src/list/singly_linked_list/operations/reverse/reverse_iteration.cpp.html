@@ -1,0 +1,76 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+struct node
+{
+ int data;
+ struct node * next;
+}*head;
+
+
+void reverse()
+{
+ node *prev=NULL;
+ node *cur=head;
+ node *next;
+ 
+ while(cur!=NULL)
+ {
+  next=cur-&gt;next;
+  cur-&gt;next=prev;
+  prev=cur;
+  cur=next;
+ }
+
+ head=prev;
+}
+
+void push(int x)
+{
+ node *ptr=new node;
+ ptr-&gt;data=x;
+ ptr-&gt;next=NULL;
+ 
+ if(head==NULL)
+ head=ptr;
+ 
+ else
+ {
+  ptr-&gt;next=head;
+  head=ptr;
+ }
+}  
+  
+ void print()
+ {
+  node *ptr=head;
+  
+  while(ptr!=NULL)
+  {
+   cout&lt;&lt;ptr-&gt;data&lt;&lt;" ";
+   ptr=ptr-&gt;next;
+  }
+ }
+    
+int main()
+{
+ push(2);
+ push(3);
+ push(4);
+ push(5);
+ 
+ cout&lt;&lt;"\nOriginal list is : ";
+ print();
+ 
+ cout&lt;&lt;"\nReversed list is : ";
+ reverse();
+  
+ print();
+ cout&lt;&lt;"\n";
+ return 0;
+ 
+}
+   
+ 
+</pre>

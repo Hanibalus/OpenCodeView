@@ -1,0 +1,14 @@
+<pre>
+#include &lt;iostream&gt;
+typedef std::pair&lt;double, double&gt; point;
+
+double calcArea(point a, point b, point c) {
+  return abs( (a.first - b.first) * (c.second - b.second) - (a.second - b.second) * (c.first - b.first) ) / 2;
+}
+
+int main () {
+  point a, b, c;
+  std::cin &gt;&gt; a.first &gt;&gt; a.second &gt;&gt; b.first &gt;&gt; b.second &gt;&gt; c.first &gt;&gt; c.second;
+  std::cout &lt;&lt; calcArea(a, b, c);
+}
+</pre>

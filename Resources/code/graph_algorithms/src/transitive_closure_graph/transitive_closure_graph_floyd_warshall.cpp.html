@@ -1,0 +1,71 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;bitset&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+
+// Floyd-Warshall algorithm. Time complexity: O(n ^ 3)
+void transitive_closure_graph(std::vector&lt;std::vector&lt;int&gt;&gt; &amp;graph) {
+    int n = (int) graph.size();
+    for (int k = 0; k &lt; n; k++) {
+        for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                graph[i][j] |= (graph[i][k] &amp; graph[k][j]);
+            }
+        }
+    }
+}
+
+const int MAX_N = 2000; // maximum possible number of vertixes (only for bitset version)
+
+// Floyd-Warshall algorithm with bitset.
+// Time complexity: O(n ^ 3), but with 1/bitset constant. (~32 or ~64 times faster than naive)
+void transitive_closure_graph_bitset(std::vector&lt;std::vector&lt;int&gt;&gt; &amp;graph) {
+    int n = (int) graph.size();
+    
+    std::vector&lt;std::bitset&lt;MAX_N&gt;&gt; d(n);
+    
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            d[i][j] = graph[i][j];
+        }
+    }
+    
+    for (int k = 0; k &lt; n; k++) {
+        for (int i = 0; i &lt; n; i++) {
+            if (d[i][k]) {
+                d[i] |= d[k];
+            }
+        }
+    }
+    
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            graph[i][j] = d[i][j];
+        }
+    }
+}
+
+int main() {
+    std::cout &lt;&lt; "Enter the number of vertexes:" &lt;&lt; std::endl;
+    int n;
+    std::cin &gt;&gt; n;
+    std::cout &lt;&lt; "Enter the adjacency matrix (consisting from 0 and 1):" &lt;&lt; std::endl;
+    std::vector&lt;std::vector&lt;int&gt;&gt; graph(n, std::vector&lt;int&gt;(n));
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            std::cin &gt;&gt; graph[i][j];
+        }
+    }
+    transitive_closure_graph_bitset(graph);
+    std::cout &lt;&lt; "Result:\n";
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            std::cout &lt;&lt; graph[i][j] &lt;&lt; " ";
+        }
+        std::cout &lt;&lt; "\n";
+    }
+    return 0;
+}
+</pre>

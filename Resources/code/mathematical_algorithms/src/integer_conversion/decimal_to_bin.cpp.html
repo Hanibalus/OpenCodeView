@@ -1,0 +1,17 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+  int decimal;
+  cout &lt;&lt; "Enter a decimal: ";
+  cin &gt;&gt; decimal;
+
+  cout &lt;&lt; "The number in binary: ";
+  for(int i = 31; i &gt;= 0; i--)
+    cout &lt;&lt; ((decimal &gt;&gt; i) &amp; 1);
+  cout &lt;&lt; endl;
+
+  return 0;
+}
+</pre>

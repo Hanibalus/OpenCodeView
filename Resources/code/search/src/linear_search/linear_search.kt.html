@@ -1,0 +1,23 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+
+fun &lt;T&gt; linearSearch(array: Array&lt;T&gt;, key: T): Int? {
+    for (i in 0 until array.size) {
+        if (array[i] == key) {
+            return i
+        }
+    }
+    return null
+}
+
+fun main(args: Array&lt;String&gt;) {
+    val sample: Array&lt;Int&gt; = arrayOf(13, 17, 19, 23, 29, 31, 37, 41, 43)
+    val key = 23
+
+    val result = linearSearch(sample, key)
+
+    println(when (result) {
+        null -&gt; "$key is not in sample"
+        else -&gt; "Position of $key is $result"
+    })
+}</pre>

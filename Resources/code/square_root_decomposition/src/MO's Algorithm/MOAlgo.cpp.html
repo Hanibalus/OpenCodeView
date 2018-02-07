@@ -1,0 +1,96 @@
+<pre>
+//Time Complexity : O((n+q)*sqrt(n))
+
+#include &lt;bits/stdc++.h&gt;
+#include&lt;math.h&gt;
+#include&lt;conio.h&gt;
+
+/* Part of Cosmos by OpenGenus Foundation */
+
+ 
+#define ll long long int
+#define mod 1000000007
+#define show(a) for(i=0;i&lt;a.size();i++) cout&lt;&lt;a[i]&lt;&lt;" ";
+#define fi first
+#define se second
+#define vi vector&lt;int&gt;
+#define vs vector&lt;string&gt;
+#define vll vector&lt;long long int&gt;
+#define pb push_back
+#define pi pair&lt;int,int&gt;
+#define si set&lt;int&gt;
+#define sll set&lt;ll&gt;
+#define maxheap priority_queue&lt;int&gt;
+#define minheap priority_queue&lt;int,vector&lt;int&gt;,greater&lt;int&gt;&gt;
+#define mp make_pair
+#define fast_io() cin.sync_with_stdio(false);cout.sync_with_stdio(false);
+#define long_zero 0ll
+#define long_one 1ll
+inline int sbt(int x){return __builtin_popcount(x);}
+using namespace std;
+int freq[1111111];
+int BLOCK;
+//Mo Sorting
+bool f(pair&lt;int,pi&gt; a, pair&lt;int,pi&gt; b){
+    if(a.se.fi/BLOCK == b.se.fi/BLOCK)
+        return a.se.se&gt;b.se.se;
+    return a.se.fi/BLOCK&gt;b.se.fi/BLOCK;
+}
+int main() {
+	system("cls");
+    //fast_io()
+    int n;
+    scanf("%d",&amp;n);
+    int a[n+3];
+    for(int i=0;i&lt;n;i++)
+    {
+	    scanf("%d",&amp;a[i]);
+    }
+    int l,r,s=0,e=0,Q;
+    vector&lt;pair&lt;int,pi&gt;&gt;q;
+    scanf("%d",&amp;Q);
+    //block size:SQRT(N)
+    BLOCK = floor(sqrt(1.0*double(n)));
+    for(int i=0;i&lt;Q;i++){
+        scanf("%d%d",&amp;l,&amp;r);
+        q.pb(mp(i,mp(l-1,r-1)));
+    }
+    int v[Q+4],ans=0;
+    sort(q.begin(),q.end(),f);  //f is comparator
+	for(int i=0;i&lt;Q;i++){
+	    l=q[i].se.fi;
+	    r=q[i].se.se;
+	    while(s&lt;l){
+	        freq[a[s]]--;
+	        if(!freq[a[s]])
+	            ans--;
+	        s++;
+	    }
+	    while(s&gt;l){
+	        freq[a[s-1]]++;
+	        if(freq[a[s-1]]==1)
+	            ans++;
+	        s--;
+	    }
+	    while(e&lt;=r){
+	        freq[a[e]]++; // mantains frequency
+	        if(freq[a[e]]==1)
+	            ans++;
+	        e++;
+	    }
+	    while(e&gt;r+1){
+	        freq[a[e-1]]--;
+	        if(freq[a[e-1]]==0)
+	            ans--;
+	        e--;
+	    }
+	  
+		v[q[i].fi]=ans;
+	}
+	for(int i=0;i&lt;Q;i++)
+	    printf("%d\n",v[i]);
+        getch();
+	return 0;
+	
+}
+</pre>

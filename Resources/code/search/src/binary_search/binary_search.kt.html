@@ -1,0 +1,29 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+
+fun &lt;T : Comparable&lt;T&gt;&gt; binarySearch(a: Array&lt;T&gt;, key: T): Int? {
+    var lowerBound = 0
+    var upperBound = a.size
+    while (lowerBound &lt; upperBound) {
+        val middleIndex = lowerBound + (upperBound - lowerBound) / 2
+        when {
+            a[middleIndex] == key -&gt; return middleIndex
+            a[middleIndex] &lt; key -&gt; lowerBound = middleIndex + 1
+            else -&gt; upperBound = middleIndex
+        }
+    }
+    return null
+}
+
+fun main(args: Array&lt;String&gt;) {
+    val sample: Array&lt;Int&gt; = arrayOf(13, 17, 19, 23, 29, 31, 37, 41, 43)
+    val key = 23
+
+    val result = binarySearch(sample, key)
+
+    println(when (result) {
+        null -&gt; "$key is not in $sample"
+        else -&gt; "Position of $key is $result"
+    })
+}
+</pre>

@@ -1,0 +1,16 @@
+<pre>
+&lt;?php
+function reverse_number($numbers) {
+  $string =  (string) $numbers;
+  $result = "";
+  $length = strlen($string);
+
+  for ($i = $length - 1; $i &gt;= 0; $i--) {
+    $result .= $string[$i];
+  }
+
+  return  $result ;
+}
+
+echo reverse_number(123456789);
+</pre>

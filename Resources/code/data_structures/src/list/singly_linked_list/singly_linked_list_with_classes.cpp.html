@@ -1,0 +1,108 @@
+<pre>
+#include &lt;iostream&gt;
+namespace std{
+
+	class Node{
+	private:
+		int _data;
+		Node *_next;
+
+	public:
+		Node(){}
+		void setData(int Data){ _data = Data;}
+		void setNext(Node *Next){ 
+			if(Next == NULL){
+				_next = NULL;
+			}else{
+			_next = Next;
+			}
+		}
+		int Data(){return _data;}
+		Node *Next(){return _next;}
+	};
+
+	class LinkedList{
+	private:
+		Node *head;
+	public:
+		LinkedList(){ head = NULL;}
+		void insert_back(int data);
+		void insert_front(int data);
+		void init_list(int data);
+		void print_List();
+	};
+
+	void LinkedList::print_List(){
+		Node *tmp = head;
+
+		//Checking the list if there is a node or not.
+		if(tmp == NULL){
+			cout &lt;&lt; "List is empty\n";
+			return;
+		}
+
+		//Checking only one node situation.
+		if(tmp-&gt;Next() == NULL){
+			cout &lt;&lt; "Starting: " &lt;&lt;tmp-&gt;Data()
+				 &lt;&lt;"Next Value &gt; NULL\n";
+		}else{
+			while(tmp!=NULL){
+				cout &lt;&lt; tmp-&gt;Data() &lt;&lt; " &gt; ";
+				tmp = tmp-&gt;Next();
+			}
+		}
+	}
+
+	/*inserting a value infront of the */
+	void LinkedList::insert_back(int data){
+		//Creating a node
+		Node *newNode = new Node();
+		newNode-&gt;setData(data);
+		newNode-&gt;setNext(NULL);
+
+		//Creating a temporary pointer.
+		Node *tmp = head;
+
+		if (tmp != NULL){
+			while(tmp-&gt;Next() != NULL){
+				tmp = tmp-&gt;Next();
+			}
+			tmp-&gt;setNext(newNode);
+		}else{
+			head = newNode;
+		}
+	}
+	/*Inserting a value in front of the head node.*/
+	void LinkedList::insert_front(int data){
+		// creating a new node.
+		 Node *newNode = new Node();
+		 newNode-&gt;setData(data);
+		 newNode-&gt;setNext(NULL);
+
+		 newNode-&gt;setNext(head);
+		 head = newNode;
+	}
+	/*Initializing the list with a value.*/
+	void LinkedList::init_list(int data){
+		//creating a node
+		Node *newNode = new Node();
+		newNode-&gt;setData(data);
+		newNode-&gt;setNext(NULL);
+		if(head != NULL){
+			head = NULL;
+		}
+		head = newNode;
+	}
+}
+
+int main(){
+	//Creating a list
+	std::LinkedList list;
+
+	//Initilizing it with 5
+	list.init_list(5);
+	list.insert_back(6);
+	list.insert_front(4);
+	list.print_List();
+}
+</pre>

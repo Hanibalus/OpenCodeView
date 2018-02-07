@@ -1,0 +1,117 @@
+<pre>
+
+public func pushHeap&lt;T&gt;(inout xs: [T], value: T, compare: (T, T) -&gt; Bool) {
+    xs.append(value)
+    siftUp(&amp;xs, xs.startIndex, xs.endIndex, compare, xs.count)
+}
+ 
+
+public func pushHeap&lt;T: Comparable&gt;(inout xs: [T], value: T) {
+    pushHeap(&amp;xs, value) {a, b in a &lt; b}
+}
+ 
+
+
+public func popHeap&lt;T&gt;(inout xs: [T], comp: (T, T) -&gt; Bool) -&gt; T {
+    precondition(!xs.isEmpty, "cannot pop an empty heap")
+    swap(&amp;xs[0], &amp;xs[xs.endIndex - 1])
+    siftDown(&amp;xs, xs.startIndex, xs.endIndex, comp, xs.count - 1, xs.startIndex)
+    let result = xs.removeLast()
+    return result
+}
+ 
+
+public func popHeap&lt;T: Comparable&gt;(inout xs: [T]) -&gt; T {
+    return popHeap(&amp;xs) {a, b in a &lt; b}
+}
+
+
+
+// MARK: - Private
+
+
+func siftDown&lt;T&gt;(inout xs: [T],
+                 var first: Int,
+                 var last: Int,
+                 compare: (T, T) -&gt; Bool,
+                 var len: Int,
+                 var start: Int)
+{
+    // left-child of start is at 2 * start + 1
+    // right-child of start is at 2 * start + 2
+    var child = start - first
+
+    if (len &lt; 2 || (len - 2) / 2 &lt; child) {
+        return
+    }
+
+    child = 2 * child + 1;
+    var child_i = first + child
+
+    if child + 1 &lt; len &amp;&amp; compare(xs[child_i + 1], xs[child_i]) {
+        // right-child exists and is greater than left-child
+        ++child_i
+        ++child
+    }
+
+    // check if we are in heap-order
+    if compare(xs[start], xs[child_i]) {
+        // we are, start is larger than it's largest child
+        return
+    }
+
+    let top = xs[start]
+    do {
+        // we are not in heap-order, swap the parent with it's largest child
+        xs[start] = xs[child_i]
+        start = child_i;
+
+        if ((len - 2) / 2 &lt; child) {
+            break
+        }
+
+        // recompute the child based off of the updated parent
+        child = 2 * child + 1
+        child_i = first + child
+
+        if child + 1 &lt; len &amp;&amp; compare(xs[child_i + 1], xs[child_i]) {
+            // right-child exists and is greater than left-child
+            ++child_i
+            ++child
+        }
+
+        // check if we are in heap-order
+    } while (!compare(top, xs[child_i]))
+    xs[start] = top
+}
+
+
+
+
+private func siftUp&lt;T&gt;(inout xs: [T],
+                       var first: Int,
+                       var last: Int,
+                       compare: (T, T) -&gt; Bool,
+                       var len: Int)
+{
+    if len &lt;= 1 {
+        return
+    }
+    len = (len - 2) / 2
+    var index = first + len
+    last -= 1
+    if (compare(xs[last], xs[index])) {
+        let t = xs[last]
+        do {
+            xs[last] = xs[index]
+            last = index
+            if len == 0 {
+                break
+            }
+            len = (len - 1) / 2
+            index = first + len
+        } while (compare(t, xs[index]))
+        xs[last] = t
+    }
+}
+</pre>

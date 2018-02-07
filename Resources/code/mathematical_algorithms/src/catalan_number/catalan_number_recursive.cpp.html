@@ -1,0 +1,21 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+
+int main(){
+	int n;
+	cin &gt;&gt; n;
+
+	long long cat[100000];
+	cat[0] = 1;
+	cout &lt;&lt; cat[0];
+
+	for(int i = 1; i &lt;= n; i++){
+		int cat[i] = 0;
+		for(int j = 0; j &lt; i; j++)
+			cat[i] += cat[j] * cat[i - j - 1];
+		cout &lt;&lt; cat[i] &lt;&lt; endl;
+	}
+}
+</pre>

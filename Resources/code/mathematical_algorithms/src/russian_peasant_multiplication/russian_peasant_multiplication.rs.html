@@ -1,0 +1,19 @@
+<pre>
+fn russian_peasant(mut a: u32, mut b: u32) -&gt; u32 {
+    let mut res = 0;
+
+    while b &gt; 0 {
+        if (b &amp; 1) != 0 {
+            res += a;  
+        }
+
+        a = a &lt;&lt; 1;
+        b = b &gt;&gt; 1;
+    }
+    res
+}
+
+fn main() {
+    println!("{}", russian_peasant(18, 24));
+    println!("{}", russian_peasant(20, 12));
+}</pre>

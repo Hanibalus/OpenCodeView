@@ -1,0 +1,260 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;stdlib.h&gt;
+#include "doubly_linked_list.h"
+
+dllist_t *dl_create() {
+    dllist_t *l = (dllist_t *) calloc(1, sizeof(dllist_t));
+    return l;
+}
+
+int8_t dl_destroy(dllist_t **l) {
+    if (*l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if ((*l)-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *p = (*l)-&gt;head;
+
+    while (p != (node_t *) NULL) {
+	(*l)-&gt;head = p-&gt;next;
+	free(p);
+	p = (*l)-&gt;head;
+    }
+
+    (*l)-&gt;tail = (node_t *) NULL;
+    *l = (dllist_t *) NULL;
+
+    return SUCCESS;
+}
+
+int8_t dl_insert_beginning(dllist_t *l, int32_t value) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    node_t *nn = (node_t *) calloc(1, sizeof(node_t));
+
+    if (nn == (node_t *) NULL)
+	return ERR_MALLOC_FAIL;
+
+    nn-&gt;id = l-&gt;tail_id++;
+    nn-&gt;data = value;
+    nn-&gt;prev = (node_t *) NULL;
+
+    node_t *p = l-&gt;head;
+
+    if (p == (node_t *) NULL) {
+	l-&gt;tail = nn;
+    } else {
+	nn-&gt;next = p;
+	p-&gt;prev = nn;
+    }
+    l-&gt;head = nn;
+    l-&gt;len++;
+
+    return SUCCESS;
+}
+
+int8_t dl_insert_tail(dllist_t *l, int32_t value) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    node_t *nn = (node_t *) calloc(1, sizeof(node_t));
+
+    if (nn == (node_t *) NULL)
+	return ERR_MALLOC_FAIL;
+
+    nn-&gt;id = l-&gt;tail_id++;
+    nn-&gt;data = value;
+    node_t *p = l-&gt;tail;
+
+    if (l-&gt;head == (node_t *) NULL) {
+	l-&gt;head = nn;
+	l-&gt;tail = nn;
+    } else {
+	p-&gt;next = nn;
+	nn-&gt;prev = p;
+	l-&gt;tail = nn;
+    }
+    l-&gt;len++;
+
+    return SUCCESS;
+}
+
+int8_t dl_insert_after(dllist_t *l, int32_t key, int32_t value) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if (l-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *nn = (node_t *) calloc(1, sizeof(node_t));
+
+    if (nn == (node_t *) NULL)
+	return ERR_MALLOC_FAIL;
+
+    nn-&gt;id = l-&gt;tail_id++;
+    nn-&gt;data = value;
+
+    node_t *p = l-&gt;head;
+
+    while (p != (node_t *) NULL) {
+	if (p-&gt;data == key) {
+	    nn-&gt;next = p-&gt;next;
+	    p-&gt;next = nn;
+	    nn-&gt;prev = p;
+	    if (p == l-&gt;tail) {
+		l-&gt;tail = nn;
+	    }
+	    break;
+	}
+	p = p-&gt;next;
+    }
+
+    return SUCCESS;
+}
+
+int8_t dl_insert_before(dllist_t *l, int32_t key, int32_t value) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if (l-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *nn = (node_t *) calloc(1, sizeof(node_t));
+
+    if (nn == (node_t *) NULL)
+	return ERR_MALLOC_FAIL;
+
+    nn-&gt;id = l-&gt;tail_id++;
+    nn-&gt;data = value;
+
+    node_t *p = l-&gt;head;
+
+    while (p != (node_t *) NULL) {
+	if (p-&gt;data == key) {
+	    if (p == l-&gt;head) {
+		l-&gt;head = nn;
+	    } else {
+		p-&gt;prev-&gt;next = nn;
+	    }
+	    nn-&gt;next = p;
+	    nn-&gt;prev = p-&gt;prev;
+
+	    break;
+	}
+	p = p-&gt;next;
+    }
+
+    return SUCCESS;
+}
+
+int8_t dl_remove_beginning(dllist_t *l) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if (l-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *p = l-&gt;head;
+
+    l-&gt;head = p-&gt;next;
+    p-&gt;next = (node_t *) NULL;
+
+    free(p);
+
+    l-&gt;len--;
+
+    return SUCCESS;
+}
+
+int8_t dl_remove_tail(dllist_t *l) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if (l-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *p = l-&gt;tail;
+
+    if (p == l-&gt;head) {
+	l-&gt;head = (node_t *) NULL;
+    } else {
+	p-&gt;prev-&gt;next = (node_t *) NULL;
+	l-&gt;tail = p-&gt;prev;
+    }
+
+    free(p);
+
+    l-&gt;len--;
+
+    return SUCCESS;
+
+}
+
+int8_t dl_remove_next(dllist_t *l, int32_t key) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if (l-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *p = l-&gt;head;
+    node_t *r = (node_t *) NULL;
+
+    while (p-&gt;next != (node_t *) NULL) {
+	if (p-&gt;id == key) {
+	    r = p-&gt;next;
+
+	    if (r-&gt;next == (node_t *) NULL) {
+		l-&gt;tail = p;
+		p-&gt;next = (node_t *) NULL;
+	    } else {
+		r-&gt;next-&gt;prev = p;
+		p-&gt;next = r-&gt;next;
+	    }
+
+	    free(r);
+	    l-&gt;len--;
+	    r = (node_t *) NULL;
+	    break;
+	}
+	p = p-&gt;next;
+    }
+
+    return SUCCESS;
+}
+
+int8_t dl_remove_prev(dllist_t *l, int32_t key) {
+    if (l == (dllist_t *) NULL)
+	return ERR_NO_LIST;
+
+    if (l-&gt;head == (node_t *) NULL)
+	return ERR_EMPTY_LIST;
+
+    node_t *p = l-&gt;head-&gt;next;
+    node_t *r = (node_t *) NULL;
+
+    while (p != (node_t *) NULL) {
+	if (p-&gt;id == key) {
+	    r = p-&gt;prev;
+	    if (r == l-&gt;head) {
+		l-&gt;head = p;
+		p-&gt;prev = (node_t *) NULL;
+	    } else {
+		p-&gt;prev = r-&gt;prev;
+		r-&gt;prev-&gt;next = p;
+	    }
+	    free(r);
+	    l-&gt;len--;
+	    r = (node_t *) NULL;
+	    break;
+	}
+	p = p-&gt;next;
+    }
+
+    return SUCCESS;
+}
+</pre>

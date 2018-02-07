@@ -1,0 +1,57 @@
+<pre>
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+using namespace std;
+void Zalgo(string s,string pattern)
+{
+    string k=pattern + "&amp;" + s;
+	
+    int Z[k.length()]; //Z-array for storing the length of the longest substring 
+	                   //starting from s[i] which is also a prefix of s[0..n-1]
+    int l=0,r=0;
+    for(int i=1;i&lt;k.length();i++)
+    {
+    	if(i&gt;r)
+    	{
+    		l=i;r=i;
+    		while(r&lt;k.length() &amp;&amp; k[r]==k[r-l])
+    		  r++;
+    		Z[i]=r-l;
+    		r--;
+    	}
+    	else
+    	{
+    		int p=i-l;
+    		if(Z[p] &lt; r-i+1)
+    		  Z[i]=Z[p];
+    		else
+    		 {
+    		   l=i;
+    		   while(r&lt;k.length() &amp;&amp; k[r]==k[r-l])
+    		     r++;
+    		   Z[i]=r-l;
+    		   r--;	
+    		 }
+    	}
+    }
+    for(int i=1;i&lt;k.length();i++)
+    {
+    	if(Z[i]==pattern.length())
+    	{
+    		cout&lt;&lt;"Found Pattern at "&lt;&lt;i-pattern.length()-1&lt;&lt;endl;
+    	}
+    }
+}
+int main() {
+	 
+	 string s="atababatggagabagt";//original string
+	 string pattern="aba";//pattern to be searched in string
+	 Zalgo(s,pattern);
+	return 0;
+}
+/*Output:
+Found Pattern at 2
+Found Pattern at 4
+Found Pattern at 12
+*/
+</pre>

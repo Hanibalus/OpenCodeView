@@ -1,0 +1,42 @@
+<pre>
+package main
+// Part of Cosmos by OpenGenus Foundation
+import (
+	"fmt"
+	"math"
+	"errors"
+)
+
+func divide(dividend int, divisor int) (int, error) {
+	var positive bool = false
+	var answer int = 0
+
+	if divisor == 0 {
+		return 0, errors.New("cannot divide by zero")
+	}
+
+	if dividend &gt; 0 &amp;&amp; divisor &gt; 0 {
+		positive = true
+	}
+
+	dividend = int(math.Abs(float64(dividend)))
+	divisor = int(math.Abs(float64(divisor)))
+
+	for dividend &gt;= divisor {
+		temp, i := divisor, 1
+		for dividend &gt;= temp {
+			dividend -= temp
+			answer += i
+			i &lt;&lt;= 1
+			temp &lt;&lt;= 1
+		}
+	}
+ 
+	if !positive {
+		answer = -answer
+	}
+
+	return answer, nil
+}
+
+</pre>

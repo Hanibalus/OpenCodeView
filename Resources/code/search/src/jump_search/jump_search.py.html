@@ -1,0 +1,40 @@
+<pre>
+import math
+
+
+def jumpSearch(arr, x):
+    n = len(arr)
+    jump = int(math.sqrt(n))
+    left, right = 0, 0
+    while left &lt; n and arr[left] &lt;= x:
+        right = min(n - 1, left + jump)
+        if arr[left] &lt;= x and arr[right] &gt;= x:
+            break
+        left += jump
+
+    if left &gt;= n or arr[left] &gt; x:
+        return -1
+
+    right = min(n - 1, right)
+
+    temp = left
+    while temp &lt;= right and arr[temp] &lt;= x:
+        if arr[temp] == x:
+            return temp
+        temp += 1
+
+    return -1
+
+
+def test(x):
+    arr = [7, 18, 24, 12, 47, 84, 14]
+    index = jumpSearch(arr, x)
+
+    if index != -1:
+        print "The element", x, "is at the index", index
+    else:
+        print "Element", x, "not found!"
+
+
+test(18)
+</pre>

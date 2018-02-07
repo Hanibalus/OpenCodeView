@@ -1,0 +1,28 @@
+<pre>
+#include &lt;iostream&gt;
+
+//Part of Cosmos by OpenGenus Foundation
+void removeDups(std::string &amp;str)
+{
+    std::string resStr;
+    resStr.push_back(str.front());
+    for (std::string::iterator it = str.begin() + 1; it != str.end(); ++it)
+    {
+
+        if (*it != resStr.back())
+            resStr.push_back(*it);
+
+    }
+    std::swap(str, resStr);
+}
+
+int main()
+{
+    std::string str;
+    std::cout &lt;&lt; "Enter string: " &lt;&lt; std::endl;
+    std::getline(std::cin, str);
+    removeDups(str);
+    std::cout &lt;&lt; "Resultant string: " &lt;&lt; str &lt;&lt; std::endl;
+    return 0;
+}
+</pre>

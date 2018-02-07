@@ -1,0 +1,31 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+#include &lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+    int n, m, a[502] = {}, b[502] = {}, d[502][502] = {}, z = 0;
+    cin &gt;&gt; n &gt;&gt; m;
+    for (int i = 1; i &lt;= n; i++)
+        cin &gt;&gt; a[i];
+    for (int i = 1; i &lt;= m; i++)
+        cin &gt;&gt; b[i];
+    for (int i = 1; i &lt;= n; i++)
+    {
+        int k = 0;
+        for (int j = 1; j &lt;= m; j++)
+        {
+            d[i][j] = d[i - 1][j];
+            if (b[j] &lt; a[i])
+                k = max(k, d[i - 1][j]);
+            if (b[j] == a[i])
+                d[i][j] = max(d[i - 1][j], k + 1);
+            z = max(z, d[i][j]);
+        }
+    }
+    cout &lt;&lt; z &lt;&lt; '\n';
+}
+
+</pre>

@@ -1,0 +1,42 @@
+<pre>
+#!/usr/bin/env perl
+
+use utf8;
+use 5.024;
+use warnings;
+use feature qw(signatures);
+no warnings qw(experimental::signatures);
+
+{
+    package FenwickTree;
+
+    sub new($class, %args) {
+        return bless {
+            arr =&gt; [ (0) x ($args{max}+1) ], # arr[k] = x[k-phi(k)+1] + ... + x[k]
+            n   =&gt; $args{max} + 1,
+        }, 'FenwickTree';
+    }
+
+    sub phi($n) { return $n &amp; -$n; }
+    sub get($self, $k) { # returns x[1] + x[2] + x[3] + ... + x[k]
+        return $k &lt;= 0 ? 0 : $self-&gt;{arr}-&gt;[$k] + $self-&gt;get( $k - phi($k) );
+    }
+    sub add($self, $k, $c) { # x[k] += c
+        return if $k &gt; $self-&gt;{n};
+        $self-&gt;{arr}-&gt;[$k] += $c;
+        $self-&gt;add( $k+phi($k), $c );
+    }
+}
+
+use Test::More tests =&gt; 2;
+
+my $tree = FenwickTree-&gt;new( max =&gt; 12 );
+my @values = (2, 1, 1, 3, 2, 3, 4, 5, 6, 7, 8, 9);
+$tree-&gt;add($_, $values[$_-1]) for (1..12);
+
+is( $tree-&gt;get(5), 2+1+1+3+2, 'sum of first 5 elements' );
+
+$tree-&gt;add(4, 4);
+
+is( $tree-&gt;get(5), 2+1+1+(3+4)+2, 'sum after adding' );
+</pre>

@@ -1,0 +1,18 @@
+<pre>
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+int main() {
+	int n;
+	cin &gt;&gt; n;
+	vector&lt;int&gt; v(n);
+	for (int i = 0; i &lt; n; i++) {
+		cin &gt;&gt; v[i];
+	}
+	int k;
+	cin &gt;&gt; k;
+	nth_element(v.begin(), v.begin() + k, v.end());
+	cout &lt;&lt; v[k] &lt;&lt; endl;
+	return 0;
+}</pre>

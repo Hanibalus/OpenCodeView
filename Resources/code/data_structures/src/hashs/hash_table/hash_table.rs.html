@@ -1,0 +1,125 @@
+<pre>
+use std::hash::{Hash, Hasher};
+use std::collections::hash_map::DefaultHasher;
+use std::fmt;
+
+trait HashFunc {
+    type Key;
+    type Value;
+    fn new(key: Self::Key, value: Self::Value) -&gt; Self;
+    fn get_value(&amp;self) -&gt; &amp;Self::Value;
+    fn get_key(&amp;self) -&gt; &amp;Self::Key;
+}
+struct HashTable&lt;K, V&gt; {
+    list: Vec&lt;Vec&lt;HashPair&lt;V, K&gt;&gt;&gt;,
+    mindex: u64,
+    size: u64,
+}
+impl&lt;K, V&gt; HashTable&lt;K, V&gt;
+where
+    K: Hash + PartialEq + fmt::Display,
+    V: fmt::Display,
+{
+    fn new(index: u64) -&gt; Self {
+        let mut empty_vec = Vec::new();
+        for _ in 0..index {
+            empty_vec.push(Vec::new());
+        }
+        HashTable {
+            list: empty_vec,
+            size: 0,
+            mindex: index,
+        }
+    }
+    fn hash(&amp;self, key: &amp;K) -&gt; u64 {
+        let mut hasher = DefaultHasher::new();
+        key.hash(&amp;mut hasher);
+        hasher.finish() % self.mindex
+    }
+    fn get(&amp;self, key: K) -&gt; Option&lt;&amp;V&gt; {
+        let index = self.hash(&amp;key);
+        if let Some(list) = self.list.get(index as usize) {
+            if let Some(ele) = list.iter().find(|x| *x.get_key() == key) {
+                Some(ele.get_value())
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+    fn put(&amp;mut self, key: K, value: V) {
+        let index = self.hash(&amp;key);
+        if let Some(lin_list) = self.list.get_mut(index as usize) {
+            let insert_value = HashPair::new(key, value);
+            if let Some(index) = lin_list.iter().position(
+                |x| *x.get_key() == insert_value.key,
+            )
+            {
+                lin_list.remove(index);
+            }
+            lin_list.push(insert_value);
+            self.size += 1;
+        }
+    }
+    fn remove(&amp;mut self, key: K) {
+        let index = self.hash(&amp;key);
+        if let Some(lin_list) = self.list.get_mut(index as usize) {
+            lin_list.retain(|x| *x.get_key() != key);
+            self.size -= 1;
+        }
+    }
+    fn size(&amp;self) -&gt; u64 {
+        self.size
+    }
+    fn print(&amp;self) {
+        for index in 0..self.mindex {
+            if let Some(lin_list) = self.list.get(index as usize) {
+                for inner_index in 0..lin_list.len() {
+                    print!("{} ", lin_list.get(inner_index).unwrap());
+                }
+            }
+        }
+        println!();
+    }
+}
+struct HashPair&lt;T, K&gt; {
+    key: K,
+    value: T,
+}
+impl&lt;T, K&gt; fmt::Display for HashPair&lt;T, K&gt;
+where
+    T: fmt::Display,
+    K: fmt::Display,
+{
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, "({}, {})", self.key, self.value)
+    }
+}
+impl&lt;T, K&gt; HashFunc for HashPair&lt;T, K&gt; {
+    type Key = K;
+    type Value = T;
+    fn get_value(&amp;self) -&gt; &amp;Self::Value {
+        &amp;self.value
+    }
+    fn get_key(&amp;self) -&gt; &amp;Self::Key {
+        &amp;self.key
+    }
+    fn new(key: Self::Key, value: Self::Value) -&gt; Self {
+        HashPair {
+            key: key,
+            value: value,
+        }
+    }
+}
+
+const MINDEX: u64 = 128;
+
+fn main() {
+    let mut test = HashTable::new(MINDEX);
+    test.put("hello", "bye");
+    test.put("what's up", "dude");
+    test.remove("hell");
+    test.print();
+}
+</pre>

@@ -1,0 +1,75 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+//
+//  heap_sort.m
+//  Created by DaiPei on 2017/10/9.
+//
+
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface HeapSort : NSObject
+
+- (void)sort:(NSMutableArray&lt;NSNumber *&gt; *)array;
+
+@end
+
+@implementation HeapSort
+
+- (void)sort:(NSMutableArray&lt;NSNumber *&gt; *)array {
+    int n = (int)array.count;
+    
+    // create the heap
+    for (int i = n / 2; i &gt;= 0; i--) {
+        [self sink:array at:i to:n - 1];
+    }
+    
+    // sort core
+    for (int i = n - 1; i &gt; 0; i--) {
+        [self swap:array at:i and:0];
+        [self sink:array at:0 to:i - 1];
+    }
+}
+
+- (void)sink:(NSMutableArray&lt;NSNumber *&gt; *)array at:(NSUInteger)indexA to:(NSUInteger)indexB {
+    NSUInteger pMax;
+    while ((indexA + 1) * 2 - 1 &lt;= indexB) {
+        NSUInteger l = (indexA + 1) * 2 - 1;
+        NSUInteger r = (indexA + 1) * 2;
+        if (r &lt;= indexB &amp;&amp; [array[l] compare:array[r]] == NSOrderedAscending) {
+            pMax = r;
+        } else {
+            pMax = l;
+        }
+        if ([array[indexA] compare:array[pMax]] == NSOrderedAscending) {
+            [self swap:array at:indexA and:pMax];
+            indexA = pMax;
+        } else {
+            break;
+        }
+    }
+}
+
+- (void)swap:(NSMutableArray&lt;NSNumber *&gt; *)array at:(NSUInteger)indexA and:(NSUInteger)indexB {
+    NSNumber *tmp = array[indexA];
+    array[indexA] = array[indexB];
+    array[indexB] = tmp;
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSMutableArray *array = [NSMutableArray array];
+        for (int i = 0; i &lt; 20; i++) {
+            int ran = arc4random() % 20 - 10;
+            [array addObject:@(ran)];
+        }
+        NSLog(@"before: %@", array);
+        HeapSort *hs = [[HeapSort alloc] init];
+        [hs sort:array];
+        NSLog(@"after: %@", array);
+    }
+    return 0;
+}
+</pre>

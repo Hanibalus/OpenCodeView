@@ -1,0 +1,105 @@
+<pre>
+// Fully persistent Segment tree with spaces. Allows to find sum in O(log size) time in any version. Uses O(n log size) memory.
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+const int size = 1000000000;
+const int versionCount = 100000;
+
+struct node {
+  int leftBound, rightBound;
+  node *leftChild, *rightChild;
+  int value;
+  node (int LeftBound, int RightBound) {
+    leftBound = LeftBound;
+    rightBound = RightBound;
+    value = 0;
+    leftChild = rightChild = 0;
+  }
+  node (node *vertexToClone) {
+    leftBound = vertexToClone-&gt;leftBound;
+    rightBound = vertexToClone-&gt;rightBound;
+    value = vertexToClone-&gt;value;
+    leftChild = vertexToClone-&gt;leftChild;
+    rightChild = vertexToClone-&gt;rightChild;
+  }
+} *root[versionCount];
+
+void add (node *vertex, int destination, int value) {
+  if (vertex-&gt;leftBound == destination &amp;&amp; vertex-&gt;rightBound == destination + 1) {
+    vertex-&gt;value += value;
+    return;
+  }
+
+  vertex-&gt;value += value;
+
+  int middle = (vertex-&gt;leftBound + vertex-&gt;rightBound) / 2;
+
+  if (destination &lt; middle) {
+    if (vertex-&gt;leftChild == 0) {
+      vertex-&gt;leftChild = new node (vertex-&gt;leftBound, middle);
+    } else {
+      vertex-&gt;leftChild = new node (vertex-&gt;leftChild);
+    }
+
+    add (vertex-&gt;leftChild, destination, value);
+  } else {
+    if (vertex-&gt;rightChild == 0) {
+      vertex-&gt;rightChild = new node (middle, vertex-&gt;rightBound);
+    } else {
+      vertex-&gt;rightChild = new node (vertex-&gt;rightChild);
+    }
+
+    add (vertex-&gt;rightChild, destination, value);
+  }
+}
+
+int ask (node *vertex, int leftBound, int rightBound) {
+  if (vertex == 0) return 0;
+
+  if (vertex-&gt;leftBound &gt;= leftBound &amp;&amp; vertex-&gt;rightBound &lt;= rightBound) {
+    return vertex-&gt;value;
+  }
+
+  if (vertex-&gt;leftBound &gt;= rightBound &amp;&amp; vertex-&gt;rightBound &lt;= leftBound) {
+    return 0;
+  }
+
+  return ask (vertex-&gt;leftChild, leftBound, rightBound) + ask (vertex-&gt;rightChild, leftBound, rightBound);
+}
+
+int main () {
+  root[0] = new node (-size, size); // Actually allows negative numbers
+
+  std::cout &lt;&lt; "Print number of queries!\n";
+
+  int q;
+  std::cin &gt;&gt; q;
+
+  int currentVersion = 1;
+
+  for (int _ = 0; _ &lt; q; _++) {
+    std::string type;
+    std::cin &gt;&gt; type;
+
+    if (type == "add") {
+      int version, destination, value;
+      std::cin &gt;&gt; version &gt;&gt; destination &gt;&gt; value;
+
+      root[currentVersion] = new node (root[version]);
+      add (root[currentVersion], destination, value);
+
+      std::cout &lt;&lt; "Version " &lt;&lt; currentVersion &lt;&lt; " created succesfully!\n";
+      ++currentVersion;
+    } else if (type == "ask") {
+      int version, leftBound, rightBound;
+      std::cin &gt;&gt; version &gt;&gt; leftBound &gt;&gt; rightBound;
+
+      std::cout &lt;&lt; ask (root[version], leftBound, rightBound) &lt;&lt; "\n";
+    } else {
+      std::cout &lt;&lt; "Unknown Type! Only add and ask allowed\n";
+    }
+  }
+
+}
+</pre>

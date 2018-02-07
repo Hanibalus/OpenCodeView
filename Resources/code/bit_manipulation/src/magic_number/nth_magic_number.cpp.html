@@ -1,0 +1,35 @@
+<pre>
+//Part of Cosmos by OpenGenus Foundation
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+// Function to find nth magic numebr
+int nthMagicNo(int n)
+{
+    int pow = 1, answer = 0;
+
+    // Go through every bit of n
+    while (n)
+    {
+        pow = pow*5;
+
+        // If last bit of n is set
+        if (n &amp; 1)
+            answer += pow;
+
+        // proceed to next bit
+        n &gt;&gt;= 1;  // or n = n/2
+    }
+    return answer;
+}
+
+int main()
+{
+    int n ;
+    cin&gt;&gt;n;
+    cout &lt;&lt; "nth magic number is " &lt;&lt; nthMagicNo(n) &lt;&lt; endl;
+    return 0;
+}
+
+</pre>

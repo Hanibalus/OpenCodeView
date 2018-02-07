@@ -1,0 +1,41 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+
+//
+//  bogo_sort.swift
+//  Created by DaiPei on 2017/10/14.
+//
+
+import Foundation
+
+func bogoSort(_ array: inout [Int]) {
+    while !isSorted(array) {
+        shuffle(&amp;array)
+    }
+}
+
+private func shuffle(_ array: inout [Int]) {
+    for i in 0..&lt;array.count {
+        let j = Int(arc4random()) % array.count
+        swap(&amp;array, at: i, and: j)
+    }
+}
+
+private func isSorted(_ array: [Int]) -&gt; Bool {
+    if array.count &lt;= 1 {
+        return true
+    }
+    for i in 1..&lt;array.count {
+        if array[i] &lt; array[i - 1] {
+            return false
+        }
+    }
+    return true
+}
+
+private func swap(_ array: inout [Int], at indexA: Int, and indexB: Int) {
+    let tmp = array[indexA]
+    array[indexA] = array[indexB]
+    array[indexB] = tmp
+}
+</pre>

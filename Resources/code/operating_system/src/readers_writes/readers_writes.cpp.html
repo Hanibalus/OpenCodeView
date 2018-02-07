@@ -1,0 +1,65 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;thread&gt;
+#include &lt;mutex&gt;
+#include &lt;chrono&gt;
+
+#define N     5 // # of processes (readers &amp; writes)
+
+std::mutex mu; // controlling access to the number of processes
+std::mutex db; // controlling acess to the database
+std::mutex print_mu; // guards the cout &lt;&lt; I/O
+int rc = 0; // # of processes reading or waiting to
+
+void read_db(int i) {
+    std::lock_guard&lt;std::mutex&gt; guard {print_mu};
+    std::cout &lt;&lt; "Reader #" &lt;&lt; i &lt;&lt; " is reading to the database" &lt;&lt; std::endl;
+}
+
+void write_db(int i) {
+    std::lock_guard&lt;std::mutex&gt; guard {print_mu};
+    std::cout &lt;&lt; "Writer #" &lt;&lt; i &lt;&lt; " is writing to the database" &lt;&lt; std::endl;
+}
+
+void reader(int i) {
+    while(true) {
+        std::unique_lock&lt;std::mutex&gt; lock_mu {mu};
+        std::unique_lock&lt;std::mutex&gt; lock_db {db, std::defer_lock};
+        rc = rc + 1;
+        if (rc == 1) {  lock_db.lock(); }
+        lock_mu.unlock();
+        read_db(i);
+        lock_mu.lock();
+        rc = rc - 1;
+        if (rc == 0) { lock_db.unlock(); }
+        lock_mu.unlock();
+    }
+}
+
+void writer(int i) {
+    while(true) {
+        std::unique_lock&lt;std::mutex&gt; lock_db {db};
+        write_db(i);
+        lock_db.unlock();
+    }
+}
+
+int main() {
+
+    std::thread writers[N];
+    std::thread readers[N];
+    
+    for (size_t i = 0; i &lt; N; i++) {
+        writers[i] = std::thread(writer, i);
+        readers[i] = std::thread(reader, i);
+    }
+    
+    for (size_t i = 0; i &lt; N; i++) {
+        writers[i].join();
+        readers[i].join();
+    }
+
+    return 0;
+}
+</pre>

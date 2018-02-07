@@ -1,0 +1,184 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+/* Contributed by Vaibhav Jain (vaibhav29498) */
+#include &lt;iostream&gt;
+#include &lt;cstdlib&gt;
+using namespace std;
+
+template &lt;typename T&gt;
+struct node
+{
+    T info;
+    node* pre;
+    node* next;
+    node();
+};
+
+template &lt;typename T&gt; node&lt;T&gt;::node()
+{
+    info=0;
+    pre=nullptr;
+    next=nullptr;
+}
+
+template &lt;class T&gt;
+class doubleLinkedList
+{
+    node&lt;T&gt;* head;
+public:
+    doubleLinkedList();
+    int listSize();
+    void insertNode(T,int);
+    void deleteNode(int);
+    void print();
+    void reversePrint();
+};
+
+template &lt;class T&gt; doubleLinkedList&lt;T&gt;::doubleLinkedList()
+{
+    head=nullptr;
+}
+
+template &lt;class T&gt; int doubleLinkedList&lt;T&gt;::listSize()
+{
+    int i=0;
+    node&lt;T&gt; *ptr=head;
+    while(ptr!=nullptr)
+    {
+        ++i;
+        ptr=ptr-&gt;next;
+    }
+    return i;
+}
+
+template &lt;class T&gt; void doubleLinkedList&lt;T&gt;::insertNode(T i,int p)
+{
+    node&lt;T&gt; *ptr=new node&lt;T&gt;,*cur=head;
+    ptr-&gt;info=i;
+    if(cur==nullptr)
+        head=ptr;
+    else if(p==1)
+    {
+        ptr-&gt;next=head;
+        head-&gt;pre=ptr;
+        head=ptr;
+    }
+    else if(p&gt;listSize())
+    {
+        while(cur-&gt;next!=nullptr)
+            cur=cur-&gt;next;
+        cur-&gt;next=ptr;
+        ptr-&gt;pre=cur;
+    }
+    else
+    {
+        int n=p-1;
+        while(n--)
+            cur=cur-&gt;next;
+        ptr-&gt;pre=cur-&gt;pre;
+        ptr-&gt;next=cur;
+        cur-&gt;pre-&gt;next=ptr;
+        cur-&gt;pre=ptr;
+    }
+    cout &lt;&lt; "Node inserted!" &lt;&lt; endl;
+}
+
+template &lt;class T&gt; void doubleLinkedList&lt;T&gt;::deleteNode(int p)
+{
+    if(p&gt;listSize())
+    {
+        cout &lt;&lt; "Underflow!" &lt;&lt; endl;
+        return;
+    }
+    node&lt;T&gt; *ptr=head;
+    if(p==1)
+    {
+        head=head-&gt;next;
+        head-&gt;pre=nullptr;
+        delete ptr;
+    }
+    else if(p==listSize())
+    {
+        while(ptr-&gt;next!=nullptr)
+            ptr=ptr-&gt;next;
+        ptr-&gt;pre-&gt;next=nullptr;
+        delete ptr;
+    }
+    else
+    {
+        int n=p-1;
+        while(n--)
+            ptr=ptr-&gt;next;
+        ptr-&gt;pre-&gt;next=ptr-&gt;next;
+        ptr-&gt;next-&gt;pre=ptr-&gt;pre;
+        delete ptr;
+    }
+    cout &lt;&lt; "Node deleted!" &lt;&lt; endl;
+}
+
+template &lt;class T&gt; void doubleLinkedList&lt;T&gt;::print()
+{
+    node&lt;T&gt; *ptr=head;
+    while(ptr!=nullptr)
+    {
+        cout &lt;&lt; ptr-&gt;info &lt;&lt; " -&gt; ";
+        ptr=ptr-&gt;next;
+    }
+    cout &lt;&lt; "NULL" &lt;&lt; endl;
+}
+
+template &lt;class T&gt; void doubleLinkedList&lt;T&gt;::reversePrint()
+{
+    node&lt;T&gt; *ptr=head;
+    while(ptr-&gt;next!=nullptr)
+        ptr=ptr-&gt;next;
+    while(ptr!=nullptr)
+    {
+        cout &lt;&lt; ptr-&gt;info &lt;&lt; " &lt;- ";
+        ptr=ptr-&gt;pre;
+    }
+    cout &lt;&lt; "NULL" &lt;&lt; endl;
+}
+
+int main()
+{
+    doubleLinkedList&lt;int&gt; l;
+    char cont;
+    int m,i,p;
+    while(true)
+    {
+        system("cls");
+        cout &lt;&lt; "1.Insert" &lt;&lt; endl
+             &lt;&lt; "2.Delete" &lt;&lt; endl
+             &lt;&lt; "3.Print" &lt;&lt; endl
+             &lt;&lt; "4.Reverse Print" &lt;&lt; endl
+             &lt;&lt; "5.Exit" &lt;&lt; endl;
+        cin &gt;&gt; m;
+        switch(m)
+        {
+        case 1:
+            cout &lt;&lt; "Enter info and position ";
+            cin &gt;&gt; i &gt;&gt; p;
+            l.insertNode(i,p);
+            break;
+        case 2:
+            cout &lt;&lt; "Enter position ";
+            cin &gt;&gt; p;
+            l.deleteNode(p);
+            break;
+        case 3:
+            l.print();
+            break;
+        case 4:
+            l.reversePrint();
+            break;
+        case 5:
+            exit(0);
+        default:
+            cout &lt;&lt; "Invalid choice!" &lt;&lt; endl;
+        }
+        system("pause");
+    }
+    return 0;
+}
+</pre>

@@ -1,0 +1,42 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+void SieveOfEratosthenes(int n)
+{
+	// Create a boolean array "prime[0..n]" and initialize
+	// all entries it as true. A value in prime[i] will
+	// finally be false if i is Not a prime, else true.
+	vector&lt;bool&gt; prime(n+1, true);
+
+	for (int p=2; p*p&lt;=n; p++)
+	{
+		// If prime[p] is not changed, then it is a prime
+		if (prime[p] == true)
+		{
+			// Update all multiples of p
+			for (int i=p*2; i&lt;=n; i += p)
+				prime[i] = false;
+		}
+	}
+
+	// Print all prime numbers
+	for (int p=2; p&lt;=n; p++)
+		if (prime[p])
+			cout &lt;&lt; p &lt;&lt; " ";
+}
+
+// Driver Program to test above function
+int main()
+{
+	int n;
+	cout&lt;&lt;"Enter the number";
+	cin&gt;&gt;n;
+	cout &lt;&lt; "Following are the prime numbers smaller "
+		 &lt;&lt; " than or equal to " &lt;&lt; n &lt;&lt; endl;
+	SieveOfEratosthenes(n);
+	cout &lt;&lt; "\n";
+	return 0;
+}
+</pre>

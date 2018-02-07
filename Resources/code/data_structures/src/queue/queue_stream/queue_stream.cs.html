@@ -1,0 +1,171 @@
+<pre>
+using System;
+
+namespace Cosmos_Data_Structures
+{
+    /// &lt;summary&gt;
+    /// QueueStream provides an alternative Queue implementation to High speed 
+    /// IO/Stream operations that works on multitheaded environment.
+    /// Internally use 'circular array' in the implementation.
+    /// &lt;/summary&gt;
+	[Serializable]
+    public class QueueStream
+    {
+        byte[] _array = new byte[64]; // array in memory
+        int _head;       // head index
+        int _tail;       // tail index
+        int _size;       // Number of elements.
+
+        /// &lt;summary&gt;
+        /// Buffer size (maximum limit) for single stream operation (Default is 64 KB)
+        /// &lt;/summary&gt;
+        const int BufferBlock = 1024 * 64;
+
+        /// &lt;summary&gt;
+        /// Get total bytes in queue
+        /// &lt;/summary&gt;
+        public int Count
+        {
+            get { return _size; }
+        }
+
+        /// &lt;summary&gt;
+        /// Remove all bytes in queue
+        /// &lt;/summary&gt;
+        public virtual void Clear()
+        {
+            _head = 0;
+            _tail = 0;
+            _size = 0;
+        }
+
+        /// &lt;summary&gt;
+        /// Remove all bytes in queue and discard waste memory to GC.
+        /// &lt;/summary&gt;
+        public void Clean()
+        {
+            _head = 0;
+            _tail = 0;
+            _size = 0;
+            _array = new byte[64];
+        }
+
+        /// &lt;summary&gt;
+        /// Adds a byte to the back of the queue.
+        /// &lt;/summary&gt;
+        public virtual void Enqueue(byte obj)
+        {
+            if (_size == _array.Length)
+            {
+                SetCapacity(_size &lt;&lt; 1);
+            }
+
+            _array[_tail] = obj;
+            _tail = (_tail + 1) % _array.Length;
+            _size++;
+        }
+
+        /// &lt;summary&gt;
+        /// Removes and returns the byte at the front of the queue.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        public byte Dequeue()
+        {
+            if (_size == 0)
+                throw new InvalidOperationException("Invalid operation. Queue is empty!");
+
+            byte removed = _array[_head];
+            _head = (_head + 1) % _array.Length;
+            _size--;
+            return removed;
+        }
+
+        /// &lt;summary&gt;
+        /// Returns the byte at the front of the queue.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        public byte Front()
+        {
+            if (_size == 0)
+                throw new InvalidOperationException("Invalid operation. Queue is empty!");
+
+            return _array[_head];
+        }
+
+        /// &lt;summary&gt;
+        /// Read and push stream bytes to queue. Can be multi-threaded.
+        /// &lt;/summary&gt;
+        /// &lt;param name="stream"&gt;The stream to push&lt;/param&gt;
+        /// &lt;param name="maxSize"&gt;Maximum bytes size for this operation&lt;/param&gt;
+        /// &lt;returns&gt;Size of pushed bytes&lt;/returns&gt;
+        public int Enqueue(Stream stream, long maxSize = int.MaxValue)
+        {
+            if ((_size + BufferBlock) &gt; _array.Length)
+            {
+                SetCapacity(Math.Max((_size + BufferBlock), _size &lt;&lt; 1));
+            }
+
+            var count = Math.Min(Math.Min((int)maxSize, BufferBlock), _array.Length - _tail);
+
+            lock (_array)
+            {
+                count = stream.Read(_array, _tail, count);
+                _tail = (_tail + count) % _array.Length;
+                _size += count;
+            }
+
+            return count;
+        }
+
+        /// &lt;summary&gt;
+        /// Pop and write stream bytes to queue. Can be multi-threaded.
+        /// &lt;/summary&gt;
+        /// &lt;param name="stream"&gt;The stream to pop&lt;/param&gt;
+        /// &lt;param name="maxSize"&gt;Maximum bytes size for this operation&lt;/param&gt;
+        /// &lt;returns&gt;Size of popped bytes&lt;/returns&gt;
+        public int Dequeue(Stream stream, long maxSize = int.MaxValue)
+        {
+            if (_size == 0)
+                return 0; // It's okay to be empty
+
+            int count = Math.Min(Math.Min(BufferBlock, _size), Math.Min((int)maxSize, _array.Length - _head));
+
+            lock (_array)
+            {
+                stream.Write(_array, _head, count);
+                _head = (_head + count) % _array.Length;
+                _size -= count;
+            }
+
+            return count;
+        }
+
+        /// &lt;summary&gt;
+        /// Set new capacity
+        /// &lt;/summary&gt;
+        private void SetCapacity(int capacity)
+        {
+            lock (_array)
+            {
+                byte[] newarray = new byte[capacity];
+
+                if (_size &gt; 0)
+                {
+                    if (_head &lt; _tail)
+                    {
+                        Array.Copy(_array, _head, newarray, 0, _size);
+                    }
+                    else
+                    {
+                        Array.Copy(_array, _head, newarray, 0, _array.Length - _head);
+                        Array.Copy(_array, 0, newarray, _array.Length - _head, _tail);
+                    }
+                }
+
+                _array = newarray;
+                _head = 0;
+                _tail = (_size == capacity) ? 0 : _size;
+            }
+        }
+    }
+}</pre>

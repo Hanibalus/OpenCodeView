@@ -1,0 +1,52 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+void heapify (vector&lt;int&gt; &amp;v, int n, int i)
+{
+    int largest = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
+
+    if (l &lt; n &amp;&amp; v[l] &gt; v[largest])
+        largest = l;
+    if (r &lt; n &amp;&amp; v[r] &gt; v[largest])
+        largest = r;
+    if (largest != i)
+    {
+        swap(v[i], v[largest]);
+        heapify(v, n, largest);
+    }
+}
+
+// The heap sort function that should be called
+void heap_sort(vector&lt;int&gt; &amp;v)
+{
+    int n = v.size();
+
+    // Build heap (rearrange array)
+    for(int i = n / 2 - 1; i &gt;= 0; --i)
+        heapify(v, n, i);
+    // Extract element from heap 1 by 1
+    for(int i = n - 1; i &gt;= 0; --i)
+    {
+        swap(v[0], v[i]);
+        heapify(v, i, 0);
+    }
+}
+
+
+// Testing the heap sort implementation
+int main()
+{
+    vector&lt;int&gt; v = {2, 3, 6, 7, 4, 1};
+    heap_sort(v);
+    for(int i = 0; i &lt; v.size(); ++i)
+    {
+        cout &lt;&lt; v[i] &lt;&lt; " ";
+    }	
+    return 0;
+}
+</pre>

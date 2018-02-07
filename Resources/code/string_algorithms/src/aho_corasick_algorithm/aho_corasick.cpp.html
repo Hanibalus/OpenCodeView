@@ -1,0 +1,114 @@
+<pre>
+#include &lt;vector&gt;
+#include &lt;fstream&gt;
+#include &lt;queue&gt;
+using namespace std;
+ 
+const int MAXN  = 1000005;
+ 
+char word[MAXN];
+int n;
+struct trie_node
+{
+    int nr;
+    trie_node *children[26];
+    trie_node *fail;
+    vector&lt;trie_node* &gt;out;
+ 
+    trie_node() {
+        nr = 0;
+        for(int i = 0; i &lt; 26; i++){
+            children[i] = 0;
+        }
+        fail = 0;
+        out.clear();
+    }
+ 
+}*root = new trie_node;
+ 
+trie_node *fr[MAXN];
+ 
+queue&lt;trie_node* &gt;coada;
+ 
+trie_node* trie_insert(trie_node *&amp;node, char *p)
+{
+    if(!*p)
+        return node;
+ 
+    if(!node-&gt;children[*p - 'a'])
+        node-&gt;children[*p - 'a'] = new trie_node;
+ 
+    return trie_insert(node-&gt;children[*p - 'a'], p + 1);
+}
+ 
+void traversal(trie_node *t) {
+    for(int i = 0;i &lt; t-&gt;out.size(); i++){
+        traversal(t-&gt;out[i]);
+        t-&gt;nr += t-&gt;out[i]-&gt;nr;
+    }
+}
+ 
+int main()
+{ 
+    ifstream in("ahocorasick.in");
+    ofstream out("ahocorasick.out");
+ 
+    in&gt;&gt;word&gt;&gt;n;
+ 
+    for(int i = 1; i &lt;= n; i++){
+        char s[100000];
+        in&gt;&gt;s;
+        fr[i] = trie_insert(root, s);
+    }
+ 
+    coada.push(root);
+ 
+    while(!coada.empty()) {
+        trie_node *nod = coada.front();
+        coada.pop();
+        for(int i = 0; i &lt; 26; i++){
+ 
+            if(!nod-&gt;children[i])
+                continue;
+ 
+            trie_node *f = nod-&gt;fail;
+            while(f &amp;&amp; !f-&gt;children[i]){
+                f = f-&gt;fail;
+            }
+ 
+            if(!f){
+                nod-&gt;children[i]-&gt;fail = root;
+                root-&gt;out.push_back(nod-&gt;children[i]);
+            } else {
+                nod-&gt;children[i]-&gt;fail = f-&gt;children[i];
+                f-&gt;children[i]-&gt;out.push_back(nod-&gt;children[i]);
+            }
+ 
+            coada.push(nod-&gt;children[i]);
+        }
+    }
+ 
+    trie_node *t = root;
+ 
+    for(char *p = word; *p; p++){
+        int ch = *p - 'a';
+        while(t &amp;&amp; !t-&gt;children[ch]){
+            t = t-&gt;fail; 
+        }
+ 
+        if(!t)
+            t = root;
+        else
+            t = t-&gt;children[ch];
+ 
+        t-&gt;nr++;
+    }
+ 
+    traversal(root);
+ 
+    for(int i = 1; i &lt;= n; i++)
+        out&lt;&lt;fr[i]-&gt;nr&lt;&lt;'\n';
+     
+    return 0;
+}
+</pre>

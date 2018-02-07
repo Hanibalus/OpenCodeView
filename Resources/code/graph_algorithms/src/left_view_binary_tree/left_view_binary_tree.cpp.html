@@ -1,0 +1,54 @@
+<pre>
+#include &lt;iostream&gt;
+using namespace std;
+// Part of Cosmos by OpenGenus Foundation
+struct node
+{
+ int d;
+ node *left;
+ node *right;
+};
+
+struct node* newnode(int num)
+{
+ node *temp=new node;
+ temp-&gt;d=num;
+ temp-&gt;left=temp-&gt;right=NULL;
+ return temp;
+}
+  
+void lefttree(struct node *root, int level, int *maxlevel)
+{
+ if(root==NULL)
+ return;
+
+ 
+ if(*maxlevel&lt;level)
+ {
+  cout&lt;&lt;root-&gt;d&lt;&lt;endl;
+  *maxlevel=level;
+ }
+ 
+ lefttree(root-&gt;left,level+1,maxlevel);
+ lefttree(root-&gt;right,level+1,maxlevel);
+ 
+}
+
+int main()
+{
+ node *root= newnode(12);
+ root-&gt;left=newnode(10);
+ root-&gt;right=newnode(30);
+ root-&gt;right-&gt;left=newnode(25);
+ root-&gt;right-&gt;right=newnode(40);
+ 
+ int maxlevel=0;
+ 
+ lefttree(root,1,&amp;maxlevel);
+ 
+ cout&lt;&lt;endl;
+ return 0;
+}
+  
+  
+</pre>

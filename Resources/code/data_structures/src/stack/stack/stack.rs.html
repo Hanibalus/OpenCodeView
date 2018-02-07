@@ -1,0 +1,49 @@
+<pre>
+pub struct Stack&lt;T&gt; {
+    elements: Vec&lt;T&gt;
+}
+
+impl&lt;T&gt; Stack&lt;T&gt; {
+    pub fn new() -&gt; Stack&lt;T&gt; {
+        Stack {
+            elements: Vec::new()
+        }
+    }
+
+    pub fn push(&amp;mut self, elem: T) {
+        self.elements.push(elem);
+    }
+
+    pub fn pop(&amp;mut self) -&gt; T {
+        let last = self.elements.len() - 1;
+        self.elements.remove(last)
+    }
+
+    pub fn peek(&amp;mut self) -&gt; &amp;T {
+        let last = self.elements.len() - 1;
+        &amp;self.elements[last]
+    }
+
+    pub fn peek_mut(&amp;mut self) -&gt; &amp;mut T {
+        let last = self.elements.len() - 1;
+        &amp;mut self.elements[last]
+    }
+
+    pub fn len(&amp;self) -&gt; usize {
+        self.elements.len()
+    }
+
+    pub fn is_empty(&amp;self) -&gt; bool {
+        self.elements.is_empty()
+    }
+}
+
+fn main() {
+    let mut stack = Stack::&lt;i32&gt;::new();
+    stack.push(1);
+    stack.push(2);
+    println!("{}", stack.pop());
+    stack.push(-5);
+    println!("{}", stack.peek());
+}
+</pre>

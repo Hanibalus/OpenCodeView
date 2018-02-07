@@ -1,0 +1,66 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;alloc.h&gt;
+// Part of Cosmos by OpenGenus Foundation
+struct btreenode
+{
+    struct btreenode *leftchild ;
+    int data ;
+    struct btreenode *rightchild ;
+} ;
+
+void insert ( struct btreenode **, int ) ;
+void inorder ( struct btreenode * ) ;
+
+void main( )
+{
+    struct btreenode *bt ;
+    int arr[10] = { 11, 2, 9, 13, 57, 25, 17, 1, 90, 3 } ;
+    int i ;
+
+    bt = NULL ;
+
+
+    printf ( "Binary tree sort.\n" ) ;
+
+    printf ( "\nArray:\n" ) ;
+    for ( i = 0 ; i &lt;= 9 ; i++ )
+        printf ( "%d\t", arr[i] ) ;
+
+    for ( i = 0 ; i &lt;= 9 ; i++ )
+        insert ( &amp;bt, arr[i] ) ;
+
+    printf ( "\nIn-order traversal of binary tree:\n" ) ;
+    inorder ( bt ) ;
+
+}
+
+void insert ( struct btreenode **sr, int num )
+{
+    if ( *sr == NULL )
+    {
+        *sr = malloc ( sizeof ( struct btreenode ) ) ;
+
+        ( *sr ) -&gt; leftchild = NULL ;
+        ( *sr ) -&gt; data = num ;
+        ( *sr ) -&gt; rightchild = NULL ;
+    }
+    else
+    {
+        if ( num &lt; ( *sr ) -&gt; data )
+            insert ( &amp;( ( *sr ) -&gt; leftchild ), num ) ;
+        else
+            insert ( &amp;( ( *sr ) -&gt; rightchild ), num ) ;
+    }
+}
+
+void inorder ( struct btreenode *sr )
+{
+    if ( sr != NULL )
+    {
+        inorder ( sr -&gt; leftchild ) ;
+        printf ( "%d\t", sr -&gt; data ) ;
+        inorder ( sr -&gt; rightchild ) ;
+    }
+}
+</pre>

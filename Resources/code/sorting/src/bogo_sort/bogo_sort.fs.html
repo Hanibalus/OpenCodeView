@@ -1,0 +1,25 @@
+<pre>
+//Part of Cosmos by OpenGenus Foundation
+open System
+let rnd = Random()
+
+//Simple method to shuffle lists, not really random in terms of crypthography
+let shuffle (x:IComparable list)=
+    List.sortBy(fun x -&gt; rnd.Next()) x
+
+let isSorted (sList:IComparable list)=
+    let folder = fun (a,b) x -&gt; (a &amp;&amp; (b&lt;=x),x)
+    fst &lt;&lt; List.fold (folder) (true,sList.[0]) &lt;| sList
+
+let rec bogosort (x: IComparable list)= 
+    let shuffled = shuffle x
+    if isSorted shuffled then
+        shuffled
+    else
+        bogosort x
+
+[&lt;EntryPoint&gt;]
+let main (argv) =
+    printfn "%A" &lt;| bogosort [14;3;31;4;92;1]
+    0
+</pre>

@@ -1,0 +1,73 @@
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+#define ll long long
+using namespace std;
+
+struct ranking {
+    ll index;
+    ll first;
+    ll second;
+};
+
+bool comp(ranking a, ranking b) {
+    if (a.first == b.first) {
+        return a.second &lt; b.second;
+    }
+    return a.first &lt; b.first;
+}
+
+vector&lt;ll&gt; build_suffix_array(string s) {
+    const ll n = s.length();
+    const ll lgn = ceil(log2(n));
+
+    // vector to hold final suffix array result
+    vector&lt;ll&gt; sa(n);
+
+    // P[i][j] holds the ranking of the j-th suffix
+    // after comparing the first 2^i characters
+    // of that suffix
+    ll P[lgn][n];
+
+    // vector to store ranking tuples of suffixes
+    vector&lt;ranking&gt; ranks(n);
+    
+    ll i, j, step = 1;
+    for(j = 0; j &lt; n; j++) {
+        P[0][j] = s[j] - 'a';
+    }
+
+    for(i = 1; i &lt;= lgn; i++, step++) {
+        for(j = 0; j &lt; n; j++) {
+            ranks[j].index = j;
+            ranks[j].first = P[i-1][j];
+            ranks[j].second = (j + pow(2,i-1) &lt; n) ? P[i-1][j + (ll)(pow(2,i-1))] : -1;
+        }
+
+        sort(ranks.begin(), ranks.end(), comp);
+
+        for(j = 0; j &lt; n; j++) {
+            P[i][ranks[j].index] = (j &gt; 0 &amp;&amp; ranks[j].first == ranks[j-1].first &amp;&amp; ranks[j].second == ranks[j-1].second) ? P[i][ranks[j-1].index] : j;
+        }
+    }
+
+    step -= 1;
+
+    for(i = 0; i &lt; n; i++) {
+        sa[P[step][i]] = i;
+    }
+
+    return sa;
+}
+
+int main() {
+    string s;
+    cin &gt;&gt; s;
+    vector&lt;ll&gt; sa = build_suffix_array(s);
+    for(ll i = 0; i &lt; s.length(); i++) {
+        cout &lt;&lt; i &lt;&lt; " : " &lt;&lt; sa[i] &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>

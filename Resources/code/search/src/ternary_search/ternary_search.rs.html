@@ -1,0 +1,37 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+fn main() {
+    let nums = vec![1, 3, 5, 7, 9];
+    let ele = 5;
+    println!("Sample input list: {:?}", nums);
+    println!("Searched for {} and found index {}", ele, ternary_search(&amp;nums, 0, nums.len(), ele));
+}
+
+fn ternary_search(nums: &amp;Vec&lt;i64&gt;, left: usize, right: usize, x: i64) -&gt; i64 {
+
+    if left &lt;= right {
+        let intvl = (right - left) / 3;
+        let leftmid = left + intvl;
+        let rightmid = leftmid + intvl;
+
+       if nums[leftmid] == x {
+           return leftmid as i64
+       }
+
+       if nums[rightmid] == x {
+           return rightmid as i64;
+       }
+
+       if x &lt; nums[leftmid] {
+           return ternary_search(&amp;nums, left, leftmid, x);
+       }
+       else if x &gt; nums[leftmid] &amp;&amp; x &lt; nums[rightmid] {
+           return ternary_search(&amp;nums, leftmid, rightmid, x);
+       }
+       else {
+           return ternary_search(&amp;nums, rightmid, right, x);
+       }
+   }
+   -1
+}
+</pre>

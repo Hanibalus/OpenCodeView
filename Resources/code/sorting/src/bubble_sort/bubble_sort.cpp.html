@@ -1,0 +1,52 @@
+<pre>
+/*
+ Part of Cosmos by OpenGenus Foundation
+
+ bubble sort synopsis
+
+template&lt;typename _Bidirectional_Iter, typename _Compare&gt;
+void
+bubbleSort(_Bidirectional_Iter begin, _Bidirectional_Iter end, _Compare compare);
+
+template&lt;typename _Bidirectional_Iter&gt;
+void
+bubbleSort(_Bidirectional_Iter begin, _Bidirectional_Iter end);
+ */
+
+#include &lt;functional&gt;
+
+template&lt;typename _Bidirectional_Iter, typename _Compare&gt;
+void
+bubbleSort(_Bidirectional_Iter begin, _Bidirectional_Iter end, _Compare compare)
+{
+    if (begin != end)
+    {
+        auto frontOfSorted = end;
+
+        for (--frontOfSorted; frontOfSorted != begin; --frontOfSorted)
+        {
+            bool swapped{};
+            for (auto j = begin; j != frontOfSorted; ++j)
+            {
+                auto nextOfJ = j;
+                if (compare(*++nextOfJ, *j))
+                {
+                    std::iter_swap(nextOfJ, j);
+                    swapped = true;
+                }
+            }
+            if (swapped == false)
+                break;
+        }
+    }
+}
+
+template&lt;typename _Bidirectional_Iter&gt;
+void
+bubbleSort(_Bidirectional_Iter begin, _Bidirectional_Iter end)
+{
+    using value_type = typename std::iterator_traits&lt;_Bidirectional_Iter&gt;::value_type;
+
+    bubbleSort(begin, end, std::less&lt;value_type&gt;());
+}
+</pre>

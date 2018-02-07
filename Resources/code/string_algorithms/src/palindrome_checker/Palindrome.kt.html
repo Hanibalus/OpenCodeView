@@ -1,0 +1,20 @@
+<pre>
+class Palindrome {
+fun main(args : Array&lt;String&gt;) {
+val kayakString = "kayak"
+val levelString = "level"
+val sosString = "sos"
+val reviverString = "reviver"
+val listOfPalindromes = listOf&lt;String&gt;(kayakString, levelString, sosString, reviverString)
+
+    fun checkIfPalindrome(list : List&lt;String&gt;) : Boolean {
+        return (list[0] == list[0].reversed()
+                &amp;&amp; list[1] == list[1].reversed()
+                &amp;&amp; list[2] == list[2].reversed()
+                &amp;&amp; list[3] == list[3].reversed())
+    }
+
+    checkIfPalindrome(listOfPalindromes)
+  }
+}
+</pre>

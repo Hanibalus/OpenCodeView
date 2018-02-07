@@ -1,0 +1,150 @@
+<pre>
+import java.io.*;
+import java.util.*;
+
+public class CrosswordPuzzle {
+    public static void display(String[][] arr){
+        for(int i = 0; i &lt; arr.length; i++){
+            for(int j = 0; j &lt; arr[i].length; j++){
+                System.out.print(arr[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scn = new Scanner(System.in);
+
+        String[][] grid = new String[10][10];
+        for(int i = 0; i &lt; 10; i++){
+            grid[i] = scn.nextLine().split("");
+        }
+
+        String[] words = scn.nextLine().split(";");
+
+        for(int i = 0; i &lt; words.length; i++){
+            if(puzzleSolved(grid, words, words[i], 0, 0)){
+                break;
+            }
+        }
+
+        display(grid);
+    }
+
+    public static boolean puzzleSolved(String[][] grid, String[] words, String word, int row, int col){
+
+      if(col &gt;= grid.length){
+            col = 0;
+            row += 1;
+        }
+
+      while(row &lt; grid.length &amp;&amp; !grid[row][col].equals("-")){
+            col += 1;
+            if(col &gt;= grid.length){
+                col = 0;
+                row += 1;
+            }
+        }
+
+        if(row == grid.length){
+          return false;
+        }
+
+        boolean isPlacedHoz = false, isPlacedVer = false;
+        while(row - 1 &gt;= 0 &amp;&amp; !grid[row - 1][col].equals("+")){
+          row -= 1;
+        }
+
+        isPlacedVer = placeVertical(grid, row, col, word);
+        if(!isPlacedVer){
+          while(col - 1 &gt;= 0 &amp;&amp; !grid[row][col - 1].equals("+")){
+              col -= 1;
+            }
+
+          isPlacedHoz = placeHorizontal(grid, row, col, word);
+        }
+        if( isPlacedVer || isPlacedHoz){
+          String[] remainingWords = new String[words.length - 1];
+
+          if(remainingWords.length == 0){
+                return true;
+            }
+
+          int i = 0, j = 0;
+            while(i &lt; words.length){
+              if(!words[i].equals(word)){
+                remainingWords[j] = words[i];
+                  j++;
+              }
+              i++;
+            }
+
+            String pword = word;
+          for(int k = 0; k &lt; remainingWords.length; k++){
+            word = remainingWords[k];
+              if(puzzleSolved(grid, remainingWords, word, row, col + 1)){
+                   return true;
+                }
+            }
+          if(isPlacedHoz){
+            clearHorizontal(grid, row, col, pword);
+          }
+          if(isPlacedVer){
+            clearVertical(grid, row, col, pword);
+          }
+        }
+        return false;
+    }
+
+    public static boolean placeHorizontal(String[][] grid, int row, int col, String word){
+        if(word.length() == 0 &amp;&amp; (col == grid.length || grid[row][col].equals("+"))){
+          return true;
+        }else if(col == grid.length || word.length() == 0){
+            return false;
+        }
+
+        if(grid[row][col].equals("-") || grid[row][col].equals(word.charAt(0)+"")){
+          String prev = grid[row][col];
+            grid[row][col] = word.charAt(0) + "";
+            if(placeHorizontal(grid, row, col + 1, word.substring(1))){
+                return true;
+            }
+            grid[row][col] = prev;
+        }
+        return false;
+    }
+
+    public static boolean placeVertical(String[][] grid, int row, int col,String word){
+        if(word.length() == 0 &amp;&amp; (row == grid.length || grid[row][col].equals("+"))){
+            return true;
+        } else if(row == grid.length || word.length() == 0){
+            return false;
+        }
+        if(grid[row][col].equals("-") || grid[row][col].equals(word.charAt(0)+"")){
+          String prev = grid[row][col];
+            grid[row][col] = word.charAt(0) + "";
+            if(placeVertical(grid, row + 1, col, word.substring(1))){
+                return true;
+            }
+            grid[row][col] = prev;
+        }
+        return false;
+    }
+
+    public static void clearHorizontal(String[][] grid, int row, int col, String word){
+        int pcol = col;
+      while(pcol &lt; grid.length &amp;&amp; pcol &lt; col + word.length()){
+            grid[row][pcol] = "-";
+            pcol++;
+        }
+    }
+
+    public static void clearVertical(String[][] grid, int row, int col, String word){
+        int prow = row;
+      while(prow &lt; grid.length &amp;&amp; prow &lt; row + word.length()){
+            grid[prow][col] = "-";
+            prow++;
+        }
+    }
+}
+</pre>

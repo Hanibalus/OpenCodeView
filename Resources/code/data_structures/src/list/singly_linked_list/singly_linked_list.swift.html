@@ -1,0 +1,60 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+import Foundation
+
+public struct Node&lt;T&gt; {
+    private var data: T?
+    private var next: [Node&lt;T&gt;?] = []
+    
+    init() {
+        self.data = nil
+    }
+    
+    init(data: T) {
+        self.data = data
+    }
+    
+    func getData() -&gt; T? {
+        return self.data
+    }
+    
+    func getNext() -&gt; Node&lt;T&gt;? {
+        return self.next[0]
+    }
+    
+    mutating func setNext(next: Node&lt;T&gt;?) {
+        self.next = [next]
+    }
+}
+
+public struct LinkedList&lt;T&gt; {
+    private var head: Node&lt;T&gt;?
+    
+    init() {
+        self.head = nil
+    }
+    
+    init(head: Node&lt;T&gt;?) {
+        self.head = head
+    }
+    
+    func size() -&gt; Int {
+        if var current_node = head {
+            var len = 1
+            while let next = current_node.getNext() {
+                current_node = next
+                len += 1
+            }
+            return len
+        }
+        return 0
+    }
+    
+    mutating func insert(data: T) {
+
+        var node = Node&lt;T&gt;(data: data)
+        node.setNext(next: self.head)
+        self.head = node
+    }
+}
+</pre>

@@ -1,0 +1,29 @@
+<pre>
+#include &lt;array&gt;
+#include &lt;iostream&gt;
+#include &lt;iterator&gt;
+#include &lt;random&gt;
+
+// Part of Cosmos by OpenGenus Foundation
+template&lt;class It, class RNG&gt;
+void shuffle_an_array(It first, It last, RNG &amp;&amp;rng) {
+    std::uniform_int_distribution&lt;&gt; dist;
+    using ptype = std::uniform_int_distribution&lt;&gt;::param_type;
+    using std::swap;
+    
+    for (; first != last; ++first) {
+        swap(*first, *(first + dist(rng, ptype(0, last - first - 1))));
+    }
+}
+
+int main(int argc, char *argv[]) {
+    std::array&lt;int, 10&gt; values{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::minstd_rand rng(std::random_device{}());
+    shuffle_an_array(values.begin(), values.end(), rng);
+    
+    for (int i=0; i &lt; values.size(); ++i) {
+        std::cout &lt;&lt; (i &gt; 0 ? ", " : "") &lt;&lt; values[i];
+    }
+    std::cout &lt;&lt; std::endl;
+}
+</pre>

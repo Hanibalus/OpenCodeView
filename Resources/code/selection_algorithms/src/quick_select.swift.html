@@ -1,0 +1,59 @@
+<pre>
+import Foundation
+
+public func kthLargest(_ a: [Int], _ k: Int) -&gt; Int? {
+  let len = a.count
+  if k &gt; 0 &amp;&amp; k &lt;= len {
+    let sorted = a.sorted()
+    return sorted[len - k]
+  } else {
+    return nil
+  }
+}
+
+public func random(min: Int, max: Int) -&gt; Int {
+  assert(min &lt; max)
+  return min + Int(arc4random_uniform(UInt32(max - min + 1)))
+}
+
+public func randomizedSelect&lt;T: Comparable&gt;(_ array: [T], order k: Int) -&gt; T {
+  var a = array
+
+  func randomPivot&lt;T: Comparable&gt;(_ a: inout [T], _ low: Int, _ high: Int) -&gt; T {
+    let pivotIndex = random(min: low, max: high)
+    a.swapAt(pivotIndex, high)
+    return a[high]
+  }
+
+  func randomizedPartition&lt;T: Comparable&gt;(_ a: inout [T], _ low: Int, _ high: Int) -&gt; Int {
+    let pivot = randomPivot(&amp;a, low, high)
+    var i = low
+    for j in low..&lt;high {
+      if a[j] &lt;= pivot {
+        a.swapAt(i, j)
+        i += 1
+      }
+    }
+    a.swapAt(i, high)
+    return i
+  }
+
+  func randomizedSelect&lt;T: Comparable&gt;(_ a: inout [T], _ low: Int, _ high: Int, _ k: Int) -&gt; T {
+    if low &lt; high {
+      let p = randomizedPartition(&amp;a, low, high)
+      if k == p {
+        return a[p]
+      } else if k &lt; p {
+        return randomizedSelect(&amp;a, low, p - 1, k)
+      } else {
+        return randomizedSelect(&amp;a, p + 1, high, k)
+      }
+    } else {
+      return a[low]
+    }
+  }
+
+  precondition(a.count &gt; 0)
+  return randomizedSelect(&amp;a, 0, a.count - 1, k)
+}
+</pre>

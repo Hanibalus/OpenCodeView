@@ -1,0 +1,119 @@
+<pre>
+//  divide conquer | structure to represent a point | C
+//  Part of Cosmos by OpenGenus Foundation
+
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cfloat&gt;
+#define ll long long
+using namespace std;
+
+struct point {
+	ll x;
+	ll y;
+};
+
+// comparator function to sort points by X coordinates
+bool compX(point a, point b) {
+	return a.x &lt; b.x;
+}
+
+// comparator function to sort points by Y coordinates
+bool compY(point a, point b) {
+	if(a.y &lt; b.y)
+		return true;
+	if(a.y &gt; b.y)
+		return false;
+	return a.x &lt; b.x;
+}
+
+point result1, result2;
+double minDist = DBL_MAX;
+
+double euclideanDistance(point a, point b) {
+	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+
+double bruteMin(vector&lt;point&gt; &amp;pointsByX, ll low, ll high) {
+	ll i,j;
+	double dist,bestDistance = DBL_MAX;
+	for(i=low; i&lt;=high; i++) {
+		for(j=i+1; j&lt;=high; j++) {
+			dist = euclideanDistance(pointsByX[i], pointsByX[j]);
+			if(dist &lt; bestDistance) {
+				bestDistance = dist;
+				if(bestDistance &lt; minDist) {
+					minDist = bestDistance;
+					result1 = pointsByX[i];
+					result2 = pointsByX[j];
+				}
+			}
+		}
+	}
+	return bestDistance;
+}
+
+double closestPair(vector&lt;point&gt; &amp;pointsByX, vector&lt;point&gt; &amp;pointsByY, ll low, ll high) {
+	ll i,j,n = high - low + 1;
+
+    // if number of points &lt;= 3, use brute to find min distance
+	if (n &lt;= 3)	{
+		return bruteMin(pointsByX, low, high);
+	}
+
+	ll mid = low + (high - low)/2;
+
+    // find minimum distance among left half of points recursively
+	double distLeft = closestPair(pointsByX, pointsByY, low, mid);
+
+    // find minimum distance among right half of points recursively
+	double distRight = closestPair(pointsByX, pointsByY, mid+1, high);
+
+	double bestDistance = min(distLeft, distRight);
+
+    // store points in strip of width 2d sorted by Y coordinates
+	vector&lt;point&gt; pointsInStrip;
+	for(i=0; i&lt;n; i++) {
+        if(abs(pointsByY[i].x - pointsByX[mid].x) &lt; bestDistance)
+		    pointsInStrip.push_back(pointsByY[i]);
+	}
+
+    // calculate minimum distance within the strip (atmost 6 comparisons)
+	for(i=0; i&lt;pointsInStrip.size(); i++) {
+		for(j=i+1; j&lt;pointsInStrip.size() &amp;&amp; abs(pointsInStrip[i].y - pointsInStrip[j].y) &lt; bestDistance; j++) {
+			double dist = euclideanDistance(pointsInStrip[i], pointsInStrip[j]);
+			if(dist &lt; bestDistance) {
+				bestDistance = dist;
+                minDist = dist;
+				result1 = pointsInStrip[i];
+				result2 = pointsInStrip[j];
+			}
+		}
+	}
+
+	return bestDistance;
+}
+
+int main() {
+	ll i,n;
+	cin&gt;&gt;n;     // number of points
+
+    // pointsByX stores points sorted by X coordinates
+    // pointsByY stores points sorted by Y coordinates
+	vector&lt;point&gt; pointsByX(n), pointsByY(n);
+
+	for(i=0; i&lt;n; i++) {
+		cin&gt;&gt;pointsByX[i].x&gt;&gt;pointsByX[i].y;
+		pointsByY[i].x = pointsByX[i].x;
+		pointsByY[i].y = pointsByX[i].y;
+	}
+	sort(pointsByX.begin(), pointsByX.end(), compX);
+	sort(pointsByY.begin(), pointsByY.end(), compY);
+
+	cout&lt;&lt;"Shortest distance = "&lt;&lt;closestPair(pointsByX, pointsByY, 0, n-1)&lt;&lt;endl;
+	cout&lt;&lt;"Points are ("&lt;&lt;result1.x&lt;&lt;","&lt;&lt;result1.y&lt;&lt;") and ("&lt;&lt;result2.x&lt;&lt;","&lt;&lt;result2.y&lt;&lt;")\n";
+	return 0;
+}
+</pre>

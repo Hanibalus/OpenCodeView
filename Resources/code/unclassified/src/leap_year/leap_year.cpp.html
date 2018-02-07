@@ -1,0 +1,38 @@
+<pre>
+#include &lt;iostream&gt;
+
+bool isLeapYear(int year)
+{
+    if (year % 400 == 0)
+        return true;
+
+    if (year % 100 == 0)
+        return false;
+
+    return year % 4 == 0
+}
+
+void findLeapYears(int a , int b)
+{
+    cout&lt;&lt;"The leap years between "&lt;&lt;a&lt;&lt;" and "&lt;&lt;b&lt;&lt;" are : \n";
+    for(int i = a ; i &lt;= b ; i++)
+        if (isLeapYear(i))
+            cout&lt;&lt;i&lt;&lt;"\n";
+}
+
+int main()
+{
+    using namespace std;
+    int year1, year2;
+    cout&lt;&lt;"Enter the first year: ";
+    cin&gt;&gt;year1;
+    cout&lt;&lt;"Enter the second year year: ";
+    cin&gt;&gt;year2;
+    if (year1 &gt; year2)
+        findLeapYears(year2,year1);
+    else
+        findLeapYears(year1,year2);
+    
+    return 0;
+}
+</pre>

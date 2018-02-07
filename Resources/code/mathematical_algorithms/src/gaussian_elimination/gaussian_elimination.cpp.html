@@ -1,0 +1,103 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+#include &lt;cmath&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+const long double EPS = 1e-8;
+
+/**
+    Gaussian elimination (also known as row reduction). Solves systems of linear equations.
+
+    @param a is an input matrix
+    @param ans is result vector
+    @return number of system solutions (0 or 1), -1 if the system is inconsistent.
+*/
+int gauss(vector&lt;vector &lt;long double&gt; &gt; a, vector&lt;long double&gt; &amp;ans) {
+    int n = (int) a.size();
+    int m = (int) a[0].size() - 1;
+    vector&lt;int&gt; cged(m, -1);
+    ans.assign(m, 0);
+    
+    for (int cur_col = 0, cur_row = 0; cur_col &lt; m &amp;&amp; cur_row &lt; n; cur_col++) {
+        int sel = cur_row;
+        for (int i = cur_row; i &lt; n; i++) {
+            if (abs(a[i][cur_col]) &gt; abs(a[sel][cur_col])) {
+                sel = i;
+            }
+        }
+        if (abs(a[sel][cur_col]) &lt; EPS) {
+            continue;
+        }
+        swap(a[sel], a[cur_row]);
+        cged[cur_col] = cur_row;
+        for (int i = 0; i &lt; n; i++) {
+            if (i != cur_row) {
+                long double cf = -a[i][cur_col] / a[cur_row][cur_col];
+                for (int j = cur_col; j &lt;= m; j++) {
+                    a[i][j] += a[cur_row][j] * cf;
+                }
+            }
+        }
+        cur_row++;
+    }
+    for (int i = 0; i &lt; m; i++) {
+        if (cged[i] != -1) {
+            ans[i] = a[cged[i]][m] / a[cged[i]][i];
+        }
+    }
+    for (int i = 0; i &lt; n; i++) {
+        long double sum = 0.0;
+        for (int j = 0; j &lt; m; j++) {
+            sum += ans[j] * a[i][j];
+        }
+        if (abs(sum - a[i][m]) &gt; EPS) {
+            return 0;
+        }
+    }
+    for (int i = 0; i &lt; m; i++) {
+        if (cged[i] == -1) {
+            return -1;
+        }
+    }
+    return 1;
+}
+
+/*
+Input:
+2
+2 1 4
+1 2 5
+Output:
+single
+1 2
+*/
+int main() {
+    int n;
+    cin &gt;&gt; n;
+    vector &lt;vector &lt;long double&gt; &gt; l(n);
+    vector &lt;long double&gt; ans(n);
+    for (int i = 0; i &lt; n; i++) {
+        l[i].resize(n + 1);
+        for (int j = 0; j &lt;= n; j++) {
+            cin &gt;&gt; l[i][j];
+        }
+    }
+    int st = gauss(l, ans);
+    if (!(st + 1)) {
+        cout &lt;&lt; "infinity\n";
+        return 0;
+    }
+    if (!st) {
+        cout &lt;&lt; "impossible\n";
+        return 0;
+    }
+    cout &lt;&lt; "single\n";
+    for (int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; ans[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; "\n";
+}
+</pre>

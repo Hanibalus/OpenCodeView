@@ -1,0 +1,25 @@
+<pre>
+/* Part of Cosmos by OpenGenus Foundation */
+/* Created by Shubham Prasad Singh on 12/10/2017 */
+
+/* Check if a number is a power of 2 */
+#include&lt;iostream&gt;
+using namespace std;
+typedef long long ll;
+bool isPowerOf2(ll n)
+{
+    return n &amp;&amp; (!(n &amp; (n-1)));
+}
+int main()
+{
+    ll n;
+    cout&lt;&lt;"Enter a number\n";
+    cin&gt;&gt;n;
+    if(isPowerOf2(n))
+        cout&lt;&lt;"Is a power of 2"&lt;&lt;endl;
+    else
+        cout&lt;&lt;"Not a power of 2"&lt;&lt;endl;
+    return 0;
+}
+
+</pre>

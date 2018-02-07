@@ -1,0 +1,45 @@
+<pre>
+/*
+ * Part of Cosmos by OpenGenus Foundation.
+ * Author : ABDOUS Kamel
+ * How to use matrix-representation graphs.
+ */
+
+#include "mgraph_struct.h"
+#include &lt;stdio.h&gt;
+
+#define NB_NODES 5
+
+int
+main()
+{
+  M_Graph g;
+  createMGraph(NB_NODES, &amp;g);
+
+  int i, j;
+  for (i = 0; i &lt; NB_NODES; ++i) {
+    for (j = 0; j &lt; NB_NODES; ++j) {
+      printf("%d ", MG_get(&amp;g, i, j));
+    }
+
+    printf("\n");
+  }
+
+  MG_set(&amp;g, 0, 0, 1);
+  MG_set(&amp;g, 1, 2, 1);
+  MG_set(&amp;g, 2, 3, 1);
+
+  printf("\n");
+
+  for (i = 0; i &lt; NB_NODES; ++i) {
+    for (j = 0; j &lt; NB_NODES; ++j) {
+      printf("%d ", MG_get(&amp;g, i, j));
+    }
+
+    printf("\n");
+  }
+
+  freeMGraph(&amp;g);
+  return (0);
+}
+</pre>

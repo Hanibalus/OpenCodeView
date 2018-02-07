@@ -1,0 +1,30 @@
+<pre>
+# Written by Michele Riva
+
+BACONIAN_CODE = {
+  'a' =&gt; 'AAAAA', 'b' =&gt; 'AAAAB', 'c' =&gt; 'AAABA',
+  'd' =&gt; 'AAABB', 'e' =&gt; 'AABAA', 'f' =&gt; 'AABAB',
+  'g' =&gt; 'AABBA', 'h' =&gt; 'AABBB', 'i' =&gt; 'ABAAA',
+  'j' =&gt; 'BBBAA', 'k' =&gt; 'ABAAB', 'l' =&gt; 'ABABA',
+  'm' =&gt; 'ABABB', 'n' =&gt; 'ABBAA', 'o' =&gt; 'ABBAB',
+  'p' =&gt; 'ABBBA', 'q' =&gt; 'ABBBB', 'r' =&gt; 'BAAAA',
+  's' =&gt; 'BAAAB', 't' =&gt; 'BAABA', 'u' =&gt; 'BAABB',
+  'v' =&gt; 'BBBAB', 'w' =&gt; 'BABAA', 'x' =&gt; 'BABAB',
+  'y' =&gt; 'BABBA', 'z' =&gt; 'BABBB'
+}.freeze
+
+def encode(string)
+  text = string.downcase.split('')
+  encoded_text = []
+
+  text.each do |c|
+    bac_char = BACONIAN_CODE[c]
+    encoded_text.push(bac_char)
+  end
+
+  encoded_text.join('')
+end
+
+# TEST!
+puts encode('Hello World') # =&gt; AABBBAABAAABABAABABAABBABBABAAABBABBAAAAABABAAAABB
+</pre>

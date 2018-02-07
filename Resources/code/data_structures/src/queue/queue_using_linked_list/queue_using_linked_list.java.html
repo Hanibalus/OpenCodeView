@@ -1,0 +1,81 @@
+<pre>
+class Node&lt;T&gt; //NODE CLASS
+{
+    T data;
+    Node&lt;T&gt; next;
+}
+// Part of Cosmos by OpenGenus Foundation
+//Queue Using linked list
+public class QueueUsingLL&lt;T&gt; {
+
+	private Node&lt;T&gt; front; // Front Node
+	private Node&lt;T&gt; rear;  // Rear Node
+	private int size;
+
+
+	public int size(){
+		return size;
+	}
+
+    //Returns TRUE if queue is empty
+	public boolean isEmpty(){
+		return size() == 0;
+	}
+
+	public T front() {
+
+		return front.data;
+	}
+
+	public void enqueue(T element){     //to add an element in queue
+		Node&lt;T&gt; newNode = new Node&lt;&gt;();
+		newNode.data = element;
+		if(rear == null){
+			front = newNode;
+			rear = newNode;
+		}
+		else{
+			rear.next = newNode;
+			rear = newNode;
+		}
+		size++;
+
+	}
+
+	public T dequeue() {    //to remove an element from queue
+
+		T temp = front.data;
+		if(front.next == null){
+			front = null;
+			rear = null;
+		}
+		else{
+			front = front.next;
+		}
+		size--;
+		return temp;
+
+	}
+
+	public static class QueueUse
+    {
+        //Main Function to implement Queue
+        public static void main(String[] args) {
+            QueueUsingLL&lt;Integer&gt; queueUsingLL=new QueueUsingLL&lt;&gt;();
+            for(int i=1;i&lt;=10;i++) // Creates a dummy queue which contains integers from 1-10
+            {
+             queueUsingLL.enqueue(i);
+            }
+
+            System.out.println("QUEUE :");
+
+            while (!queueUsingLL.isEmpty())
+            {
+                System.out.println(queueUsingLL.dequeue());
+            }
+        }
+    }
+
+
+}
+</pre>

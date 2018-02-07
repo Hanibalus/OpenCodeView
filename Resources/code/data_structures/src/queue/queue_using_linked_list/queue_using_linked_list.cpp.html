@@ -1,0 +1,128 @@
+<pre>
+#include &lt;cassert&gt;
+#include &lt;iostream&gt;
+// Part of Cosmos by OpenGenus Foundation
+using namespace std;
+
+template &lt;class T&gt;
+class Queue
+{
+  private:
+    class Node
+    {
+      public:
+        Node(const T &amp;data, Node *next)
+            : data(data), next(next)
+        {
+        }
+
+        T data;
+        Node *next;
+    };
+
+  public:
+    Queue(void);
+    ~Queue();
+
+    void enqueue(const T &amp;data);
+    T dequeue(void);
+
+    bool empty(void) const;
+    int size(void) const;
+    T &amp;front(void);
+
+  private:
+    Node *head;
+    Node *back;
+    int items;
+};
+
+template &lt;class T&gt;
+Queue&lt;T&gt;::Queue(void) : head(NULL)
+{
+    items = 0;
+}
+
+template &lt;class T&gt;
+Queue&lt;T&gt;::~Queue()
+{
+    while (head != NULL)
+    {
+        Node *tmpHead = head;
+        head = head-&gt;next;
+        delete tmpHead;
+    }
+}
+
+template &lt;class T&gt;
+void Queue&lt;T&gt;::enqueue(const T &amp;data)
+{
+    Node *newNode = new Node(data, NULL);
+    if (empty())
+    {
+        head = (back = newNode);
+    }
+    else
+    {
+        back-&gt;next = newNode;
+        back = back-&gt;next;
+    }
+
+    items++;
+}
+
+template &lt;class T&gt;
+T Queue&lt;T&gt;::dequeue(void)
+{
+    assert(!empty());
+    Node *tmpHead = head;
+    head = head-&gt;next;
+    T data = tmpHead-&gt;data;
+    items--;
+    delete tmpHead;
+    return data;
+}
+
+template &lt;class T&gt;
+bool Queue&lt;T&gt;::empty(void) const
+{
+    return head == NULL;
+}
+
+template &lt;class T&gt;
+int Queue&lt;T&gt;::size(void) const
+{
+    return items;
+}
+
+template &lt;class T&gt;
+T &amp;Queue&lt;T&gt;::front(void)
+{
+    assert(!empty());
+    return head-&gt;data;
+}
+
+int main()
+{
+    Queue&lt;int&gt; queue;
+    queue.enqueue(34);
+    queue.enqueue(54);
+    queue.enqueue(64);
+    queue.enqueue(74);
+    queue.enqueue(84);
+
+    cout &lt;&lt; queue.front() &lt;&lt; endl;
+    cout &lt;&lt; queue.size() &lt;&lt; endl;
+
+    while (!queue.empty())
+    {
+        cout &lt;&lt; queue.dequeue() &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; queue.size() &lt;&lt; endl;
+
+    cout &lt;&lt; endl;
+
+    return 0;
+}
+</pre>

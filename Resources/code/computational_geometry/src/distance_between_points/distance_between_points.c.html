@@ -1,0 +1,26 @@
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+
+struct Point {
+    double x;
+    double y;
+};
+
+double distanceBetweenPoints(Point a, Point b) {
+    return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+}
+
+int main() {
+    Point a, b;
+
+    printf("First point (x y): ");
+    scanf("%lg %lg", &amp;a.x, &amp;a.y);
+    printf("Second point (x y): ");
+    scanf("%lg %lg", &amp;b.x, &amp;b.y);
+
+    printf("%lg", distanceBetweenPoints(a, b));
+
+    return 0;
+}
+</pre>

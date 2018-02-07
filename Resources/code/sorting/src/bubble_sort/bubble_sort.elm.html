@@ -1,0 +1,50 @@
+<pre>
+module BubbleSort exposing (sort)
+
+import Tuple
+
+
+sort : List a -&gt; (a -&gt; a -&gt; Order) -&gt; List a
+sort list order =
+    let
+        ( swapped, listResult ) =
+            swapPass ( False, list ) order
+    in
+    if swapped then
+        sort listResult order
+    else
+        listResult
+
+
+swapPass : ( Bool, List a ) -&gt; (a -&gt; a -&gt; Order) -&gt; ( Bool, List a )
+swapPass ( swapped, list ) order =
+    case list of
+        x0 :: x1 :: xs -&gt;
+            case order x0 x1 of
+                LT -&gt;
+                    let
+                        ( swapped_, result ) =
+                            swapPass ( swapped, x1 :: xs ) order
+                    in
+                    ( swapped_, x0 :: result )
+
+                EQ -&gt;
+                    let
+                        ( swapped_, result ) =
+                            swapPass ( swapped, x1 :: xs ) order
+                    in
+                    ( swapped_, x0 :: result )
+
+                GT -&gt;
+                    let
+                        ( swapped_, result ) =
+                            swapPass ( swapped, x0 :: xs ) order
+                    in
+                    ( True, x1 :: result )
+
+        x1 :: [] -&gt;
+            ( swapped, [ x1 ] )
+
+        [] -&gt;
+            ( swapped, [] )
+</pre>

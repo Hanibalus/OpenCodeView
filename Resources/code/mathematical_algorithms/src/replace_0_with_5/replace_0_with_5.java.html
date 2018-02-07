@@ -1,0 +1,37 @@
+<pre>
+// Part of Cosmos by OpenGenus Foundation
+
+import java.util.ArrayList;
+
+public class Main {
+    static ArrayList&lt;Integer&gt; array = new ArrayList&lt;&gt;();
+
+    private static void replase(int num) {
+
+        while (num &gt; 0) {
+            int k = num % 10;
+            array.add(k);
+            num = num / 10;
+        }
+        for (int i = 0; i &lt; array.size(); i++) {
+            if (array.get(i) == 0) {
+                array.set(i, 5);
+            }
+        }
+        int s = array.size();
+        for (int j = 0; j &lt; array.size() / 2; j++) {
+            s--;
+            int id = array.get(j);
+            int last = array.get(s);
+            array.set(j, last);
+            array.set(s, id);
+        }
+    }
+
+    public static void main(String[] args) {
+        int number = 14912400;
+        replase(number);
+        System.out.println(array);
+    }
+} 
+</pre>
